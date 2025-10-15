@@ -1,7 +1,7 @@
 import env from '@/config/env';
 import { AuthService } from '@/services/auth.service';
 import { InternalServerError } from '@/utils/errors';
-import { logger } from '@/utils/logger';
+import { ErrorLog, logger } from '@/utils/logger';
 import { sendSuccess } from '@/utils/response';
 import type { Request, Response } from 'express';
 
@@ -56,8 +56,7 @@ const login = async (req: Request, res: Response) => {
     const { password: _password, refreshTokens: _refreshTokens, ...sanitizedUser } = userObj;
     return sendSuccess(res, { user: sanitizedUser, /*tokens*/ }, 200);
   } catch (error) {
-    if (env.NODE_ENV === 'development') logger.error(error);
-    throw new InternalServerError();
+    ErrorLog(error as unknown as Error)
   }
 };
 
@@ -70,8 +69,7 @@ const logout = async (req: Request, res: Response) => {
     // res.clearCookie('refreshToken');
     // return sendSuccess(res, {}, 200);
   } catch (error) {
-    if (env.NODE_ENV === 'development') logger.error(error);
-    throw new InternalServerError();
+    ErrorLog(error as unknown as Error)
   }
 }
 
@@ -79,7 +77,7 @@ const forgotPassword = async (req: Request, res: Response) => {
   try {
 
   } catch (error) {
-
+    ErrorLog(error as unknown as Error)
   }
 }
 
@@ -87,7 +85,7 @@ const resetPassword = async (req: Request, res: Response) => {
   try {
 
   } catch (error) {
-
+    ErrorLog(error as unknown as Error)
   }
 }
 
@@ -95,7 +93,7 @@ const verifyEmail = async (req: Request, res: Response) => {
   try {
 
   } catch (error) {
-
+    ErrorLog(error as unknown as Error)
   }
 }
 
@@ -103,7 +101,7 @@ const refreshToken = async (req: Request, res: Response) => {
   try {
 
   } catch (error) {
-
+    ErrorLog(error as unknown as Error)
   }
 }
 
@@ -111,7 +109,7 @@ const googleOAuth = async (req: Request, res: Response) => {
   try {
 
   } catch (error) {
-
+    ErrorLog(error as unknown as Error)
   }
 }
 
@@ -119,7 +117,7 @@ const discordOAuth = async (req: Request, res: Response) => {
   try {
 
   } catch (error) {
-
+    ErrorLog(error as unknown as Error)
   }
 }
 

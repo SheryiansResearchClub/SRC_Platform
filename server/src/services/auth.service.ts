@@ -65,7 +65,6 @@ export class AuthService {
     return { user, tokens };
   }
 
-  // OAuth login (Google, Discord)
   async oauthLogin(
     provider: 'google' | 'discord',
     profile: {
@@ -119,7 +118,6 @@ export class AuthService {
     return { user: user!, tokens, isNewUser };
   }
 
-  // Refresh access token
   async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
     // Verify refresh token
     const payload = jwtService.verifyRefreshToken(refreshToken);
@@ -148,18 +146,15 @@ export class AuthService {
     return tokens;
   }
 
-  // Logout (remove refresh token)
   async logout(userId: string, refreshToken: string): Promise<void> {
     const tokenHash = jwtService.hashToken(refreshToken);
     await this.userRepo.removeRefreshToken(userId, tokenHash);
   }
 
-  // Logout from all devices
   async logoutAll(userId: string): Promise<void> {
     await this.userRepo.removeAllRefreshTokens(userId);
   }
 
-  // Send verification email
   async sendVerificationEmail(userId: string, email: string): Promise<void> {
     // Generate verification token
     const token = crypto.randomBytes(32).toString('hex');
@@ -174,7 +169,6 @@ export class AuthService {
     console.log(`Verification token for ${email}: ${token}`);
   }
 
-  // Verify email
   async verifyEmail(token: string): Promise<UserDocument> {
     const user = await this.userRepo.verifyEmail(token);
     if (!user) {
@@ -184,7 +178,6 @@ export class AuthService {
     return user;
   }
 
-  // Request password reset
   async requestPasswordReset(email: string): Promise<void> {
     const user = await this.userRepo.findByEmail(email);
     if (!user) {
@@ -205,7 +198,6 @@ export class AuthService {
     console.log(`Password reset token for ${email}: ${token}`);
   }
 
-  // Reset password
   async resetPassword(token: string, newPassword: string): Promise<void> {
     // Validate password
     if (newPassword.length < 6) {
@@ -221,7 +213,6 @@ export class AuthService {
     await this.userRepo.removeAllRefreshTokens(user._id.toString());
   }
 
-  // Change password (for logged-in user)
   async changePassword(
     userId: string,
     currentPassword: string,
@@ -255,7 +246,6 @@ export class AuthService {
     await this.userRepo.removeAllRefreshTokens(userId);
   }
 
-  // Get current user profile
   async getCurrentUser(userId: string): Promise<UserDocument> {
     const user = await this.userRepo.findById(userId);
     if (!user) {
@@ -265,7 +255,6 @@ export class AuthService {
     return user;
   }
 
-  // Private helper: Generate access and refresh tokens
   private async generateTokens(user: UserDocument) {
     const tokens = jwtService.generateTokenPair({
       _id: user._id.toString(),
@@ -273,7 +262,6 @@ export class AuthService {
       role: user.role
     });
 
-    // Save refresh token hash in database
     const tokenHash = jwtService.hashToken(tokens.refreshToken);
     const expiresAt = dayjs().add(7, 'days').toDate();
     await this.userRepo.saveRefreshToken(user._id.toString(), tokenHash, expiresAt);
