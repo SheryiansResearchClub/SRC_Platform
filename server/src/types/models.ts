@@ -1,0 +1,1 @@
+export type { UserDocument, UserType } from "@/models/user.model"

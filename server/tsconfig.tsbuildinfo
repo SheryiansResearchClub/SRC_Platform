@@ -1,0 +1,1 @@
+{"root":["./src/server.ts","./src/app/index.ts","./src/config/dotenv.config.ts","./src/db/mongo.ts"],"version":"5.9.3"}
