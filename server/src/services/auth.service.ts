@@ -6,17 +6,20 @@ import {
   ValidationError,
   ConflictError
 } from '@/utils/errors';
+import { emailService } from '@/services/email.service';
+import { logger } from '@/utils/logger';
 import crypto from 'crypto';
 import dayjs from 'dayjs';
+import type { Tokens } from '@/types/auth';
 
-export class AuthService {
+class AuthService {
   private userRepo = new UserRepository();
 
   async register(data: {
     name: string;
     email: string;
     password: string;
-  }): Promise<{ user: UserDocument; tokens: any }> {
+  }): Promise<{ user: UserDocument; tokens: Tokens }> {
     const emailExists = await this.userRepo.emailExists(data.email);
     if (emailExists) {
       throw new ConflictError('Email already registered');
@@ -34,7 +37,17 @@ export class AuthService {
       role: 'member'
     });
 
-    await this.sendVerificationEmail(user._id.toString(), user.email);
+    await this.sendVerificationEmail(user._id.toString(), user.email, user.name);
+    void emailService
+      .sendWelcomeEmail(user.email, user.name, user._id.toString())
+      .catch((error) => {
+        logger.error('Failed to send welcome email', {
+          userId: user._id.toString(),
+          email: user.email,
+          error,
+        });
+      });
+
     const tokens = await this.generateTokens(user);
 
     return { user, tokens };
@@ -43,7 +56,7 @@ export class AuthService {
   async login(data: {
     email: string;
     password: string;
-  }): Promise<{ user: UserDocument; tokens: any }> {
+  }): Promise<{ user: UserDocument; tokens: Tokens }> {
     const user = await this.userRepo.findByEmailWithPassword(data.email);
     if (!user) {
       throw new UnauthorizedError('Invalid email or password');
@@ -73,7 +86,7 @@ export class AuthService {
       name: string;
       avatarUrl?: string;
     }
-  ): Promise<{ user: UserDocument; tokens: any; isNewUser: boolean }> {
+  ): Promise<{ user: UserDocument; tokens: Tokens; isNewUser: boolean }> {
     // Check if user exists with OAuth ID
     let user = await this.userRepo.findByOAuthId(profile.id, provider);
     let isNewUser = false;
@@ -155,7 +168,7 @@ export class AuthService {
     await this.userRepo.removeAllRefreshTokens(userId);
   }
 
-  async sendVerificationEmail(userId: string, email: string): Promise<void> {
+  async sendVerificationEmail(userId: string, email: string, name: string): Promise<void> {
     // Generate verification token
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = dayjs().add(24, 'hours').toDate();
@@ -163,10 +176,21 @@ export class AuthService {
     // Save token
     await this.userRepo.saveEmailVerifyToken(userId, token, expiresAt);
 
-    // TODO: Send email with verification link
-    // await emailService.sendVerificationEmail(email, token);
-
-    console.log(`Verification token for ${email}: ${token}`);
+    try {
+      const sent = await emailService.sendVerificationEmail(email, name, token, userId);
+      if (!sent) {
+        logger.warn('Verification email send returned false', {
+          userId,
+          email,
+        });
+      }
+    } catch (error) {
+      logger.error('Failed to send verification email', {
+        userId,
+        email,
+        error,
+      });
+    }
   }
 
   async verifyEmail(token: string): Promise<UserDocument> {
@@ -181,35 +205,47 @@ export class AuthService {
   async requestPasswordReset(email: string): Promise<void> {
     const user = await this.userRepo.findByEmail(email);
     if (!user) {
-      // Don't reveal if email exists or not
       return;
     }
 
-    // Generate reset token
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = dayjs().add(1, 'hour').toDate();
 
-    // Save token
     await this.userRepo.saveResetToken(email, token, expiresAt);
 
-    // TODO: Send email with reset link
-    // await emailService.sendPasswordResetEmail(email, token);
+    try {
+      const sent = await emailService.sendPasswordResetEmail(
+        email,
+        user.name,
+        token,
+        user._id.toString(),
+      );
 
-    console.log(`Password reset token for ${email}: ${token}`);
+      if (!sent) {
+        logger.warn('Password reset email send returned false', {
+          email,
+          userId: user._id.toString(),
+        });
+      }
+    } catch (error) {
+      logger.error('Failed to send password reset email', {
+        email,
+        userId: user._id.toString(),
+        error,
+      });
+    }
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<void> {
-    // Validate password
-    if (newPassword.length < 6) {
+  async resetPassword(data: { token: string, newPassword: string }): Promise<void> {
+    if (data.newPassword.length < 6) {
       throw new ValidationError('Password must be at least 6 characters');
     }
 
-    const user = await this.userRepo.resetPassword(token, newPassword);
+    const user = await this.userRepo.resetPassword(data.token, data.newPassword);
     if (!user) {
       throw new ValidationError('Invalid or expired reset token');
     }
 
-    // Remove all refresh tokens (logout from all devices)
     await this.userRepo.removeAllRefreshTokens(user._id.toString());
   }
 
@@ -270,6 +306,8 @@ export class AuthService {
   }
 }
 
+export const authService = new AuthService();
+
 /*
 
 // OAuth Login
@@ -284,7 +322,7 @@ const { user, tokens, isNewUser } = await authService.oauthLogin('google', {
 const newTokens = await authService.refreshToken(oldRefreshToken);
 
 // Logout
-await authService.logout(userId, refreshToken);
+await authService.logout(userId, refreshToken); 
 
 // Logout All Devices
 await authService.logoutAll(userId);

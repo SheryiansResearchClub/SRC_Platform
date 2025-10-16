@@ -1,5 +1,6 @@
 import env from '@config/env';
 import type { SignOptions } from 'jsonwebtoken';
+import type { CookieOptions } from 'express';
 
 type JwtExpiration = NonNullable<SignOptions['expiresIn']>;
 
@@ -41,4 +42,19 @@ export const appConfig = {
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ],
   },
+
+  cookie: {
+    accessToken: {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 60 * 1000
+    } satisfies CookieOptions,
+    refreshToken: {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 15 * 60 * 60 * 1000
+    } satisfies CookieOptions
+  }
 };
