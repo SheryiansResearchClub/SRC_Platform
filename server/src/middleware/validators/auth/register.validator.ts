@@ -1,7 +1,7 @@
-import { body } from "express-validator";
 import { validateResult } from "@/utils/validate";
+import { body } from "express-validator";
 
-const registerValidation = [
+export const registerValidation = [
   body("name")
     .trim()
     .notEmpty()
@@ -33,26 +33,3 @@ const registerValidation = [
 
   validateResult,
 ];
-
-const loginValidation = [
-  body("email")
-    .trim()
-    .notEmpty()
-    .withMessage("Email is required")
-    .isEmail()
-    .withMessage("Invalid email format"),
-
-  body("password")
-    .trim()
-    .notEmpty()
-    .withMessage("Password is required")
-    .isLength({ min: 8, max: 64 })
-    .withMessage("Password must be between 8 and 64 characters"),
-
-  validateResult,
-];
-
-export default {
-  registerValidation,
-  loginValidation,
-};

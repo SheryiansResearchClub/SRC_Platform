@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { appConfig } from '@/config/app.config';
 import { errorHandler, notFoundHandler } from '@/middleware/error/error.middleware';
+import { globalRateLimiter } from '@/middleware/rate-limit/rate-limit.middleware';
 import routes from '@/routes';
 import { logger } from '@/utils/logger';
 
@@ -31,7 +32,7 @@ export const createApp = (): Application => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
-  app.use(`/api/${appConfig.apiVersion}`, routes);
+  app.use(`/api/${appConfig.apiVersion}`, globalRateLimiter, routes);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

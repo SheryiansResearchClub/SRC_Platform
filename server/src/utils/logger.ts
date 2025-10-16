@@ -1,5 +1,6 @@
 import winston from 'winston';
 import env from '@/config/env';
+import { InternalServerError } from '@/utils/errors';
 
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -35,4 +36,9 @@ if (env.NODE_ENV !== 'production') {
       ),
     })
   );
+}
+
+export const ErrorLog = (error: Error) => {
+  if (env.NODE_ENV === 'development') logger.error(error);
+  throw new InternalServerError();
 }
