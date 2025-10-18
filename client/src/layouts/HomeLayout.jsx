@@ -15,7 +15,7 @@ const HomeLayout = () => {
           </ul>
         </nav>
       </header>
-      <Outlet />
+      {/* <Outlet /> */}
     </div>
   )
 }
