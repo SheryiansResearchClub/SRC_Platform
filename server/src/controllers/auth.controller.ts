@@ -1,12 +1,13 @@
+import type { TokenPair, Request, Response, GoogleProfileType } from '@/types';
+import env from '@/config/env';
 import { ErrorLog } from '@/utils/logger';
-import { sendSuccess } from '@/utils/response';
-import type { Request, Response } from 'express';
-import type { Tokens } from '@/types/auth';
+import { sendError, sendSuccess } from '@/utils/response';
 import { appConfig } from '@/config/app.config';
 import { jwtService } from '@/lib/auth/jwt';
 import { authService } from '@/services/auth.service';
+import { AppError } from '@/utils/errors';
 
-const setCookie = (res: Response, tokens: Tokens) => {
+const setCookie = (res: Response, tokens: TokenPair) => {
   res.cookie('accessToken', tokens.accessToken, appConfig.cookie.accessToken);
   res.cookie('refreshToken', tokens.refreshToken, appConfig.cookie.refreshToken);
 }
@@ -109,21 +110,36 @@ const refreshToken = async (req: Request, res: Response) => {
   }
 }
 
-const googleOAuth = async (req: Request, res: Response) => {
+const googleOAuthCallback = async (req: Request, res: Response) => {
   try {
+    const tokens = await authService.googleOAuthCallback(req.user as GoogleProfileType);
 
+    setCookie(res, tokens);
+
+    res.redirect(env.FRONTEND_REDIRECT_URL || "/app");
   } catch (error) {
     ErrorLog(error as unknown as Error)
   }
 }
 
-const discordOAuth = async (req: Request, res: Response) => {
+const discordOAuthCallback = async (req: Request, res: Response) => {
   try {
+    const { code } = req.query as { code: string };
 
-  } catch (error) {
-    ErrorLog(error as unknown as Error)
+    const authResponse = await authService.discordOAuthCallback(code);
+
+    setCookie(res, authResponse.tokens);
+
+    res.redirect(env.FRONTEND_REDIRECT_URL || "/app")
+
+  } catch (error: any) {
+    ErrorLog(error);
+    if (error instanceof AppError) {
+      return sendError(res, error.code, error.message, error.statusCode, error.details);
+    }
+    return sendError(res, 'DISCORD_OAUTH_FAILED', 'Discord OAuth failed');
   }
-}
+};
 
 export default {
   signup,
@@ -133,6 +149,6 @@ export default {
   resetPassword,
   verifyEmail,
   refreshToken,
-  googleOAuth,
-  discordOAuth
+  googleOAuthCallback,
+  discordOAuthCallback
 }

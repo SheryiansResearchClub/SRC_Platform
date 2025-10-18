@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response } from '@/types';
 
 export interface ApiResponse<T = any> {
   success: boolean;

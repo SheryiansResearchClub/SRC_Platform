@@ -1,8 +1,5 @@
-import env from '@config/env';
-import type { SignOptions } from 'jsonwebtoken';
-import type { CookieOptions } from 'express';
-
-type JwtExpiration = NonNullable<SignOptions['expiresIn']>;
+import type { CookieOptions, JwtExpiration } from '@/types';
+import env from '@/config/env';
 
 export const appConfig = {
   env: env.NODE_ENV,
