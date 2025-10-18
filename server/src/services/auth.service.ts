@@ -1,25 +1,21 @@
-import { UserRepository } from '@/repositories/user.repository';
+import type { UserDocument, GoogleProfileType, TokenPair } from '@/types';
+import { userRepo } from '@/repositories/user.repository';
 import { jwtService } from '@/lib/auth/jwt';
-import type { UserDocument } from '@/types/models';
-import {
-  UnauthorizedError,
-  ValidationError,
-  ConflictError
-} from '@/utils/errors';
+import { UnauthorizedError, ValidationError, ConflictError } from '@/utils/errors';
 import { emailService } from '@/services/email.service';
 import { logger } from '@/utils/logger';
 import crypto from 'crypto';
 import dayjs from 'dayjs';
-import type { Tokens } from '@/types/auth';
+import oAuthClient from '@/integrations';
 
 class AuthService {
-  private userRepo = new UserRepository();
+  private userRepo = userRepo;
 
   async register(data: {
     name: string;
     email: string;
     password: string;
-  }): Promise<{ user: UserDocument; tokens: Tokens }> {
+  }): Promise<{ user: UserDocument; tokens: TokenPair }> {
     const emailExists = await this.userRepo.emailExists(data.email);
     if (emailExists) {
       throw new ConflictError('Email already registered');
@@ -56,7 +52,7 @@ class AuthService {
   async login(data: {
     email: string;
     password: string;
-  }): Promise<{ user: UserDocument; tokens: Tokens }> {
+  }): Promise<{ user: UserDocument; tokens: TokenPair }> {
     const user = await this.userRepo.findByEmailWithPassword(data.email);
     if (!user) {
       throw new UnauthorizedError('Invalid email or password');
@@ -78,82 +74,194 @@ class AuthService {
     return { user, tokens };
   }
 
-  async oauthLogin(
-    provider: 'google' | 'discord',
-    profile: {
-      id: string;
-      email: string;
-      name: string;
-      avatarUrl?: string;
+  async googleOAuthCallback(
+    profile: GoogleProfileType
+  ): Promise<TokenPair> {
+    let user: UserDocument | null = await this.userRepo.findByOAuthId(profile._id.toString(), 'google');
+    if (user) {
+      return this.generateTokens(user);
     }
-  ): Promise<{ user: UserDocument; tokens: Tokens; isNewUser: boolean }> {
-    // Check if user exists with OAuth ID
-    let user = await this.userRepo.findByOAuthId(profile.id, provider);
+    return this.generateTokens({ _id: profile._id, email: profile.email, role: 'member', oauthProvider: 'google' } as UserDocument);
+  }
+
+  async discordOAuthCallback(code: string): Promise<{ user: UserDocument; tokens: TokenPair; isNewUser: boolean }> {
+    const tokenData = await oAuthClient.discordTokenClient(code);
+
+    const {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      token_type: tokenType,
+      expires_in: expiresIn,
+      scope
+    } = tokenData ?? {};
+
+    const discordProfile = await oAuthClient.discordUserClient(accessToken, refreshToken, expiresIn, scope, tokenType);
+
+    let user = await this.userRepo.findByDiscordId(discordProfile.id);
     let isNewUser = false;
 
+    const expiresAt = dayjs().add(discordProfile.expiresIn, 'seconds').toDate();
+
     if (!user) {
-      // Check if email already exists
-      user = await this.userRepo.findByEmail(profile.email);
+      user = await this.userRepo.findByEmail(discordProfile.email);
 
       if (user) {
-        // Link OAuth account to existing user
-        user = await this.userRepo.update(user._id.toString(), {
-          oauthId: profile.id,
-          oauthProvider: provider,
-          isEmailVerified: true
+        const isDiscordTaken = await this.userRepo.isDiscordIdTaken(
+          discordProfile.id,
+          user._id.toString()
+        );
+
+        if (isDiscordTaken) {
+          throw new ConflictError('This Discord account is already linked to another user');
+        }
+
+        user = await this.userRepo.connectDiscord(user._id.toString(), {
+          id: discordProfile.id,
+          username: discordProfile.username,
+          discriminator: discordProfile.discriminator,
+          avatar: discordProfile.avatar,
+          accessToken: discordProfile.accessToken,
+          refreshToken: discordProfile.refreshToken,
+          expiresAt,
+          scopes: discordProfile.scopes
         });
       } else {
-        // Create new user
+        const avatarUrl = discordProfile.avatar
+          ? `https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.avatar}.png`
+          : undefined;
+
         user = await this.userRepo.create({
-          name: profile.name,
-          email: profile.email,
-          oauthProvider: provider,
-          oauthId: profile.id,
-          avatarUrl: profile.avatarUrl,
-          role: 'member'
+          name: discordProfile.username,
+          email: discordProfile.email,
+          oauthProvider: 'discord',
+          oauthId: discordProfile.id,
+          avatarUrl,
+          role: 'member',
+          discord: {
+            id: discordProfile.id,
+            username: discordProfile.username,
+            discriminator: discordProfile.discriminator,
+            avatar: discordProfile.avatar,
+            accessToken: discordProfile.accessToken,
+            refreshToken: discordProfile.refreshToken,
+            expiresAt,
+            scopes: discordProfile.scopes
+          }
         });
 
-        // Mark email as verified for OAuth users
         await this.userRepo.update(user._id.toString(), {
           isEmailVerified: true
-        });
+        } as Partial<UserDocument>);
 
         isNewUser = true;
       }
+    } else {
+      await this.userRepo.updateDiscordTokens(
+        user._id.toString(),
+        discordProfile.accessToken,
+        discordProfile.refreshToken,
+        expiresAt
+      );
     }
 
-    // Update last login
     await this.userRepo.updateLastLogin(user!._id.toString());
 
-    // Generate tokens
     const tokens = await this.generateTokens(user!);
 
     return { user: user!, tokens, isNewUser };
   }
 
+  async connectDiscordAccount(
+    userId: string,
+    discordProfile: {
+      id: string;
+      username: string;
+      discriminator: string;
+      avatar?: string;
+      accessToken: string;
+      refreshToken?: string;
+      expiresIn: number;
+      scopes: string[];
+    }
+  ): Promise<UserDocument> {
+    const isDiscordTaken = await this.userRepo.isDiscordIdTaken(
+      discordProfile.id,
+      userId
+    );
+
+    if (isDiscordTaken) {
+      throw new ConflictError('This Discord account is already linked to another user');
+    }
+
+    const expiresAt = dayjs().add(discordProfile.expiresIn, 'seconds').toDate();
+
+    const user = await this.userRepo.connectDiscord(userId, {
+      id: discordProfile.id,
+      username: discordProfile.username,
+      discriminator: discordProfile.discriminator,
+      avatar: discordProfile.avatar,
+      accessToken: discordProfile.accessToken,
+      refreshToken: discordProfile.refreshToken,
+      expiresAt,
+      scopes: discordProfile.scopes
+    });
+
+    if (!user) {
+      throw new UnauthorizedError('User not found');
+    }
+
+    return user;
+  }
+
+  async disconnectDiscordAccount(userId: string): Promise<UserDocument> {
+    const user = await this.userRepo.findById(userId);
+
+    if (!user) {
+      throw new UnauthorizedError('User not found');
+    }
+
+    if (user.oauthProvider === 'discord' && !user.password) {
+      throw new ConflictError(
+        'Cannot disconnect Discord as it is your only login method. Please set a password first.'
+      );
+    }
+
+    const updatedUser = await this.userRepo.disconnectDiscord(userId);
+
+    if (!updatedUser) {
+      throw new UnauthorizedError('Failed to disconnect Discord');
+    }
+
+    return updatedUser;
+  }
+
+  async refreshDiscordToken(userId: string): Promise<UserDocument> {
+    const user = await this.userRepo.findByDiscordIdWithTokens(userId);
+
+    if (!user || !user.discord?.refreshToken) {
+      throw new UnauthorizedError('Discord account not connected or refresh token not found');
+    }
+
+    throw new Error('Discord token refresh not implemented. Implement Discord API call.');
+  }
+
   async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
-    // Verify refresh token
     const payload = jwtService.verifyRefreshToken(refreshToken);
 
-    // Hash the token
     const tokenHash = jwtService.hashToken(refreshToken);
 
-    // Verify token exists in database
     const isValid = await this.userRepo.verifyRefreshToken(payload.userId, tokenHash);
     if (!isValid) {
       throw new UnauthorizedError('Invalid refresh token');
     }
 
-    // Get user
     const user = await this.userRepo.findById(payload.userId);
     if (!user || user.status !== 'active') {
       throw new UnauthorizedError('User not found or inactive');
     }
 
-    // Remove old refresh token
     await this.userRepo.removeRefreshToken(payload.userId, tokenHash);
 
-    // Generate new tokens
     const tokens = await this.generateTokens(user);
 
     return tokens;
@@ -169,11 +277,9 @@ class AuthService {
   }
 
   async sendVerificationEmail(userId: string, email: string, name: string): Promise<void> {
-    // Generate verification token
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = dayjs().add(24, 'hours').toDate();
 
-    // Save token
     await this.userRepo.saveEmailVerifyToken(userId, token, expiresAt);
 
     try {
@@ -254,7 +360,6 @@ class AuthService {
     currentPassword: string,
     newPassword: string
   ): Promise<void> {
-    // Get user with password
     const user = await this.userRepo.findByEmail(
       (await this.userRepo.findById(userId))!.email
     );
@@ -263,22 +368,18 @@ class AuthService {
       throw new UnauthorizedError('User not found');
     }
 
-    // Verify current password
     const isPasswordValid = await user.comparePassword(currentPassword);
     if (!isPasswordValid) {
       throw new UnauthorizedError('Current password is incorrect');
     }
 
-    // Validate new password
     if (newPassword.length < 6) {
       throw new ValidationError('Password must be at least 6 characters');
     }
 
-    // Update password
     user.password = newPassword;
     await user.save();
 
-    // Remove all refresh tokens (logout from all devices)
     await this.userRepo.removeAllRefreshTokens(userId);
   }
 
@@ -291,7 +392,7 @@ class AuthService {
     return user;
   }
 
-  private async generateTokens(user: UserDocument) {
+  private async generateTokens(user: UserDocument): Promise<TokenPair> {
     const tokens = jwtService.generateTokenPair({
       _id: user._id.toString(),
       email: user.email,
@@ -307,41 +408,3 @@ class AuthService {
 }
 
 export const authService = new AuthService();
-
-/*
-
-// OAuth Login
-const { user, tokens, isNewUser } = await authService.oauthLogin('google', {
-  id: 'google-user-id',
-  email: 'john@example.com',
-  name: 'John Doe',
-  avatarUrl: 'https://...'
-});
-
-// Refresh Token
-const newTokens = await authService.refreshToken(oldRefreshToken);
-
-// Logout
-await authService.logout(userId, refreshToken); 
-
-// Logout All Devices
-await authService.logoutAll(userId);
-
-// Send Verification Email
-await authService.sendVerificationEmail(userId, email);
-
-// Verify Email
-const user = await authService.verifyEmail(token);
-
-// Request Password Reset
-await authService.requestPasswordReset('john@example.com');
-
-// Reset Password
-await authService.resetPassword(token, 'newPassword123');
-
-// Change Password
-await authService.changePassword(userId, 'oldPassword', 'newPassword');
-
-// Get Current User
-const user = await authService.getCurrentUser(userId);
-*/

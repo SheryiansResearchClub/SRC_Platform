@@ -1,7 +1,7 @@
 import http from 'http';
 import { Server } from 'socket.io';
-import { createApp } from './app';
-import { appConfig } from './config/app.config';
+import { createApp } from '@/app';
+import { appConfig } from '@/config/app.config';
 import { connectDB } from '@/lib/db/mongo';
 import { connectRedis } from '@/lib/db/redis';
 import { logger } from '@/utils/logger';

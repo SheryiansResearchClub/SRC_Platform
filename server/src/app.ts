@@ -1,14 +1,17 @@
-import express, { Application } from 'express';
+import type { Application } from '@/types';
+import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { appConfig } from '@/config/app.config';
-import { errorHandler, notFoundHandler } from '@/middleware/error/error.middleware';
-import { globalRateLimiter } from '@/middleware/rate-limit/rate-limit.middleware';
+import { errorHandler } from '@/middleware/error/errorHandler';
+import { notFoundHandler } from '@/middleware/error/notFoundHandler';
+import { globalRateLimiter } from '@/middleware/rate-limit';
 import routes from '@/routes';
 import { logger } from '@/utils/logger';
+import oauthClient from '@/integrations';
 
 export const createApp = (): Application => {
   const app = express();
@@ -21,6 +24,9 @@ export const createApp = (): Application => {
   app.use(cookieParser());
 
   app.use(compression());
+
+  oauthClient.configurePassport();
+  app.use(oauthClient.passport.initialize());
 
   if (appConfig.env === 'development') {
     app.use(morgan('dev'));

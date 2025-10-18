@@ -1,27 +1,8 @@
-import jwt, { JwtPayload, type SignOptions } from 'jsonwebtoken';
+import type { TokenPayload, TokenPair, TokenExpiration, TokenInput, SignOptions, JwtPayload } from '@/types';
+import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-
 import { appConfig } from '@/config/app.config';
 import { UnauthorizedError } from '@/utils/errors';
-
-type TokenInput = {
-  _id: string;
-  email: string;
-  role: string;
-};
-
-interface TokenPayload extends JwtPayload {
-  userId: string;
-  email: string;
-  role: string;
-}
-
-interface TokenPair {
-  accessToken: string;
-  refreshToken: string;
-}
-
-type TokenExpiration = NonNullable<SignOptions['expiresIn']>;
 
 const signToken = (payload: TokenPayload, secret: string, expiresIn: TokenExpiration): string => {
   const options: SignOptions = {
@@ -83,5 +64,3 @@ export const jwtService = {
     return crypto.createHash('sha256').update(token).digest('hex');
   }
 };
-
-export type { TokenPayload, TokenPair };

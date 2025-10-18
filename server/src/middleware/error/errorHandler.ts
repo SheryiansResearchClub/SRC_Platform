@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from '@/types';
 import { AppError } from '@/utils/errors';
 import { sendError } from '@/utils/response';
 import { logger } from '@/utils/logger';
@@ -7,7 +7,7 @@ export const errorHandler = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ): Response => {
   logger.error('Error:', {
     message: err.message,
@@ -36,12 +36,4 @@ export const errorHandler = (
   }
 
   return sendError(res, 'INTERNAL_ERROR', 'Internal server error', 500);
-};
-
-export const notFoundHandler = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): Response => {
-  return sendError(res, 'NOT_FOUND', `Route ${req.originalUrl} not found`, 404);
 };

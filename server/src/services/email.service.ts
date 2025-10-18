@@ -1,16 +1,9 @@
+import type { EmailOptions } from '@/types';
 import { emailTransporter } from '@/lib/email/transporter';
 import { emailTemplates } from '@/lib/email/templates';
 import { emailConfig } from '@/config/email.config';
 import { logger } from '@/utils/logger';
-import { emailRateLimiter } from '@/middleware/rate-limit/rate-limit.middleware';
-
-interface EmailOptions {
-  to: string;
-  subject: string;
-  html: string;
-  text?: string;
-  priority?: 'high' | 'normal' | 'low';
-}
+import { emailRateLimiter } from '@/middleware/rate-limit';
 
 export class EmailService {
   async sendEmail(options: EmailOptions, userId?: string): Promise<boolean> {

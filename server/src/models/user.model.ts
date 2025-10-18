@@ -1,17 +1,8 @@
-import {
-  Schema,
-  model,
-  type CallbackWithoutResultAndOptionalError,
-  type HydratedDocument,
-  type InferSchemaType,
-  type Model
-} from 'mongoose';
-
+import type { UserMethods, UserModel, CallbackWithoutResultAndOptionalError, HydratedDocument, InferSchemaType } from "@/types"
+import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
-interface UserMethods {
-  comparePassword(candidatePassword: string): Promise<boolean>;
-}
+const SALT_ROUNDS = 12;
 
 const UserSchema = new Schema(
   {
@@ -33,7 +24,6 @@ const UserSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
       minlength: 6,
       select: false
     },
@@ -44,7 +34,8 @@ const UserSchema = new Schema(
     },
     oauthId: {
       type: String,
-      sparse: true
+      sparse: true,
+      index: true
     },
     role: {
       type: String,
@@ -56,7 +47,7 @@ const UserSchema = new Schema(
     bio: { type: String, maxlength: 1000 },
     skills: [{ type: String }],
     // Auth fields
-    isEmailVerified: { type: Boolean, default: false },
+    isEmailVerified: { type: Boolean, default: false, index: true },
     emailVerifyToken: { type: String, select: false },
     emailVerifyExpires: { type: Date, select: false },
     resetToken: { type: String, select: false },
@@ -101,6 +92,32 @@ const UserSchema = new Schema(
       enum: ['active', 'inactive', 'suspended'],
       default: 'active',
       index: true
+    },
+    // Discord OAuth sub-document
+    discord: {
+      id: {
+        type: String,
+      },
+      username: String,
+      discriminator: {
+        type: String,
+        default: '0'
+      },
+      avatar: String,
+      accessToken: {
+        type: String,
+        select: false
+      },
+      refreshToken: {
+        type: String,
+        select: false
+      },
+      expiresAt: Date,
+      scopes: [{ type: String }],
+      connectedAt: {
+        type: Date,
+        default: Date.now
+      }
     }
   },
   {
@@ -108,20 +125,47 @@ const UserSchema = new Schema(
   }
 );
 
+UserSchema.index({ name: 'text', email: 'text', skills: 'text', bio: 'text' });
+UserSchema.index({ role: 1, status: 1, lastActiveAt: -1 });
+UserSchema.index({ points: -1, completedTaskCount: -1 });
+UserSchema.index({ 'discord.id': 1 });
+
 type UserType = InferSchemaType<typeof UserSchema>;
 type UserDocument = HydratedDocument<UserType> & UserMethods;
-
-interface UserModel extends Model<UserType, {}, UserMethods> { }
 
 UserSchema.methods.comparePassword = async function (
   this: UserDocument,
   candidatePassword: string
 ): Promise<boolean> {
+  if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-UserSchema.statics.findByEmail = async function (email: string) {
+UserSchema.methods.hasDiscordConnected = function (this: UserDocument): boolean {
+  return Boolean(this.discord?.id);
+};
+
+UserSchema.methods.isDiscordTokenExpired = function (this: UserDocument): boolean {
+  if (!this.discord?.expiresAt) return true;
+  return new Date() >= this.discord.expiresAt;
+};
+
+UserSchema.statics.findByEmail = async function (email: string): Promise<UserDocument | null> {
   return this.findOne({ email }).select('+password');
+};
+
+UserSchema.statics.findByDiscordId = async function (
+  discordId: string
+): Promise<UserDocument | null> {
+  return this.findOne({ 'discord.id': discordId });
+};
+
+UserSchema.statics.findByDiscordIdWithTokens = async function (
+  discordId: string
+): Promise<UserDocument | null> {
+  return this.findOne({ 'discord.id': discordId }).select(
+    '+discord.accessToken +discord.refreshToken'
+  );
 };
 
 UserSchema.pre('save', async function (
@@ -130,7 +174,8 @@ UserSchema.pre('save', async function (
 ) {
   if (!this.isModified('password')) return next();
   if (!this.password) return next();
-  const salt = await bcrypt.genSalt(12);
+
+  const salt = await bcrypt.genSalt(SALT_ROUNDS);
   this.password = await bcrypt.hash(this.password, salt);
   next();
 });

@@ -1,7 +1,7 @@
+import type { UserDocument } from '@/types';
 import { User } from '@/models/user.model';
-import type { UserDocument } from '@/types/models';
 
-export class UserRepository {
+class UserRepository {
   async findByEmail(email: string): Promise<UserDocument | null> {
     const user = await User.findOne({ email }).select('-password -refreshTokens');
     if (!user) {
@@ -34,6 +34,16 @@ export class UserRepository {
     oauthId?: string;
     role?: string;
     avatarUrl?: string;
+    discord?: {
+      id: string;
+      username: string;
+      discriminator?: string;
+      avatar?: string;
+      accessToken: string;
+      refreshToken?: string;
+      expiresAt: Date;
+      scopes: string[];
+    };
   }): Promise<UserDocument> {
     const user = await User.create(userData);
     return user as UserDocument;
@@ -41,6 +51,74 @@ export class UserRepository {
 
   async update(userId: string, data: Partial<UserDocument>): Promise<UserDocument | null> {
     return await User.findByIdAndUpdate(userId, data, { new: true });
+  }
+
+  async findByDiscordId(discordId: string): Promise<UserDocument | null> {
+    return await User.findByDiscordId(discordId);
+  }
+
+  async findByDiscordIdWithTokens(discordId: string): Promise<UserDocument | null> {
+    return await User.findByDiscordIdWithTokens(discordId);
+  }
+
+  async connectDiscord(
+    userId: string,
+    discordData: {
+      id: string;
+      username: string;
+      discriminator: string;
+      avatar?: string;
+      accessToken: string;
+      refreshToken?: string;
+      expiresAt: Date;
+      scopes: string[];
+    }
+  ): Promise<UserDocument | null> {
+    return await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          discord: {
+            ...discordData,
+            connectedAt: new Date()
+          },
+          oauthProvider: 'discord',
+          oauthId: discordData.id
+        }
+      },
+      { new: true }
+    );
+  }
+
+  async updateDiscordTokens(
+    userId: string,
+    accessToken: string,
+    refreshToken: string | undefined,
+    expiresAt: Date
+  ): Promise<UserDocument | null> {
+    const updateData: Record<string, unknown> = {
+      'discord.accessToken': accessToken,
+      'discord.expiresAt': expiresAt
+    };
+
+    if (refreshToken) {
+      updateData['discord.refreshToken'] = refreshToken;
+    }
+
+    return await User.findByIdAndUpdate(userId, { $set: updateData }, { new: true });
+  }
+
+  async disconnectDiscord(userId: string): Promise<UserDocument | null> {
+    return await User.findByIdAndUpdate(userId, { $unset: { discord: '' } }, { new: true });
+  }
+
+  async isDiscordIdTaken(discordId: string, excludeUserId?: string): Promise<boolean> {
+    const query: Record<string, unknown> = { 'discord.id': discordId };
+    if (excludeUserId) {
+      query._id = { $ne: excludeUserId };
+    }
+    const count = await User.countDocuments(query);
+    return count > 0;
   }
   async saveRefreshToken(
     userId: string,
@@ -143,3 +221,5 @@ export class UserRepository {
     return count > 0;
   }
 }
+
+export const userRepo = new UserRepository();

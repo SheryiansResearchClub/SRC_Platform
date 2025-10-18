@@ -1,4 +1,5 @@
-import nodemailer, { Transporter } from 'nodemailer';
+import type { Transporter } from '@/types';
+import nodemailer from 'nodemailer';
 import { emailConfig } from '@/config/email.config';
 import { logger } from '@/utils/logger';
 
