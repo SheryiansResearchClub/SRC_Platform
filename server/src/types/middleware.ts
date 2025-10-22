@@ -15,3 +15,4 @@ export interface EmailRateLimitResult {
 
 // auth/isAuthenticate
 export type { TokenPayload } from '@/types/lib';
+export type { Server, Socket } from 'socket.io';
