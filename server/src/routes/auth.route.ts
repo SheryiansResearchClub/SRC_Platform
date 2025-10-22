@@ -10,7 +10,7 @@ router.post("/signup", authRateLimiters.register, validators.registerValidation,
 router.post("/login", authRateLimiters.login, validators.loginValidation, authController.login);
 router.post("/logout", authController.logout);
 router.post("/forgot-password", authRateLimiters.forgotPassword, authController.forgotPassword);
-router.post("/reset-password", authController.resetPassword);
+router.post("/reset-password", authRateLimiters.forgotPassword, authController.resetPassword);
 router.post("/verify-email", authRateLimiters.verifyEmail, authController.verifyEmail);
 router.post("/refresh-token", authRateLimiters.refreshToken, authController.refreshToken);
 

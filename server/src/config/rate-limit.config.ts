@@ -1,7 +1,7 @@
 export const rateLimitConfig = {
   global: {
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10,                 // 1000 requests per 15 minutes
+    max: 1000,                 // 1000 requests per 15 minutes
     message: 'Too many requests, please try again later.',
     standardHeaders: true,     // Return rate limit info in headers
     legacyHeaders: false,      // Disable X-RateLimit-* headers

@@ -5,6 +5,7 @@ import { appConfig } from '@/config/app.config';
 import { connectDB } from '@/lib/db/mongo';
 import { connectRedis } from '@/lib/db/redis';
 import { logger } from '@/utils/logger';
+import { initSocketListeners } from '@/socket';
 
 const startServer = async (): Promise<void> => {
   try {
@@ -16,16 +17,10 @@ const startServer = async (): Promise<void> => {
     const server = http.createServer(app);
 
     const io = new Server(server, {
-      cors: appConfig.cors,
+      cors: appConfig.socketCors,
     });
 
-    io.on('connection', (socket) => {
-      logger.info(`Socket connected: ${socket.id}`);
-
-      socket.on('disconnect', () => {
-        logger.info(`Socket disconnected: ${socket.id}`);
-      });
-    });
+    initSocketListeners(io);
 
     app.set('io', io);
 

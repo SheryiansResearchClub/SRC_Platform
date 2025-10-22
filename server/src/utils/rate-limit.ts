@@ -22,7 +22,7 @@ export function createRedisStore(prefix: string) {
   }
   const client = redisClient as RedisClientType;
 
-  return new RedisStore({
+  return new (RedisStore as any)({
     sendCommand: async (...args: string[]) => {
       if (!client.isOpen) {
         await client.connect();
@@ -31,7 +31,7 @@ export function createRedisStore(prefix: string) {
       const command = args.map((arg) => (typeof arg === 'string' ? arg : String(arg)));
       return client.sendCommand(command as unknown as never);
     },
-    prefix: `rate-limit:${prefix}:`,
+    prefix: `rate-limit:${prefix}:`
   });
 }
 

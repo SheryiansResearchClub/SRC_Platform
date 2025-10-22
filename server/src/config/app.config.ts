@@ -1,6 +1,8 @@
 import type { CookieOptions, JwtExpiration } from '@/types';
 import env from '@/config/env';
 
+const isProduction = env.NODE_ENV === 'production';
+
 export const appConfig = {
   env: env.NODE_ENV,
   port: parseInt(env.PORT),
@@ -8,6 +10,12 @@ export const appConfig = {
 
   cors: {
     origin: env.CORS_ORIGIN.split(','),
+    credentials: true,
+  },
+
+  socketCors: {
+    origin: env.CORS_ORIGIN.split(','),
+    methods: ["GET", "POST"],
     credentials: true,
   },
 
@@ -36,21 +44,20 @@ export const appConfig = {
       'image/gif',
       'application/pdf',
       'application/msword',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     ],
   },
 
   cookie: {
     accessToken: {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      httpOnly: false,
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
       maxAge: 15 * 60 * 60 * 1000
     } satisfies CookieOptions,
     refreshToken: {
       httpOnly: true,
-      secure: true,
-      sameSite: 'strict',
+      secure: isProduction,
+      sameSite: isProduction ? 'strict' : 'lax',
       maxAge: 15 * 60 * 60 * 1000
     } satisfies CookieOptions
   }
