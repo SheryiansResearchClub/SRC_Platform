@@ -8,4 +8,11 @@ export const registerChatHandlers = (io: Server, socket: Socket) => {
     logger.info(`Message from ${sender} in room ${roomId}: ${message}`);
     io.to(roomId).emit('chat:message', { sender, message });
   });
+
+  socket.on('chat:typing', (data) => {
+    if (typeof data === 'string') data = JSON.parse(data);
+    const { roomId, sender } = data;
+    logger.info(`User ${sender} is typing in room ${roomId}`);
+    io.to(roomId).emit('chat:typing', { sender });
+  });
 };

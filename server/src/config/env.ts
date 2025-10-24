@@ -26,7 +26,11 @@ const envSchema = z.object({
   DISCORD_CLIENT_SECRET: z.string(),
   DISCORD_TOKEN: z.string(),
   DISCORD_REDIRECT_URI: z.string().default("http://localhost:8080/api/v1/auth/oauth/discord/callback"),
-  FRONTEND_REDIRECT_URL: z.string().default("http://localhost:5173")
+  FRONTEND_REDIRECT_URL: z.string().default("http://localhost:5173"),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
+  CLOUDINARY_FOLDER: z.string().default('src-platform')
 });
 
 const env = envSchema.parse(process.env);
