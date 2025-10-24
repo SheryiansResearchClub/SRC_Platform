@@ -1,10 +1,21 @@
-import WebSocketExample from "@/components/WebSocketExample";
+// import WebSocketExample from "@/components/WebSocketExample";
 
-export default function Dashboard() {
+// export default function Dashboard() {
 
+//   return (
+//     <>
+//       <WebSocketExample />
+//     </>
+//   );
+// }
+
+
+import React from 'react'
+
+const dashboard = () => {
   return (
-    <>
-      <WebSocketExample />
-    </>
-  );
+    <div>dashboard</div>
+  )
 }
+
+export default dashboard

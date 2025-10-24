@@ -7,6 +7,9 @@ import ForgetPassword from '@/features/Auth/components/forgetPassword';
 import About from "@/features/home/components/About";
 import AppLayout from '@/layouts/AppLayout';
 import Dashboard from '@/features/dashboard/components/dashboard';
+import Admin from '@/features/admin/components/admin';
+import ProjectPage from '@/features/admin/components/ProjectPage';
+import MemberProfile from '@/features/admin/components/MemberProfile';
 import { preventAuthLoader, requireAuthLoader } from '@/components/AuthLoader.jsx';
 
 const AppRouter = () => {
@@ -50,6 +53,19 @@ const AppRouter = () => {
           element: <Dashboard />,
         },
       ],
+    },
+    {
+      path: "/admin",
+      element: <Admin />,
+    },
+    {
+      path: "/admin/projects",
+      element: <ProjectPage />,
+    },
+    {
+      path: "/admin/members",
+      element: <MemberProfile />,
+
     },
     {
       path: "*",
