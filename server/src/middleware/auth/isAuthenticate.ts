@@ -24,6 +24,7 @@ export const isAuthenticate = async (
     const decoded = jwtService.verifyAccessToken(token);
     const userId = decoded.userId;
 
+
     if (!userId) {
       throw new UnauthorizedError('Invalid token payload');
     }

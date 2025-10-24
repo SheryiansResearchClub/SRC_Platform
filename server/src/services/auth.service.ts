@@ -134,7 +134,6 @@ class AuthService {
           name: discordProfile.username,
           email: discordProfile.email,
           oauthProvider: 'discord',
-          oauthId: discordProfile.id,
           avatarUrl,
           role: 'member',
           discord: {

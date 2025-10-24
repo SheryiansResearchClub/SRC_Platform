@@ -35,7 +35,7 @@ const configurePassport = () => {
           if (userByEmail) {
             const updatedUser = await userRepo.update(userByEmail._id.toString(), {
               oauthProvider: 'google',
-              oauthId: profile.id,
+              googleId: profile.id,
               isEmailVerified: true,
               avatarUrl,
             });
@@ -52,7 +52,7 @@ const configurePassport = () => {
             name: displayName || email,
             email,
             oauthProvider: 'google',
-            oauthId: profile.id,
+            googleId: profile.id,
             avatarUrl,
             role: 'member',
           });
