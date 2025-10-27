@@ -11,7 +11,7 @@ import HomeLayout from '@/layouts/HomeLayout';
 import LoginPage from '@/features/Auth/components/loginPage';
 import SignupPage from '@/features/Auth/components/signupPage';
 import ForgetPassword from '@/features/Auth/components/forgetPassword';
-import Dashboard from '@/features/Dashboard/components/dashboard';
+import Dashboard from '@/features/Dashboard/Dashboard';
 import About from "@/features/home/components/About";
 
 /**
@@ -49,7 +49,7 @@ const AppRouter = () => {
       path: "/",
       element: (
         <PrivateRoute>
-          <HomeLayout />
+          <Dashboard />
         </PrivateRoute>
       ),
       children: [

@@ -7,3 +7,9 @@
   font-style: normal;
   font-display: swap;
 }
+
+:root {
+  --theme-color: #B4DA00;
+  --theme-color-light: rgba(180, 218, 0, 0.15);
+  --theme-color-dark: #91B400;
+}
