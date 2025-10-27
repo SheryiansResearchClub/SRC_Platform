@@ -1,11 +1,10 @@
 import type { ActivityLogDocument } from '@/types';
-import { ActivityLog } from '@/models/activity-log.model';
-
+import { ActivityLog } from '@/models';
 class ActivityLogRepository {
   async create(activityData: {
     user: string;
     action: string;
-    entityType: 'User' | 'Project' | 'Task' | 'Comment' | 'File' | 'Resource' | 'Event' | 'Message' | 'Notification' | 'Badge' | 'Tag';
+    entityType: 'User' | 'Project' | 'Task' | 'Comment' | 'File' | 'Resource' | 'Event' | 'Message' | 'Notification' | 'Badge' | 'Tag' | 'Gamification';
     entityId: string;
     metadata?: any;
     ipAddress?: string;

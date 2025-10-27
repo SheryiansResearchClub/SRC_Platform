@@ -33,6 +33,26 @@ const swaggerDefinition = {
     {
       name: 'Tasks',
       description: 'Task management endpoints'
+    },
+    {
+      name: 'Tags',
+      description: 'Tag catalog and taxonomy endpoints'
+    },
+    {
+      name: 'Notifications',
+      description: 'User notifications and alerts endpoints'
+    },
+    {
+      name: 'Messages',
+      description: 'Direct messaging endpoints'
+    },
+    {
+      name: 'Gamification',
+      description: 'Points, badges, and leaderboard endpoints'
+    },
+    {
+      name: 'Comments',
+      description: 'Content comment moderation endpoints'
     }
   ],
   components: {
@@ -675,6 +695,556 @@ const swaggerDefinition = {
                       limit: { type: 'integer', example: 20 },
                       total: { type: 'integer', example: 58 },
                       totalPages: { type: 'integer', example: 3 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      Tag: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string', example: '64f1c2b7e2a4f4f5c9aabcde' },
+          name: { type: 'string', example: 'Open Source' },
+          slug: { type: 'string', example: 'open-source' },
+          description: { type: 'string', example: 'Resources related to open source contributions' },
+          type: { type: 'string', enum: ['project', 'task', 'resource', 'general'], example: 'project' },
+          color: { type: 'string', example: '#6B7280' },
+          usageCount: { type: 'integer', example: 12 },
+          createdBy: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345', nullable: true },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' }
+        }
+      },
+      TagCreateRequest: {
+        type: 'object',
+        required: ['name', 'slug', 'color'],
+        properties: {
+          name: { type: 'string', example: 'Open Source' },
+          slug: { type: 'string', example: 'open-source' },
+          description: { type: 'string', example: 'Resources related to open source contributions' },
+          type: { type: 'string', enum: ['project', 'task', 'resource', 'general'] },
+          color: { type: 'string', example: '#6B7280' }
+        }
+      },
+      TagUpdateRequest: {
+        type: 'object',
+        properties: {
+          name: { type: 'string' },
+          slug: { type: 'string' },
+          description: { type: 'string' },
+          type: { type: 'string', enum: ['project', 'task', 'resource', 'general'] },
+          color: { type: 'string' }
+        }
+      },
+      TagResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  tag: { $ref: '#/components/schemas/Tag' },
+                  message: { type: 'string', example: 'Tag operation successful' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      TagListResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  tags: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/Tag' }
+                  },
+                  pagination: {
+                    type: 'object',
+                    properties: {
+                      page: { type: 'integer', example: 1 },
+                      limit: { type: 'integer', example: 10 },
+                      total: { type: 'integer', example: 45 },
+                      totalPages: { type: 'integer', example: 5 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      TagProjectTypeResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  tags: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/Tag' }
+                  },
+                  message: { type: 'string', example: 'Project type tags retrieved successfully' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      Notification: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string', example: '64f1c2b7e2a4f4f5c9a98765' },
+          user: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+          type: {
+            type: 'string',
+            enum: ['task', 'comment', 'project', 'system', 'event', 'mention', 'deadline'],
+            example: 'task'
+          },
+          title: { type: 'string', example: 'Task assigned to you' },
+          message: { type: 'string', example: 'You have been assigned to task ABC-123' },
+          payload: { type: 'object', additionalProperties: true },
+          read: { type: 'boolean', example: false },
+          readAt: { type: 'string', format: 'date-time', nullable: true },
+          deliveredAt: { type: 'string', format: 'date-time', nullable: true },
+          channel: { type: 'string', enum: ['in-app', 'email', 'push'], example: 'in-app' },
+          actionUrl: { type: 'string', nullable: true },
+          actionText: { type: 'string', nullable: true },
+          priority: { type: 'string', enum: ['low', 'medium', 'high'], example: 'medium' },
+          expiresAt: { type: 'string', format: 'date-time', nullable: true },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' }
+        }
+      },
+      NotificationCreateRequest: {
+        type: 'object',
+        required: ['user', 'type', 'title', 'message'],
+        properties: {
+          user: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+          type: {
+            type: 'string',
+            enum: ['task', 'comment', 'project', 'system', 'event', 'mention', 'deadline']
+          },
+          title: { type: 'string', example: 'Task assigned to you' },
+          message: { type: 'string', example: 'You have been assigned to task ABC-123' },
+          payload: { type: 'object', additionalProperties: true },
+          channel: { type: 'string', enum: ['in-app', 'email', 'push'] },
+          actionUrl: { type: 'string' },
+          actionText: { type: 'string' },
+          priority: { type: 'string', enum: ['low', 'medium', 'high'] },
+          expiresAt: { type: 'string', format: 'date-time' }
+        }
+      },
+      NotificationResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  notification: { $ref: '#/components/schemas/Notification' },
+                  message: { type: 'string', example: 'Notification operation successful' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      NotificationListResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  notifications: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/Notification' }
+                  },
+                  pagination: {
+                    type: 'object',
+                    properties: {
+                      page: { type: 'integer', example: 1 },
+                      limit: { type: 'integer', example: 20 },
+                      total: { type: 'integer', example: 100 },
+                      totalPages: { type: 'integer', example: 5 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      NotificationUnreadCountResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  count: { type: 'integer', example: 3 },
+                  message: { type: 'string', example: 'Unread notification count retrieved successfully' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      Message: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string', example: '64f1c2b7e2a4f4f5c9a90123' },
+          sender: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+          recipient: { type: 'string', nullable: true, example: '64f1c2b7e2a4f4f5c9a67890' },
+          project: { type: 'string', nullable: true, example: '64f1c2b7e2a4f4f5c9a98765' },
+          conversationId: { type: 'string', example: 'conv-123' },
+          content: { type: 'string', example: 'Hey, can we review the PR?' },
+          type: { type: 'string', enum: ['text', 'system', 'file'], example: 'text' },
+          attachments: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                url: { type: 'string', example: 'https://cdn.example.com/files/design.pdf' },
+                storageKey: { type: 'string', example: 'files/design.pdf' },
+                mimeType: { type: 'string', example: 'application/pdf' },
+                filename: { type: 'string', example: 'design.pdf' },
+                size: { type: 'integer', example: 234567 }
+              }
+            }
+          },
+          readBy: {
+            type: 'array',
+            items: { type: 'string' }
+          },
+          deletedFor: {
+            type: 'array',
+            items: { type: 'string' }
+          },
+          replyTo: { type: 'string', nullable: true },
+          edited: { type: 'boolean', example: false },
+          editedAt: { type: 'string', format: 'date-time', nullable: true },
+          isRead: { type: 'boolean', example: false },
+          readAt: { type: 'string', format: 'date-time', nullable: true },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' }
+        }
+      },
+      MessageCreateRequest: {
+        type: 'object',
+        required: ['sender', 'content'],
+        properties: {
+          sender: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+          recipient: { type: 'string', example: '64f1c2b7e2a4f4f5c9a67890' },
+          project: { type: 'string', example: '64f1c2b7e2a4f4f5c9a98765' },
+          conversationId: { type: 'string', example: 'conv-123' },
+          content: { type: 'string', example: 'Hey, can we review the PR?' },
+          type: { type: 'string', enum: ['text', 'system', 'file'] },
+          attachments: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                url: { type: 'string' },
+                storageKey: { type: 'string' },
+                mimeType: { type: 'string' },
+                filename: { type: 'string' },
+                size: { type: 'integer' }
+              }
+            }
+          }
+        }
+      },
+      MessageUpdateRequest: {
+        type: 'object',
+        properties: {
+          content: { type: 'string' },
+          attachments: {
+            type: 'array',
+            items: {
+              type: 'object',
+              properties: {
+                url: { type: 'string' },
+                storageKey: { type: 'string' },
+                mimeType: { type: 'string' },
+                filename: { type: 'string' },
+                size: { type: 'integer' }
+              }
+            }
+          }
+        }
+      },
+      MessageResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  message: { $ref: '#/components/schemas/Message' },
+                  info: { type: 'string', example: 'Message operation successful' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      MessageListResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  messages: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/Message' }
+                  },
+                  pagination: {
+                    type: 'object',
+                    properties: {
+                      page: { type: 'integer', example: 1 },
+                      limit: { type: 'integer', example: 50 },
+                      total: { type: 'integer', example: 200 },
+                      totalPages: { type: 'integer', example: 4 }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      GamificationPointsResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  userId: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+                  totalPoints: { type: 'integer', example: 1250 },
+                  breakdown: {
+                    type: 'object',
+                    additionalProperties: { type: 'integer' }
+                  },
+                  message: { type: 'string', example: 'Points retrieved successfully' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      GamificationLeaderboardEntry: {
+        type: 'object',
+        properties: {
+          userId: { type: 'string', example: '64f1c2b7e2a4f4f5c9a67890' },
+          name: { type: 'string', example: 'Jane Doe' },
+          avatarUrl: { type: 'string', nullable: true },
+          totalPoints: { type: 'integer', example: 980 },
+          rank: { type: 'integer', example: 3 }
+        }
+      },
+      GamificationLeaderboardResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  leaderboard: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/GamificationLeaderboardEntry' }
+                  },
+                  message: { type: 'string', example: 'Leaderboard retrieved successfully' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      GamificationBadge: {
+        type: 'object',
+        properties: {
+          badgeId: { type: 'string', example: 'mentor-badge' },
+          name: { type: 'string', example: 'Mentor' },
+          description: { type: 'string', example: 'Awarded for guiding 5 new members' },
+          iconUrl: { type: 'string', nullable: true },
+          awardedAt: { type: 'string', format: 'date-time', nullable: true }
+        }
+      },
+      GamificationBadgeListResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  badges: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/GamificationBadge' }
+                  },
+                  message: { type: 'string', example: 'Badges retrieved successfully' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      GamificationAwardPointsRequest: {
+        type: 'object',
+        required: ['userId', 'points', 'reason'],
+        properties: {
+          userId: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+          points: { type: 'integer', example: 50 },
+          reason: { type: 'string', example: 'Completed onboarding tasks' },
+          metadata: { type: 'object', additionalProperties: true }
+        }
+      },
+      GamificationAwardBadgeRequest: {
+        type: 'object',
+        required: ['badgeId'],
+        properties: {
+          badgeId: { type: 'string', example: 'mentor-badge' },
+          reason: { type: 'string', example: 'Recognized for mentorship contribution' },
+          metadata: { type: 'object', additionalProperties: true }
+        }
+      },
+      GamificationAchievementsResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  userId: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+                  achievements: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        id: { type: 'string', example: 'first-project' },
+                        name: { type: 'string', example: 'First Project' },
+                        description: { type: 'string', example: 'Completed your first project' },
+                        unlockedAt: { type: 'string', format: 'date-time' }
+                      }
+                    }
+                  },
+                  message: { type: 'string', example: 'Achievements retrieved successfully' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      Comment: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string', example: '64f1c2b7e2a4f4f5c9a55555' },
+          content: { type: 'string', example: 'Great work on this feature!' },
+          author: { type: 'string', example: '64f1c2b7e2a4f4f5c9a12345' },
+          entityType: { type: 'string', example: 'project' },
+          entityId: { type: 'string', example: '64f1c2b7e2a4f4f5c9a98765' },
+          status: { type: 'string', enum: ['pending', 'approved', 'rejected'], example: 'pending' },
+          rejectionReason: { type: 'string', nullable: true },
+          likes: { type: 'integer', example: 4 },
+          repliesCount: { type: 'integer', example: 2 },
+          createdAt: { type: 'string', format: 'date-time' },
+          updatedAt: { type: 'string', format: 'date-time' }
+        }
+      },
+      CommentCreateRequest: {
+        type: 'object',
+        required: ['content', 'entityType', 'entityId'],
+        properties: {
+          content: { type: 'string', example: 'Great work on this feature!' },
+          entityType: { type: 'string', enum: ['project', 'task', 'resource'], example: 'project' },
+          entityId: { type: 'string', example: '64f1c2b7e2a4f4f5c9a98765' },
+          parentId: { type: 'string', nullable: true },
+          metadata: { type: 'object', additionalProperties: true }
+        }
+      },
+      CommentUpdateRequest: {
+        type: 'object',
+        properties: {
+          content: { type: 'string' }
+        }
+      },
+      CommentModerationRequest: {
+        type: 'object',
+        properties: {
+          reason: { type: 'string', example: 'Inappropriate language' }
+        }
+      },
+      CommentResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  comment: { $ref: '#/components/schemas/Comment' },
+                  message: { type: 'string', example: 'Comment operation successful' }
+                }
+              }
+            }
+          }
+        ]
+      },
+      CommentListResponse: {
+        allOf: [
+          { $ref: '#/components/schemas/ApiMessageResponse' },
+          {
+            type: 'object',
+            properties: {
+              data: {
+                type: 'object',
+                properties: {
+                  comments: {
+                    type: 'array',
+                    items: { $ref: '#/components/schemas/Comment' }
+                  },
+                  pagination: {
+                    type: 'object',
+                    properties: {
+                      page: { type: 'integer', example: 1 },
+                      limit: { type: 'integer', example: 20 },
+                      total: { type: 'integer', example: 120 },
+                      totalPages: { type: 'integer', example: 6 }
                     }
                   }
                 }

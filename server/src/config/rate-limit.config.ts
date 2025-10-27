@@ -93,7 +93,7 @@ export const rateLimitConfig = {
       standardHeaders: true,
       legacyHeaders: false,
     },
-    postComment: {
+    createComment: {
       windowMs: 60 * 60 * 1000, // 1 hour
       max: 100,                  // 100 comments per hour
       message: 'Too many comments posted, please try again later.',

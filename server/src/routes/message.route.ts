@@ -1,58 +1,226 @@
-// import express from 'express';
-// import messageController from '@/controllers/message.controller';
-// import validators from '@/middleware/validators';
-// import { isAuthenticate } from '@/middleware/auth/isAuthenticate';
-// import { apiRateLimiters } from '@/middleware/rate-limit';
+import express from 'express';
+import messageController from '@/controllers/message.controller';
+import validators from '@/middleware/validators';
 
-// const router = express.Router();
+const router = express.Router();
 
-// // All message routes require authentication
-// router.use(isAuthenticate);
+router.post(
+  '/',
+  validators.sendMessageValidation,
+  messageController.sendMessage
+);
+/**
+ * @openapi
+ * /messages:
+ *   post:
+ *     tags: [Messages]
+ *     summary: Send a message
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/MessageCreateRequest'
+ *     responses:
+ *       '201':
+ *         description: Message sent successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ *       '400':
+ *         description: Validation error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiMessageResponse'
+ */
 
-// // POST /messages - Send message
-// router.post(
-//   '/',
-//   validators.createUserValidation, // Using existing validation for now
-//   apiRateLimiters.createTask, // Using existing rate limiter
-//   messageController.sendMessage
-// );
+router.get(
+  '/',
+  validators.getMessagesValidation,
+  messageController.getMessages
+);
+/**
+ * @openapi
+ * /messages:
+ *   get:
+ *     tags: [Messages]
+ *     summary: List messages
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *       - in: query
+ *         name: project
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: recipient
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sender
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortOrder
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *           default: desc
+ *     responses:
+ *       '200':
+ *         description: Messages retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageListResponse'
+ */
 
-// // GET /messages - Get messages (filtered by project/user)
-// router.get(
-//   '/',
-//   validators.getUsersValidation, // Using existing validation for now
-//   messageController.getMessages
-// );
+router.get(
+  '/:id',
+  validators.mongoIdValidator,
+  messageController.getMessageById
+);
+/**
+ * @openapi
+ * /messages/{id}:
+ *   get:
+ *     tags: [Messages]
+ *     summary: Get message by ID
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Message retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ *       '404':
+ *         description: Message not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiMessageResponse'
+ */
 
-// // GET /messages/:id - Get single message
-// router.get(
-//   '/:id',
-//   messageController.getMessageById
-// );
+router.put(
+  '/:id',
+  validators.mongoIdValidator,
+  validators.editMessageValidation,
+  messageController.editMessage
+);
+/**
+ * @openapi
+ * /messages/{id}:
+ *   put:
+ *     tags: [Messages]
+ *     summary: Edit a message
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/MessageUpdateRequest'
+ *     responses:
+ *       '200':
+ *         description: Message updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ */
 
-// // PUT /messages/:id - Edit message
-// router.put(
-//   '/:id',
-//   validators.updateUserValidation, // Using existing validation for now
-//   messageController.editMessage
-// );
+router.delete(
+  '/:id',
+  validators.mongoIdValidator,
+  messageController.deleteMessage
+);
+/**
+ * @openapi
+ * /messages/{id}:
+ *   delete:
+ *     tags: [Messages]
+ *     summary: Delete a message
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Message deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ApiMessageResponse'
+ */
 
-// // DELETE /messages/:id - Delete message
-// router.delete(
-//   '/:id',
-//   messageController.deleteMessage
-// );
-
-// // GET /messages/conversations - Get user conversations
 // router.get(
 //   '/conversations',
 //   messageController.getUserConversations
 // );
 
-// // PUT /messages/:id/read - Mark message as read
-// router.put(
-//   '/:id/read',
-//   messageController.markAsRead
-// );
+router.put(
+  '/:id/read',
+  validators.mongoIdValidator,
+  messageController.markAsRead
+);
+/**
+ * @openapi
+ * /messages/{id}/read:
+ *   put:
+ *     tags: [Messages]
+ *     summary: Mark a message as read
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: Message marked as read successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MessageResponse'
+ */
 
-// export default router;
+export default router;

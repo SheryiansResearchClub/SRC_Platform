@@ -1,6 +1,14 @@
 import { Schema, model } from 'mongoose';
 import type { HydratedDocument, InferSchemaType } from 'mongoose';
 
+const AttachmentSchema = new Schema({
+  url: String,
+  storageKey: String,
+  mimeType: String,
+  filename: String,
+  size: Number
+}, { _id: false });
+
 const MessageSchema = new Schema(
   {
     sender: {
@@ -9,15 +17,20 @@ const MessageSchema = new Schema(
       required: true,
       index: true
     },
+    recipient: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: false,
+      index: true
+    },
     project: {
       type: Schema.Types.ObjectId,
       ref: 'Project',
-      required: true,
+      required: false,
       index: true
     },
     conversationId: {
       type: String,
-      required: true,
       index: true
     },
     content: {
@@ -29,13 +42,7 @@ const MessageSchema = new Schema(
       enum: ['text', 'system', 'file'],
       default: 'text'
     },
-    attachments: [{
-      url: String,
-      storageKey: String,
-      mimeType: String,
-      filename: String,
-      size: Number
-    }],
+    attachments: [AttachmentSchema],
     readBy: [{
       type: Schema.Types.ObjectId,
       ref: 'User'
@@ -52,14 +59,18 @@ const MessageSchema = new Schema(
       type: Boolean,
       default: false
     },
-    editedAt: Date
+    editedAt: Date,
+    isRead: {
+      type: Boolean,
+      default: false
+    },
+    readAt: Date
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 
-// Indexes for performance
 MessageSchema.index({ conversationId: 1, createdAt: -1 });
 MessageSchema.index({ project: 1, createdAt: -1 });
 MessageSchema.index({ sender: 1, createdAt: -1 });

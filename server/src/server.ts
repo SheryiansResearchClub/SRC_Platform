@@ -6,10 +6,12 @@ import { connectDB } from '@/lib/db/mongo';
 import { connectRedis } from '@/lib/db/redis';
 import { logger } from '@/utils/logger';
 import { initSocketListeners } from '@/socket';
+import { seedBadges } from '@/seed/badge.seed';
 
 const startServer = async (): Promise<void> => {
   try {
     await connectDB();
+    await seedBadges();
     await connectRedis();
 
     const app = createApp();

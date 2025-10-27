@@ -44,6 +44,10 @@ export type { ActivityLogDocument, ActivityLogType } from "@/models/activity-log
 export type { AnalyticsDocument, AnalyticsType } from "@/models/analytics.model"
 
 export type { CallbackWithoutResultAndOptionalError, HydratedDocument, InferSchemaType } from "mongoose"
+
+// gamification.model.ts
+export type { GamificationPointDocument, GamificationPointType } from "@/models/gamification.model"
+
 export interface UserMethods {
   comparePassword(candidatePassword: string): Promise<boolean>;
   hasDiscordConnected(): boolean;

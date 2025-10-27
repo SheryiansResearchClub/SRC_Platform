@@ -12,26 +12,19 @@ const handleError = (res: Response, error: unknown, code: string, message: strin
   return sendError(res, code, message);
 };
 
-// POST /messages - Send message
 const sendMessage = async (req: Request, res: Response) => {
   try {
     const messageData = {
       ...req.body,
-      sender: req.user!._id,
+      sender: String(req.user!._id || '')
     };
-
     const message = await messageService.sendMessage(messageData);
-
-    return sendSuccess(res, {
-      message,
-      message: 'Message sent successfully',
-    }, 201);
+    return sendSuccess(res, { message, messageText: 'Message sent successfully' }, 201);
   } catch (error: any) {
     return handleError(res, error, 'MESSAGE_SEND_FAILED', error.message || 'Unable to send message');
   }
 };
 
-// GET /messages - Get messages (filtered by project/user)
 const getMessages = async (req: Request, res: Response) => {
   try {
     const query = {
@@ -41,95 +34,61 @@ const getMessages = async (req: Request, res: Response) => {
       recipient: req.query.recipient as string | undefined,
       sender: req.query.sender as string | undefined,
       sortBy: req.query.sortBy as string | undefined,
-      sortOrder: (req.query.sortOrder as 'asc' | 'desc') || 'desc',
+      sortOrder: (req.query.sortOrder as 'asc' | 'desc') || 'desc'
     };
-
     const result = await messageService.getMessages(query);
-
-    return sendSuccess(res, {
-      messages: result.messages,
-      pagination: result.pagination,
-      message: 'Messages retrieved successfully',
-    });
+    return sendSuccess(res, { messages: result.messages, pagination: result.pagination, message: 'Messages retrieved successfully' });
   } catch (error: any) {
     return handleError(res, error, 'MESSAGES_FETCH_FAILED', error.message || 'Unable to fetch messages');
   }
 };
 
-// GET /messages/:id - Get single message
 const getMessageById = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const message = await messageService.getMessageById(id);
-
-    if (!message) {
-      return sendError(res, 'MESSAGE_NOT_FOUND', 'Message not found', 404);
-    }
-
-    return sendSuccess(res, {
-      message,
-      message: 'Message retrieved successfully',
-    });
+    if (!message) return sendError(res, 'MESSAGE_NOT_FOUND', 'Message not found', 404);
+    return sendSuccess(res, { message, messageText: 'Message retrieved successfully' });
   } catch (error: any) {
     return handleError(res, error, 'MESSAGE_FETCH_FAILED', error.message || 'Unable to fetch message');
   }
 };
 
-// PUT /messages/:id - Edit message
 const editMessage = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { content } = req.body;
-
-    const message = await messageService.editMessage(id, content, req.user!._id);
-
-    return sendSuccess(res, {
-      message,
-      message: 'Message updated successfully',
-    });
+    const message = await messageService.editMessage(id, content, String(req.user!._id || ''));
+    return sendSuccess(res, { message, messageText: 'Message updated successfully' });
   } catch (error: any) {
     return handleError(res, error, 'MESSAGE_EDIT_FAILED', error.message || 'Unable to edit message');
   }
 };
 
-// DELETE /messages/:id - Delete message
 const deleteMessage = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await messageService.deleteMessage(id, req.user!._id);
-
-    return sendSuccess(res, {
-      message: 'Message deleted successfully',
-    });
+    await messageService.deleteMessage(id, String(req.user!._id || ''));
+    return sendSuccess(res, { message: 'Message deleted successfully' });
   } catch (error: any) {
     return handleError(res, error, 'MESSAGE_DELETE_FAILED', error.message || 'Unable to delete message');
   }
 };
 
-// GET /messages/conversations - Get user conversations
-const getUserConversations = async (req: Request, res: Response) => {
-  try {
-    const conversations = await messageService.getUserConversations(req.user!._id);
+// const getUserConversations = async (req: Request, res: Response) => {
+//   try {
+//     const conv = await messageService.getUserConversations(String(req.user!._id || ''));
+//     return sendSuccess(res, { conversations: conv, message: 'User conversations retrieved successfully' });
+//   } catch (error: any) {
+//     return handleError(res, error, 'CONVERSATIONS_FETCH_FAILED', error.message || 'Unable to fetch user conversations');
+//   }
+// };
 
-    return sendSuccess(res, {
-      conversations,
-      message: 'User conversations retrieved successfully',
-    });
-  } catch (error: any) {
-    return handleError(res, error, 'CONVERSATIONS_FETCH_FAILED', error.message || 'Unable to fetch user conversations');
-  }
-};
-
-// PUT /messages/:id/read - Mark message as read
 const markAsRead = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const message = await messageService.markAsRead(id, req.user!._id);
-
-    return sendSuccess(res, {
-      message,
-      message: 'Message marked as read successfully',
-    });
+    const message = await messageService.markAsRead(id, String(req.user!._id || ''));
+    return sendSuccess(res, { message, messageText: 'Message marked as read successfully' });
   } catch (error: any) {
     return handleError(res, error, 'MESSAGE_MARK_READ_FAILED', error.message || 'Unable to mark message as read');
   }
@@ -141,6 +100,6 @@ export default {
   getMessageById,
   editMessage,
   deleteMessage,
-  getUserConversations,
-  markAsRead,
+  // getUserConversations,
+  markAsRead
 };
