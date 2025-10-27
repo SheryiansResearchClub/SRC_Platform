@@ -6,6 +6,8 @@ import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { appConfig } from '@/config/app.config';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec, swaggerUiOptions } from '@/config/swagger.config';
 import { errorHandler } from '@/middleware/error/errorHandler';
 import { notFoundHandler } from '@/middleware/error/notFoundHandler';
 import { globalRateLimiter } from '@/middleware/rate-limit';
@@ -37,6 +39,8 @@ export const createApp = (): Application => {
   app.get('/health', (_, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
+
+  app.use(`/api/${appConfig.apiVersion}/docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
 
   app.use(`/api/${appConfig.apiVersion}`, globalRateLimiter, routes);
 

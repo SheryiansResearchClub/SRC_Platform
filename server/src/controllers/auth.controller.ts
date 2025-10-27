@@ -12,6 +12,14 @@ const setCookie = (res: Response, tokens: TokenPair) => {
   res.cookie('refreshToken', tokens.refreshToken, appConfig.cookie.refreshToken);
 }
 
+const handleAuthError = (res: Response, error: unknown, code: string, message: string) => {
+  ErrorLog(error as unknown as Error);
+  if (error instanceof AppError) {
+    return sendError(res, error.code, error.message, error.statusCode, error.details);
+  }
+  return sendError(res, code, message);
+};
+
 const signup = async (req: Request, res: Response) => {
   try {
     const { user, tokens } = await authService.register(req.body);
@@ -22,10 +30,10 @@ const signup = async (req: Request, res: Response) => {
     const { password: _password, refreshTokens: _refreshTokens, ...sanitizedUser } = userObj;
     return sendSuccess(res, {
       user: sanitizedUser,
-      /*tokens*/
+      message: 'Signup successful',
     }, 201);
   } catch (error) {
-    ErrorLog(error as unknown as Error)
+    return handleAuthError(res, error, 'AUTH_SIGNUP_FAILED', 'Unable to create account');
   }
 };
 
@@ -39,10 +47,10 @@ const login = async (req: Request, res: Response) => {
     const { password: _password, refreshTokens: _refreshTokens, ...sanitizedUser } = userObj;
     return sendSuccess(res, {
       user: sanitizedUser,
-      /*tokens*/
+      message: 'Login successful',
     }, 200);
   } catch (error) {
-    ErrorLog(error as unknown as Error)
+    return handleAuthError(res, error, 'AUTH_LOGIN_FAILED', 'Unable to login');
   }
 };
 
@@ -55,10 +63,9 @@ const logout = async (req: Request, res: Response) => {
     res.clearCookie('refreshToken');
     return sendSuccess(res, {
       message: 'Logged out successfully',
-      user: decoded
     }, 200);
   } catch (error) {
-    ErrorLog(error as unknown as Error)
+    return handleAuthError(res, error, 'AUTH_LOGOUT_FAILED', 'Unable to logout');
   }
 }
 
@@ -69,7 +76,7 @@ const forgotPassword = async (req: Request, res: Response) => {
       message: 'Password reset email sent successfully',
     }, 200);
   } catch (error) {
-    ErrorLog(error as unknown as Error)
+    return handleAuthError(res, error, 'AUTH_FORGOT_PASSWORD_FAILED', 'Unable to process password reset request');
   }
 }
 
@@ -80,7 +87,7 @@ const resetPassword = async (req: Request, res: Response) => {
       message: 'Password reset successfully',
     }, 200);
   } catch (error) {
-    ErrorLog(error as unknown as Error)
+    return handleAuthError(res, error, 'AUTH_RESET_PASSWORD_FAILED', 'Unable to reset password');
   }
 }
 
@@ -91,22 +98,22 @@ const verifyEmail = async (req: Request, res: Response) => {
       message: 'Email verified successfully',
     }, 200);
   } catch (error) {
-    ErrorLog(error as unknown as Error)
+    return handleAuthError(res, error, 'AUTH_VERIFY_EMAIL_FAILED', 'Unable to verify email');
   }
 }
 
 const refreshToken = async (req: Request, res: Response) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
-    const decoded = jwtService.verifyRefreshToken(refreshToken);
-    const tokens = await authService.refreshToken(refreshToken);
+    const refreshToken: string = req.cookies.refreshToken;
+    const { tokens, decoded } = await authService.refreshToken(refreshToken);
     setCookie(res, tokens);
+    console.log("refresh token hits!")
     return sendSuccess(res, {
       user: decoded,
-      // tokens
+      message: 'Token refreshed successfully',
     }, 200);
   } catch (error) {
-    ErrorLog(error as unknown as Error)
+    return handleAuthError(res, error, 'AUTH_REFRESH_TOKEN_FAILED', 'Unable to refresh session');
   }
 }
 

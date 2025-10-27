@@ -1,50 +1,20 @@
-// src/routers/AppRouter.jsx
-
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import Home from '@/features/home/components/Home';
-
-// Import Layouts
 import HomeLayout from '@/layouts/HomeLayout';
-
-// Import Page Components
 import LoginPage from '@/features/Auth/components/loginPage';
 import SignupPage from '@/features/Auth/components/signupPage';
 import ForgetPassword from '@/features/Auth/components/forgetPassword';
-import Dashboard from '@/features/Dashboard/Dashboard';
 import About from "@/features/home/components/About";
-
-/**
- * A component that protects routes from unauthenticated access.
- * It checks for an auth token in the Redux store.
- */
-function PrivateRoute({ children }) {
-  const { token } = useSelector((state) => state.auth);
-  
-  // If a token exists, render the child component (e.g., the app layout).
-  // Otherwise, navigate the user to the login page.
-  return token ? children : <Navigate to="/login" />;
-}
+import AppLayout from '@/layouts/AppLayout';
+import Dashboard from '@/features/Dashboard/Dashboard';
+import Admin from '@/features/admin/components/Admin';
+import ProjectPage from '@/features/admin/components/ProjectPage';
+import MemberProfile from '@/features/admin/components/MemberProfile';
+import UserProfile from '@/features/admin/components/UserProfile'
+import { preventAuthLoader, requireAuthLoader } from '@/components/AuthLoader.jsx';
 
 const AppRouter = () => {
   const router = createBrowserRouter([
-    // --- Public Authentication Routes ---
-    // These routes are for users who are not logged in.
-    {
-      path: "/login",
-      element: <LoginPage />,
-    },
-    {
-      path: "/signup",
-      element: <SignupPage />,
-    },
-    {
-      path: "/forgot-password",
-      element: <ForgetPassword />,
-    },
-
-    // --- Private Application Routes (Protected) ---
-    // The entire HomeLayout and its children are protected by PrivateRoute.
     {
       path: "/",
       element: (
@@ -54,22 +24,62 @@ const AppRouter = () => {
       ),
       children: [
         {
-          index: true, // Makes Dashboard the default page for "/"
+          index: true,
           element: <Home />,
         },
         {
-          path: "about", // Renders at "/about"
+          path: "about",
           element: <About />,
         },
-        // Add more protected routes here as needed
+        {
+          path: "login",
+          loader: preventAuthLoader,
+          element: <LoginPage />,
+        },
+        {
+          path: "signup",
+          loader: preventAuthLoader,
+          element: <SignupPage />,
+        },
+        {
+          path: "forgot-password",
+          loader: preventAuthLoader,
+          element: <ForgetPassword />,
+        }
       ],
     },
-    
-    // --- Catch-all Route ---
-    // Redirects any URL that doesn't match the above routes.
     {
-        path: "*",
-        element: <Navigate to="/" replace />
+      path: "/app",
+      element: <AppLayout />,
+      loader: requireAuthLoader,
+      children: [
+        {
+          index: true,
+          element: <Dashboard />,
+        },
+      ],
+    },
+    {
+      path: "/admin",
+      element: <Admin />,
+    },
+    {
+      path: "/admin/projects",
+      element: <ProjectPage />,
+    },
+    {
+      path: "/admin/member/:name",
+      element: <MemberProfile />,
+
+    },
+    {
+      path: "/userprofile",
+      element: <UserProfile />,
+
+    },
+    {
+      path: "*",
+      element: <Navigate to="/" replace />
     }
   ]);
 

@@ -19,11 +19,17 @@ class UserRepository {
   }
 
   async findById(userId: string): Promise<UserDocument | null> {
-    return await User.findById(userId);
+    return await User.findById(userId) as UserDocument | null;
   }
 
   async findByOAuthId(oauthId: string, provider: string): Promise<UserDocument | null> {
-    return await User.findOne({ oauthId, oauthProvider: provider });
+    let user;
+    if (provider === 'google') {
+      user = await User.findOne({ 'google.id': oauthId }).select('+google.accessToken +google.refreshToken');
+    } else if (provider === 'discord') {
+      user = await User.findOne({ 'discord.id': oauthId }).select('+discord.accessToken +discord.refreshToken');
+    }
+    return user as UserDocument | null;
   }
 
   async create(userData: {
@@ -32,8 +38,11 @@ class UserRepository {
     password?: string;
     oauthProvider?: string;
     oauthId?: string;
+    googleId?: string;
     role?: string;
     avatarUrl?: string;
+    bio?: string;
+    skills?: string[];
     discord?: {
       id: string;
       username: string;
@@ -49,7 +58,7 @@ class UserRepository {
     return user as UserDocument;
   }
 
-  async update(userId: string, data: Partial<UserDocument>): Promise<UserDocument | null> {
+  async update(userId: string, data: any): Promise<UserDocument | null> {
     return await User.findByIdAndUpdate(userId, data, { new: true });
   }
 
@@ -112,6 +121,65 @@ class UserRepository {
     return await User.findByIdAndUpdate(userId, { $unset: { discord: '' } }, { new: true });
   }
 
+  async findByGoogleId(googleId: string): Promise<UserDocument | null> {
+    return await User.findByGoogleId(googleId) as UserDocument | null;
+  }
+
+  async findByGoogleIdWithTokens(googleId: string): Promise<UserDocument | null> {
+    return await User.findByGoogleIdWithTokens(googleId) as UserDocument | null;
+  }
+
+  async connectGoogle(
+    userId: string,
+    googleData: {
+      id: string;
+      email: string;
+      name: string;
+      picture?: string;
+      accessToken: string;
+      refreshToken?: string;
+      expiresAt: Date;
+      scopes: string[];
+    }
+  ): Promise<UserDocument | null> {
+    return await User.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          google: {
+            ...googleData,
+            connectedAt: new Date()
+          },
+          oauthProvider: 'google',
+          googleId: googleData.id
+        }
+      },
+      { new: true }
+    ) as UserDocument | null;
+  }
+
+  async updateGoogleTokens(
+    userId: string,
+    accessToken: string,
+    refreshToken: string | undefined,
+    expiresAt: Date
+  ): Promise<UserDocument | null> {
+    const updateData: Record<string, unknown> = {
+      'google.accessToken': accessToken,
+      'google.expiresAt': expiresAt
+    };
+
+    if (refreshToken) {
+      updateData['google.refreshToken'] = refreshToken;
+    }
+
+    return await User.findByIdAndUpdate(userId, { $set: updateData }, { new: true }) as UserDocument | null;
+  }
+
+  async disconnectGoogle(userId: string): Promise<UserDocument | null> {
+    return await User.findByIdAndUpdate(userId, { $unset: { google: '' } }, { new: true }) as UserDocument | null;
+  }
+
   async isDiscordIdTaken(discordId: string, excludeUserId?: string): Promise<boolean> {
     const query: Record<string, unknown> = { 'discord.id': discordId };
     if (excludeUserId) {
@@ -120,6 +188,7 @@ class UserRepository {
     const count = await User.countDocuments(query);
     return count > 0;
   }
+
   async saveRefreshToken(
     userId: string,
     tokenHash: string,
@@ -214,6 +283,27 @@ class UserRepository {
       lastLoginAt: new Date(),
       lastActiveAt: new Date()
     });
+  }
+
+  async findUsersWithPagination(
+    query: Record<string, unknown>,
+    skip: number,
+    limit: number,
+    sort: Record<string, 1 | -1>
+  ): Promise<UserDocument[]> {
+    return await User.find(query)
+      .sort(sort)
+      .skip(skip)
+      .limit(limit)
+      .exec() as UserDocument[];
+  }
+
+  async countUsers(query: Record<string, unknown>): Promise<number> {
+    return await User.countDocuments(query);
+  }
+
+  async deleteUser(userId: string): Promise<void> {
+    await User.findByIdAndDelete(userId);
   }
 
   async emailExists(email: string): Promise<boolean> {

@@ -1,4 +1,4 @@
-import type { UserDocument, GoogleProfileType, TokenPair } from '@/types';
+import type { UserDocument, GoogleProfileType, TokenPair, JwtPayload } from '@/types';
 import { userRepo } from '@/repositories/user.repository';
 import { jwtService } from '@/lib/auth/jwt';
 import { UnauthorizedError, ValidationError, ConflictError } from '@/utils/errors';
@@ -134,7 +134,6 @@ class AuthService {
           name: discordProfile.username,
           email: discordProfile.email,
           oauthProvider: 'discord',
-          oauthId: discordProfile.id,
           avatarUrl,
           role: 'member',
           discord: {
@@ -245,26 +244,26 @@ class AuthService {
     throw new Error('Discord token refresh not implemented. Implement Discord API call.');
   }
 
-  async refreshToken(refreshToken: string): Promise<{ accessToken: string; refreshToken: string }> {
-    const payload = jwtService.verifyRefreshToken(refreshToken);
+  async refreshToken(refreshToken: string): Promise<{ decoded: JwtPayload, tokens: TokenPair }> {
+    const decoded = jwtService.verifyRefreshToken(refreshToken);
 
     const tokenHash = jwtService.hashToken(refreshToken);
 
-    const isValid = await this.userRepo.verifyRefreshToken(payload.userId, tokenHash);
+    const isValid = await this.userRepo.verifyRefreshToken(decoded.userId, tokenHash);
     if (!isValid) {
       throw new UnauthorizedError('Invalid refresh token');
     }
 
-    const user = await this.userRepo.findById(payload.userId);
+    const user = await this.userRepo.findById(decoded.userId);
     if (!user || user.status !== 'active') {
       throw new UnauthorizedError('User not found or inactive');
     }
 
-    await this.userRepo.removeRefreshToken(payload.userId, tokenHash);
+    await this.userRepo.removeRefreshToken(decoded.userId, tokenHash);
 
     const tokens = await this.generateTokens(user);
 
-    return tokens;
+    return { decoded, tokens };
   }
 
   async logout(userId: string, refreshToken: string): Promise<void> {

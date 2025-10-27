@@ -1,4 +1,4 @@
-import type { UserMethods, UserModel, CallbackWithoutResultAndOptionalError, HydratedDocument, InferSchemaType } from "@/types"
+import type { UserMethods, UserModel, CallbackWithoutResultAndOptionalError, HydratedDocument, InferSchemaType } from '@/types';
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
@@ -32,7 +32,7 @@ const UserSchema = new Schema(
       enum: ['email', 'google', 'discord'],
       default: 'email'
     },
-    oauthId: {
+    googleId: {
       type: String,
       sparse: true,
       index: true
@@ -97,6 +97,8 @@ const UserSchema = new Schema(
     discord: {
       id: {
         type: String,
+        sparse: true,
+        index: true
       },
       username: String,
       discriminator: {
@@ -104,6 +106,31 @@ const UserSchema = new Schema(
         default: '0'
       },
       avatar: String,
+      accessToken: {
+        type: String,
+        select: false
+      },
+      refreshToken: {
+        type: String,
+        select: false
+      },
+      expiresAt: Date,
+      scopes: [{ type: String }],
+      connectedAt: {
+        type: Date,
+        default: Date.now
+      }
+    },
+    // Google OAuth sub-document
+    google: {
+      id: {
+        type: String,
+        sparse: true,
+        index: true
+      },
+      email: String,
+      name: String,
+      picture: String,
       accessToken: {
         type: String,
         select: false
@@ -128,7 +155,6 @@ const UserSchema = new Schema(
 UserSchema.index({ name: 'text', email: 'text', skills: 'text', bio: 'text' });
 UserSchema.index({ role: 1, status: 1, lastActiveAt: -1 });
 UserSchema.index({ points: -1, completedTaskCount: -1 });
-UserSchema.index({ 'discord.id': 1 });
 
 type UserType = InferSchemaType<typeof UserSchema>;
 type UserDocument = HydratedDocument<UserType> & UserMethods;
@@ -141,13 +167,12 @@ UserSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-UserSchema.methods.hasDiscordConnected = function (this: UserDocument): boolean {
-  return Boolean(this.discord?.id);
+UserSchema.methods.hasGoogleConnected = function (this: UserDocument): boolean {
+  return Boolean(this.google?.id);
 };
-
-UserSchema.methods.isDiscordTokenExpired = function (this: UserDocument): boolean {
-  if (!this.discord?.expiresAt) return true;
-  return new Date() >= this.discord.expiresAt;
+UserSchema.methods.isGoogleTokenExpired = function (this: UserDocument): boolean {
+  if (!this.google?.expiresAt) return true;
+  return new Date() >= this.google.expiresAt;
 };
 
 UserSchema.statics.findByEmail = async function (email: string): Promise<UserDocument | null> {
@@ -165,6 +190,22 @@ UserSchema.statics.findByDiscordIdWithTokens = async function (
 ): Promise<UserDocument | null> {
   return this.findOne({ 'discord.id': discordId }).select(
     '+discord.accessToken +discord.refreshToken'
+  );
+};
+
+UserSchema.statics.findByGoogleId = async function (
+  googleId: string
+): Promise<UserDocument | null> {
+  return this.findOne({ 'google.id': googleId }).select(
+    '+google.accessToken +google.refreshToken'
+  );
+};
+
+UserSchema.statics.findByGoogleIdWithTokens = async function (
+  googleId: string
+): Promise<UserDocument | null> {
+  return this.findOne({ 'google.id': googleId }).select(
+    '+google.accessToken +google.refreshToken'
   );
 };
 
