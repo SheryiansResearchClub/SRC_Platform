@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import ThemeContext from "@/context/ThemeContext";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import MobileMenu from "./MobileMenu";
@@ -6,26 +7,13 @@ import TaskBox from "./TaskBox";
 import MembersTable from "./MembersTable";
 import ProjectsSection from "./Projects";
 import { IoAddCircleOutline, IoAdd } from "react-icons/io5";
+import { useContext } from "react";
 
 const Admin = () => {
   const [active, setActive] = useState("home");
-  const [dark, setDark] = useState(true);
+  const { dark, toggleTheme } = useContext(ThemeContext);
   const [assignTask, setAssignTask] = useState(false);
 
-  
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("admin-theme");
-    if (savedTheme) {
-      setDark(JSON.parse(savedTheme)); 
-    }
-  }, []);
-
-  
-  useEffect(() => {
-    localStorage.setItem("admin-theme", JSON.stringify(dark));
-  }, [dark]);
-
-  const toggleTheme = () => setDark((prev) => !prev);
   const toggleTask = () => setAssignTask((prev) => !prev);
 
   return (

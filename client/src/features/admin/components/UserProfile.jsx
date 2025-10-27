@@ -1,27 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
+import ThemeContext, { ThemeProvider } from "@/context/ThemeContext";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import MobileMenu from "./MobileMenu";
 import { MdEdit } from "react-icons/md";
+import { useContext } from "react";
 
 const ProjectPage = () => {
   const [active, setActive] = useState("profile");
-  const [dark, setDark] = useState(true);
+  const { dark, toggleTheme } = useContext(ThemeContext);
   const fileInputRef = useRef(null);
   const [avatar, setAvatar] = useState(
     "https://randomuser.me/api/portraits/men/32.jpg"
   );
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("admin-theme");
-    if (savedTheme) setDark(JSON.parse(savedTheme));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("admin-theme", JSON.stringify(dark));
-  }, [dark]);
-
-  const toggleTheme = () => setDark((prev) => !prev);
 
   const [formData, setFormData] = useState({
     username: "@JohnDoe",

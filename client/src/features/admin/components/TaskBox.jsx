@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import { IoReturnUpBack } from "react-icons/io5";
 
-const TaskBox = ({ dark, toggleTask }) => {
+const TaskBox = ({ dark, toggleTask, to }) => {
   // Example team and mentor data
   const teamMembers = [
     "Sagar Patel",
@@ -21,6 +21,13 @@ const TaskBox = ({ dark, toggleTask }) => {
   const [filteredMentors, setFilteredMentors] = useState([]);
   const [showMemberSuggestions, setShowMemberSuggestions] = useState(false);
   const [showMentorSuggestions, setShowMentorSuggestions] = useState(false);
+
+// Auto-fill member name when TaskBox opens
+  useEffect(() => {
+    if (to) {
+      setMember(to);
+    }
+  }, [to]);
 
   // Handlers for member autocomplete
   const handleMemberChange = (e) => {

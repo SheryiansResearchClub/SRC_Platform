@@ -1,27 +1,14 @@
 import React, { useState, useEffect } from "react";
+import ThemeContext, { ThemeProvider } from "@/context/ThemeContext";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import MobileMenu from "./MobileMenu";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { useContext } from "react";
 
 const ProjectPage = () => {
   const [active, setActive] = useState("projects");
-  const [dark, setDark] = useState(true)
-
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("admin-theme");
-    if (savedTheme) {
-      setDark(JSON.parse(savedTheme));
-    }
-  }, []);
-
-  // ✅ Update localStorage when theme changes
-  useEffect(() => {
-    localStorage.setItem("admin-theme", JSON.stringify(dark));
-  }, [dark]);
-
-  const toggleTheme = () => setDark((prev) => !prev);
+ const {dark, toggleTheme} = useContext(ThemeContext)
 
   // Example project data
   const projects = [
@@ -71,11 +58,26 @@ const ProjectPage = () => {
       <MobileMenu dark={dark} active={active} setActive={setActive} />
 
       <main className="ml-[1rem] mt-10 flex flex-col gap-5 md:ml-[8rem] md:mt-10 relative">
+        
         {/* Header */}
         <div className="flex items-center px-3 justify-between text-xl md:text-4xl">
           <h1>All Projects</h1>
           <IoAddCircleOutline className="text-3xl md:text-4xl cursor-pointer" />
         </div>
+
+        {/* dropdown filter */}
+        <select
+          className={`w-fit py-1 ml-4 px-2 text-sm rounded-sm ${
+            dark
+              ? "bg-[#232323] border border-[#373636]"
+              : "bg-[#eeeeee] border border-[#a8a8a8]"
+          }`}
+        >
+          <option>Todo</option>
+          <option>Ongoing</option>
+          <option>Completed</option>
+        </select>
+
 
         {/* Project Cards */}
         <div className="flex flex-wrap gap-6 mt-5">

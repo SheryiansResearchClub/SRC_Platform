@@ -6,7 +6,7 @@ const ProjectsSection = ({ dark }) => (
   <div className="w-full mt-16 mb-10 p-3">
     <div className="flex items-center px-3 justify-between text-xl md:text-4xl">
       <h1>All Projects</h1>
-      <Link to={"/projects"}>
+      <Link to={"/admin/projects"}>
         <IoIosArrowDropright className="cursor-pointer text-3xl md:text-4xl" />
       </Link>
     </div>
