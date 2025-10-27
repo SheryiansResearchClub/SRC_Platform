@@ -43,7 +43,7 @@ const getNotifications = async (req: Request, res: Response) => {
       sortOrder: (req.query.sortOrder as 'asc' | 'desc') || 'desc',
     };
 
-    const result = await notificationService.getNotifications(req.user!._id, query);
+    const result = await notificationService.getNotifications(String(req.user!._id || ""), query);
 
     return sendSuccess(res, {
       notifications: result.notifications,
@@ -78,7 +78,7 @@ const getNotificationById = async (req: Request, res: Response) => {
 const markAsRead = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const notification = await notificationService.markAsRead(id, req.user!._id);
+    const notification = await notificationService.markAsRead(id, String(req.user!._id || ""));
 
     return sendSuccess(res, {
       notification,
@@ -92,7 +92,7 @@ const markAsRead = async (req: Request, res: Response) => {
 // PUT /notifications/read-all - Mark all notifications as read
 const markAllAsRead = async (req: Request, res: Response) => {
   try {
-    const count = await notificationService.markAllAsRead(req.user!._id);
+    const count = await notificationService.markAllAsRead(String(req.user!._id || ""));
 
     return sendSuccess(res, {
       count,
@@ -107,7 +107,7 @@ const markAllAsRead = async (req: Request, res: Response) => {
 const deleteNotification = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    await notificationService.deleteNotification(id);
+    await notificationService.deleteNotification(id, String(req.user!._id || ""));
 
     return sendSuccess(res, {
       message: 'Notification deleted successfully',
@@ -120,7 +120,7 @@ const deleteNotification = async (req: Request, res: Response) => {
 // GET /notifications/unread-count - Get unread notification count
 const getUnreadCount = async (req: Request, res: Response) => {
   try {
-    const count = await notificationService.getUnreadCount(req.user!._id);
+    const count = await notificationService.getUnreadCount(String(req.user!._id || ""));
 
     return sendSuccess(res, {
       count,

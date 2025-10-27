@@ -1,5 +1,4 @@
-import { Schema, model } from 'mongoose';
-import type { HydratedDocument, InferSchemaType } from 'mongoose';
+import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose'
 
 const BadgeSchema = new Schema(
   {
@@ -7,58 +6,37 @@ const BadgeSchema = new Schema(
       type: String,
       required: true,
       unique: true,
-      trim: true,
-      maxlength: 50,
-      index: true
+      trim: true
     },
     description: {
       type: String,
       required: true,
-      maxlength: 200,
+      trim: true
     },
-    iconUrl: {
+    icon: {
       type: String,
-      required: true,
+      default: 'https://cdn-icons-png.flaticon.com/512/1828/1828884.png' // fallback icon
     },
-    points: {
+    pointsRequired: {
       type: Number,
-      required: true,
-      min: 0,
-      default: 0
+      default: 0,
+      min: 0
     },
-    criteria: {
-      type: {
-        type: String,
-        enum: ['task', 'project', 'contribution', 'special'],
-        default: 'task'
-      },
-      threshold: {
-        type: Number,
-        min: 1
-      },
-      condition: String
-    },
-    rarity: {
+    level: {
       type: String,
-      enum: ['common', 'rare', 'epic', 'legendary'],
-      default: 'common'
-    },
-    category: {
-      type: String,
-      enum: ['achievement', 'milestone', 'special'],
-      default: 'achievement'
+      enum: ['bronze', 'silver', 'gold'],
+      default: 'bronze'
     }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
-);
+)
 
-BadgeSchema.index({ name: 'text', description: 'text' });
-BadgeSchema.index({ category: 1, rarity: 1, points: -1 });
+BadgeSchema.index({ name: 1, level: 1 })
 
-type BadgeType = InferSchemaType<typeof BadgeSchema>;
-type BadgeDocument = HydratedDocument<BadgeType>;
+type BadgeType = InferSchemaType<typeof BadgeSchema>
+type BadgeDocument = HydratedDocument<BadgeType>
 
-export { BadgeDocument, BadgeType };
-export const Badge = model<BadgeType>('Badge', BadgeSchema);
+export { BadgeDocument, BadgeType }
+export const Badge = model<BadgeType>('Badge', BadgeSchema)

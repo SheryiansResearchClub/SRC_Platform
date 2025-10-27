@@ -16,7 +16,7 @@ const ActivityLogSchema = new Schema(
     },
     entityType: {
       type: String,
-      enum: ['User', 'Project', 'Task', 'Comment', 'File', 'Resource', 'Event', 'Message', 'Notification', 'Badge', 'Tag'],
+      enum: ['User', 'Project', 'Task', 'Comment', 'File', 'Resource', 'Event', 'Message', 'Notification', 'Badge', 'Tag', 'Gamification'],
       required: true
     },
     entityId: {

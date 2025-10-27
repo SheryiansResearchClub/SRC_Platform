@@ -1,212 +1,124 @@
-// import { Comment, CommentDocument, CommentType } from '@/models/comment.model';
-// import { commentRepo } from '@/repositories/comment.repository';
-// import { activityLogRepo } from '@/repositories/activity-log.repository';
-// import { AppError } from '@/utils/errors';
+import { CommentType, CommentDocument } from '@/types';
+import { commentRepo } from '@/repositories/comment.repository';
+import { InternalServerError } from '@/utils/errors';
+import { activityLogRepo } from '@/repositories/activity-log.repository';
+import { Comment } from '@/models';
 
-// interface CommentQuery {
-//   page?: number;
-//   limit?: number;
-//   project?: string;
-//   task?: string;
-//   status?: string;
-//   sortBy?: string;
-//   sortOrder?: 'asc' | 'desc';
-// }
+interface CommentQuery {
+  page?: number;
+  limit?: number;
+  project?: string;
+  task?: string;
+  status?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
 
-// interface PaginationResult {
-//   currentPage: number;
-//   totalPages: number;
-//   totalCount: number;
-//   hasNext: boolean;
-//   hasPrev: boolean;
-// }
+class CommentService {
+  async createComment(data: Partial<CommentType>): Promise<CommentDocument> {
+    try {
+      const comment = await commentRepo.create(data);
+      await activityLogRepo.create({
+        action: 'comment_created',
+        entityType: 'Comment',
+        entityId: comment._id.toString(),
+        user: comment.author.toString(),
+        metadata: { content: comment.content }
+      });
+      return comment;
+    } catch {
+      throw new InternalServerError('COMMENT_CREATE_FAILED');
+    }
+  }
 
-// class CommentService {
-//   async createComment(commentData: {
-//     content: string;
-//     author: string;
-//     project?: string;
-//     task?: string;
-//     parentComment?: string;
-//     mentions?: string[];
-//     attachments?: Array<{
-//       url?: string;
-//       storageKey?: string;
-//       mimeType?: string;
-//       size?: number;
-//       filename?: string;
-//     }>;
-//   }): Promise<CommentDocument> {
-//     try {
-//       const comment = await commentRepo.create(commentData);
+  async getComments(query: CommentQuery) {
+    try {
+      const { page = 1, limit = 20, project, task, status, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+      let comments: CommentDocument[] = [];
+      let totalCount = 0;
 
-//       // Log activity
-//       await activityLogRepo.create({
-//         action: 'comment_created',
-//         entityType: 'Comment',
-//         entityId: comment._id,
-//         user: commentData.author,
-//         metadata: { commentContent: comment.content }
-//       });
+      if (project) {
+        comments = await commentRepo.findByProject(project, page, limit, status, sortOrder === 'desc' ? `-${sortBy}` : sortBy);
+        totalCount = await Comment.countDocuments({ project, status: status || { $in: ['pending', 'approved'] } });
+      } else if (task) {
+        comments = await commentRepo.findByTask(task, page, limit, status, sortOrder === 'desc' ? `-${sortBy}` : sortBy);
+        totalCount = await Comment.countDocuments({ task, status: status || { $in: ['pending', 'approved'] } });
+      } else {
+        const skip = (page - 1) * limit;
+        const sortOptions: any = {};
+        sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+        const filter: any = status ? { status } : { status: { $in: ['pending', 'approved'] } };
 
-//       return comment;
-//     } catch (error) {
-//       throw new AppError('COMMENT_CREATE_FAILED', 'Failed to create comment', 500);
-//     }
-//   }
+        [comments, totalCount] = await Promise.all([
+          Comment.find(filter).sort(sortOptions).skip(skip).limit(limit).exec(),
+          Comment.countDocuments(filter)
+        ]);
+      }
 
-//   async getComments(query: CommentQuery) {
-//     try {
-//       const { page = 1, limit = 20, project, task, status, sortBy = 'createdAt', sortOrder = 'desc' } = query;
+      const totalPages = Math.ceil(totalCount / limit);
+      return {
+        comments,
+        pagination: {
+          currentPage: page,
+          totalPages,
+          totalCount,
+          hasNext: page < totalPages,
+          hasPrev: page > 1
+        }
+      };
+    } catch {
+      throw new InternalServerError('COMMENTS_FETCH_FAILED');
+    }
+  }
 
-//       let comments: CommentDocument[] = [];
-//       let totalCount = 0;
+  async getCommentById(id: string) {
+    try {
+      return await commentRepo.findById(id);
+    } catch {
+      throw new InternalServerError('COMMENT_FETCH_FAILED');
+    }
+  }
 
-//       if (project) {
-//         const result = await commentRepo.findByProject(project, {
-//           page,
-//           limit,
-//           status: status || 'approved',
-//           sort: sortOrder === 'desc' ? `-${sortBy}` : sortBy
-//         });
-//         comments = result;
-//         totalCount = await Comment.countDocuments({
-//           project,
-//           status: status || { $ne: 'rejected' }
-//         });
-//       } else if (task) {
-//         const result = await commentRepo.findByTask(task, {
-//           page,
-//           limit,
-//           status: status || 'approved',
-//           sort: sortOrder === 'desc' ? `-${sortBy}` : sortBy
-//         });
-//         comments = result;
-//         totalCount = await Comment.countDocuments({
-//           task,
-//           status: status || { $ne: 'rejected' }
-//         });
-//       } else {
-//         // Get all comments with pagination
-//         const skip = (page - 1) * limit;
-//         const sortOptions: any = {};
-//         sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+  async updateComment(commentId: string, data: Partial<CommentType>) {
+    try {
+      const comment = await commentRepo.update(commentId, data);
+      return comment;
+    } catch {
+      throw new InternalServerError('COMMENT_UPDATE_FAILED');
+    }
+  }
 
-//         let filter: any = {};
-//         if (status) filter.status = status;
-//         else filter.status = { $ne: 'rejected' };
+  async deleteComment(commentId: string) {
+    try {
+      await commentRepo.delete(commentId);
+    } catch {
+      throw new InternalServerError('COMMENT_DELETE_FAILED');
+    }
+  }
 
-//         [comments, totalCount] = await Promise.all([
-//           Comment.find(filter)
-//             .populate('author', 'name email avatarUrl')
-//             .populate('project', 'title status')
-//             .populate('task', 'title status priority')
-//             .sort(sortOptions)
-//             .skip(skip)
-//             .limit(limit)
-//             .exec(),
-//           Comment.countDocuments(filter)
-//         ]);
-//       }
+  async softDeleteComment(commentId: string, deletedBy: string) {
+    try {
+      return await commentRepo.softDelete(commentId, deletedBy);
+    } catch {
+      throw new InternalServerError('COMMENT_DELETE_FAILED');
+    }
+  }
 
-//       const totalPages = Math.ceil(totalCount / limit);
-//       const pagination: PaginationResult = {
-//         currentPage: page,
-//         totalPages,
-//         totalCount,
-//         hasNext: page < totalPages,
-//         hasPrev: page > 1
-//       };
+  async approveComment(commentId: string, moderatorId: string) {
+    try {
+      return await commentRepo.approve(commentId, moderatorId);
+    } catch {
+      throw new InternalServerError('COMMENT_APPROVE_FAILED');
+    }
+  }
 
-//       return {
-//         comments,
-//         pagination
-//       };
-//     } catch (error) {
-//       throw new AppError('COMMENTS_FETCH_FAILED', 'Failed to fetch comments', 500);
-//     }
-//   }
+  async rejectComment(commentId: string, moderatorId: string, reason: string) {
+    try {
+      return await commentRepo.reject(commentId, moderatorId, reason);
+    } catch {
+      throw new InternalServerError('COMMENT_REJECT_FAILED');
+    }
+  }
+}
 
-//   async getCommentById(commentId: string): Promise<CommentDocument | null> {
-//     try {
-//       return await commentRepo.findById(commentId);
-//     } catch (error) {
-//       throw new AppError('COMMENT_FETCH_FAILED', 'Failed to fetch comment', 500);
-//     }
-//   }
-
-//   async updateComment(commentId: string, updateData: Partial<CommentType>): Promise<CommentDocument | null> {
-//     try {
-//       const comment = await commentRepo.update(commentId, updateData);
-
-//       // Log activity
-//       await activityLogRepo.create({
-//         action: 'comment_updated',
-//         entityType: 'Comment',
-//         entityId: commentId,
-//         user: updateData.author?.toString(),
-//         metadata: { commentId }
-//       });
-
-//       return comment;
-//     } catch (error) {
-//       throw new AppError('COMMENT_UPDATE_FAILED', 'Failed to update comment', 500);
-//     }
-//   }
-
-//   async deleteComment(commentId: string): Promise<void> {
-//     try {
-//       await commentRepo.delete(commentId);
-
-//       // Log activity
-//       await activityLogRepo.create({
-//         action: 'comment_deleted',
-//         entityType: 'Comment',
-//         entityId: commentId,
-//         metadata: { commentId }
-//       });
-//     } catch (error) {
-//       throw new AppError('COMMENT_DELETE_FAILED', 'Failed to delete comment', 500);
-//     }
-//   }
-
-//   async approveComment(commentId: string, moderatorId: string): Promise<CommentDocument | null> {
-//     try {
-//       const comment = await commentRepo.approve(commentId, moderatorId);
-
-//       // Log activity
-//       await activityLogRepo.create({
-//         action: 'comment_approved',
-//         entityType: 'Comment',
-//         entityId: commentId,
-//         user: moderatorId,
-//         metadata: { commentId }
-//       });
-
-//       return comment;
-//     } catch (error) {
-//       throw new AppError('COMMENT_APPROVE_FAILED', 'Failed to approve comment', 500);
-//     }
-//   }
-
-//   async rejectComment(commentId: string, moderatorId: string, reason: string): Promise<CommentDocument | null> {
-//     try {
-//       const comment = await commentRepo.reject(commentId, moderatorId, reason);
-
-//       // Log activity
-//       await activityLogRepo.create({
-//         action: 'comment_rejected',
-//         entityType: 'Comment',
-//         entityId: commentId,
-//         user: moderatorId,
-//         metadata: { commentId, reason }
-//       });
-
-//       return comment;
-//     } catch (error) {
-//       throw new AppError('COMMENT_REJECT_FAILED', 'Failed to reject comment', 500);
-//     }
-//   }
-// }
-
-// export const commentService = new CommentService();
+export const commentService = new CommentService();
