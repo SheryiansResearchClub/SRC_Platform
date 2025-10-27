@@ -1,336 +1,127 @@
-// import { User, GamificationPoint, GamificationBadge, GamificationAchievement } from '@/models';
-// import { activityLogRepo } from '@/repositories/activity-log.repository';
-// import { AppError } from '@/utils/errors';
+import { gamificationRepo } from '@/repositories/gamification.repository'
+import { activityLogRepo } from '@/repositories/activity-log.repository'
+import { NotFoundError } from '@/utils/errors'
+import { userRepo } from '@/repositories'
+import { Badge } from '@/models/badge.model'
 
-// interface LeaderboardEntry {
-//   user: {
-//     _id: string;
-//     name: string;
-//     email: string;
-//     avatarUrl?: string;
-//   };
-//   points: number;
-//   badges: number;
-//   rank: number;
-// }
+class GamificationService {
+  async getUserPoints(userId: string) {
+    const userPoints = await gamificationRepo.getUserPoints(userId)
+    if (!userPoints) throw new NotFoundError('USER_POINTS_NOT_FOUND')
+    return userPoints
+  }
 
-// interface Badge {
-//   _id: string;
-//   name: string;
-//   description: string;
-//   icon: string;
-//   category: string;
-//   points: number;
-//   criteria: any;
-// }
+  async awardPoints(userId: string, points: number, reason: string) {
+    const userExists = await userRepo.findById(userId)
+    if (!userExists) throw new NotFoundError('USER_NOT_FOUND')
 
-// class GamificationService {
-//   async getUserPoints(userId: string): Promise<{ totalPoints: number; pointsByCategory: any }> {
-//     try {
-//       const points = await GamificationPoint.aggregate([
-//         { $match: { user: userId } },
-//         {
-//           $group: {
-//             _id: '$category',
-//             total: { $sum: '$points' },
-//             count: { $sum: 1 }
-//           }
-//         }
-//       ]);
+    await gamificationRepo.createPoints(userId, points, reason)
+    await gamificationRepo.updateUserPoints(userId, points)
 
-//       const totalPoints = points.reduce((sum, category) => sum + category.total, 0);
+    const userPoints = await this.getUserPoints(userId)
+    await this.checkBadgeAchievements(userId)
 
-//       return {
-//         totalPoints,
-//         pointsByCategory: points
-//       };
-//     } catch (error) {
-//       throw new AppError('USER_POINTS_FETCH_FAILED', 'Failed to fetch user points', 500);
-//     }
-//   }
+    await activityLogRepo.create({
+      action: 'points_awarded',
+      entityType: 'Gamification',
+      entityId: userId,
+      user: userId,
+      metadata: { points, reason, totalPoints: userPoints.totalPoints }
+    })
 
-//   async awardPoints(userId: string, points: number, reason: string): Promise<{ success: boolean; totalPoints: number }> {
-//     try {
-//       // Create points record
-//       await GamificationPoint.create({
-//         user: userId,
-//         points,
-//         category: 'achievement',
-//         reason,
-//         awardedBy: 'system'
-//       });
+    return { success: true, totalPoints: userPoints.totalPoints }
+  }
 
-//       // Update user's total points (if User model has points field)
-//       await User.findByIdAndUpdate(userId, {
-//         $inc: { totalPoints: points },
-//         $set: { lastActive: new Date() }
-//       });
+  async getLeaderboard(period = 'all', limit = 10) {
+    let dateFilter: Record<string, any> = {}
+    const now = new Date()
 
-//       const userPoints = await this.getUserPoints(userId);
+    if (period === 'week') {
+      dateFilter = { createdAt: { $gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } }
+    } else if (period === 'month') {
+      dateFilter = { createdAt: { $gte: new Date(now.getFullYear(), now.getMonth(), 1) } }
+    }
 
-//       // Check for badge achievements
-//       await this.checkBadgeAchievements(userId);
+    const leaderboard = await gamificationRepo.getLeaderboard(dateFilter, limit)
+    return leaderboard.map((entry, index) => ({ ...entry, rank: index + 1 }))
+  }
 
-//       // Log activity
-//       await activityLogRepo.create({
-//         action: 'points_awarded',
-//         entityType: 'Gamification',
-//         entityId: userId,
-//         user: userId,
-//         metadata: { points, reason, totalPoints: userPoints.totalPoints }
-//       });
+  async getAllBadges() {
+    const badges = await gamificationRepo.getAllBadges()
+    return badges || []
+  }
 
-//       return {
-//         success: true,
-//         totalPoints: userPoints.totalPoints
-//       };
-//     } catch (error) {
-//       throw new AppError('POINTS_AWARD_FAILED', 'Failed to award points', 500);
-//     }
-//   }
+  async getUserBadges(userId: string) {
+    const badges = await gamificationRepo.getUserBadges(userId)
+    if (!badges) return []
 
-//   async getLeaderboard(period: string, limit: number): Promise<LeaderboardEntry[]> {
-//     try {
-//       let dateFilter = {};
-//       const now = new Date();
+    return badges.map(b => ({
+      _id: (b as any)._id,
+      name: (b as any).name,
+      description: (b as any).description,
+      icon: (b as any).icon,
+      pointsRequired: (b as any).pointsRequired,
+      level: (b as any).level
+    }))
+  }
 
-//       switch (period) {
-//         case 'week':
-//           dateFilter = { createdAt: { $gte: new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000) } };
-//           break;
-//         case 'month':
-//           dateFilter = { createdAt: { $gte: new Date(now.getFullYear(), now.getMonth(), 1) } };
-//           break;
-//         case 'all':
-//         default:
-//           dateFilter = {};
-//       }
+  async awardBadge(userId: string, badgeId: string) {
+    const existingBadge = await gamificationRepo.findUserBadge(userId, badgeId)
+    if (existingBadge) throw new NotFoundError('BADGE_ALREADY_AWARDED')
 
-//       const leaderboard = await GamificationPoint.aggregate([
-//         { $match: dateFilter },
-//         {
-//           $group: {
-//             _id: '$user',
-//             totalPoints: { $sum: '$points' }
-//           }
-//         },
-//         {
-//           $lookup: {
-//             from: 'users',
-//             localField: '_id',
-//             foreignField: '_id',
-//             as: 'user'
-//           }
-//         },
-//         { $unwind: '$user' },
-//         {
-//           $lookup: {
-//             from: 'gamificationbadges',
-//             localField: '_id',
-//             foreignField: 'user',
-//             as: 'badges'
-//           }
-//         },
-//         {
-//           $project: {
-//             user: {
-//               _id: '$user._id',
-//               name: '$user.name',
-//               email: '$user.email',
-//               avatarUrl: '$user.avatarUrl'
-//             },
-//             points: '$totalPoints',
-//             badges: { $size: '$badges' }
-//           }
-//         },
-//         { $sort: { points: -1 } },
-//         { $limit: limit }
-//       ]);
+    const badge = await gamificationRepo.findBadgeById(badgeId)
+    if (!badge) throw new NotFoundError('BADGE_NOT_FOUND')
 
-//       // Add rank
-//       return leaderboard.map((entry, index) => ({
-//         ...entry,
-//         rank: index + 1
-//       }));
-//     } catch (error) {
-//       throw new AppError('LEADERBOARD_FETCH_FAILED', 'Failed to fetch leaderboard', 500);
-//     }
-//   }
+    await gamificationRepo.createBadgeAward(userId, badgeId)
+    await this.awardPoints(userId, badge.pointsRequired, `Badge: ${badge.name}`)
 
-//   async getAllBadges(): Promise<Badge[]> {
-//     try {
-//       const badges = await GamificationBadge.find({})
-//         .sort({ points: 1 })
-//         .exec();
+    await activityLogRepo.create({
+      action: 'badge_awarded',
+      entityType: 'Gamification',
+      entityId: userId,
+      user: userId,
+      metadata: { badgeName: badge.name, points: badge.pointsRequired }
+    })
 
-//       return badges.map(badge => ({
-//         _id: badge._id,
-//         name: badge.name,
-//         description: badge.description,
-//         icon: badge.icon,
-//         category: badge.category,
-//         points: badge.points,
-//         criteria: badge.criteria
-//       }));
-//     } catch (error) {
-//       throw new AppError('BADGES_FETCH_FAILED', 'Failed to fetch badges', 500);
-//     }
-//   }
+    return {
+      _id: String(badge._id),
+      name: badge.name,
+      description: badge.description,
+      level: badge.level,
+      pointsRequired: badge.pointsRequired,
+      icon: badge.icon
+    }
+  }
 
-//   async getUserBadges(userId: string): Promise<Badge[]> {
-//     try {
-//       const badges = await GamificationBadge.find({ user: userId })
-//         .populate('badgeId')
-//         .sort({ awardedAt: -1 })
-//         .exec();
+  async getUserAchievements(userId: string) {
+    const badges = await this.getUserBadges(userId)
+    return badges.map(b => ({
+      type: 'badge',
+      title: b.name,
+      description: b.description,
+      points: b.pointsRequired,
+      level: b.level,
+      icon: b.icon,
+      earnedAt: new Date()
+    }))
+  }
 
-//       return badges.map(badge => ({
-//         _id: (badge as any).badgeId._id,
-//         name: (badge as any).badgeId.name,
-//         description: (badge as any).badgeId.description,
-//         icon: (badge as any).badgeId.icon,
-//         category: (badge as any).badgeId.category,
-//         points: (badge as any).badgeId.points,
-//         criteria: (badge as any).badgeId.criteria
-//       }));
-//     } catch (error) {
-//       throw new AppError('USER_BADGES_FETCH_FAILED', 'Failed to fetch user badges', 500);
-//     }
-//   }
+  private async checkBadgeAchievements(userId: string) {
+    try {
+      const userPoints = await this.getUserPoints(userId)
+      const userBadges = await this.getUserBadges(userId)
+      const allBadges = await Badge.find({}).sort({ pointsRequired: 1 })
 
-//   async awardBadge(userId: string, badgeId: string, reason: string): Promise<Badge> {
-//     try {
-//       // Check if user already has this badge
-//       const existingBadge = await GamificationBadge.findOne({ user: userId, badgeId });
-//       if (existingBadge) {
-//         throw new AppError('BADGE_ALREADY_AWARDED', 'User already has this badge', 400);
-//       }
+      for (const badge of allBadges) {
+        const hasBadge = userBadges.some(b => b.name === badge.name)
+        if (!hasBadge && userPoints.totalPoints >= badge.pointsRequired) {
+          await this.awardBadge(userId, String(badge._id))
+        }
+      }
+    } catch (error) {
+      console.error('Badge check failed:', error)
+    }
+  }
+}
 
-//       // Get badge details
-//       const badge = await GamificationBadge.findById(badgeId);
-//       if (!badge) {
-//         throw new AppError('BADGE_NOT_FOUND', 'Badge not found', 404);
-//       }
-
-//       // Award the badge
-//       await GamificationBadge.create({
-//         user: userId,
-//         badgeId,
-//         reason,
-//         awardedBy: 'admin'
-//       });
-
-//       // Award points for the badge
-//       await this.awardPoints(userId, badge.points, `Badge: ${badge.name}`);
-
-//       // Log activity
-//       await activityLogRepo.create({
-//         action: 'badge_awarded',
-//         entityType: 'Gamification',
-//         entityId: userId,
-//         user: userId,
-//         metadata: { badgeName: badge.name, points: badge.points }
-//       });
-
-//       return {
-//         _id: badge._id,
-//         name: badge.name,
-//         description: badge.description,
-//         icon: badge.icon,
-//         category: badge.category,
-//         points: badge.points,
-//         criteria: badge.criteria
-//       };
-//     } catch (error) {
-//       throw new AppError('BADGE_AWARD_FAILED', 'Failed to award badge', 500);
-//     }
-//   }
-
-//   async getUserAchievements(userId: string): Promise<any[]> {
-//     try {
-//       // This would aggregate various achievements
-//       // For now, returning user badges as achievements
-//       const badges = await this.getUserBadges(userId);
-
-//       return badges.map(badge => ({
-//         type: 'badge',
-//         title: badge.name,
-//         description: badge.description,
-//         points: badge.points,
-//         category: badge.category,
-//         icon: badge.icon,
-//         earnedAt: new Date() // This would need to be stored in the badge record
-//       }));
-//     } catch (error) {
-//       throw new AppError('USER_ACHIEVEMENTS_FETCH_FAILED', 'Failed to fetch user achievements', 500);
-//     }
-//   }
-
-//   private async checkBadgeAchievements(userId: string): Promise<void> {
-//     try {
-//       // Get user stats
-//       const userPoints = await this.getUserPoints(userId);
-//       const userBadges = await this.getUserBadges(userId);
-
-//       // Define badge criteria (this would typically be in a database)
-//       const badgeCriteria = [
-//         {
-//           id: 'first_project',
-//           name: 'First Project',
-//           description: 'Created your first project',
-//           icon: '🎯',
-//           category: 'milestone',
-//           points: 100,
-//           criteria: { projectsCount: 1 }
-//         },
-//         {
-//           id: 'project_master',
-//           name: 'Project Master',
-//           description: 'Created 10 projects',
-//           icon: '🏆',
-//           category: 'achievement',
-//           points: 500,
-//           criteria: { projectsCount: 10 }
-//         },
-//         {
-//           id: 'points_collector',
-//           name: 'Points Collector',
-//           description: 'Earned 1000 points',
-//           icon: '⭐',
-//           category: 'points',
-//           points: 200,
-//           criteria: { totalPoints: 1000 }
-//         }
-//       ];
-
-//       // Check each badge
-//       for (const criteria of badgeCriteria) {
-//         const hasBadge = userBadges.some(badge => badge.name === criteria.name);
-
-//         if (!hasBadge) {
-//           // Check if user meets criteria
-//           let meetsCriteria = false;
-
-//           switch (criteria.criteria) {
-//             case 'projectsCount':
-//               // This would need to check actual project count
-//               meetsCriteria = userPoints.totalPoints > 0; // Simplified
-//               break;
-//             case 'totalPoints':
-//               meetsCriteria = userPoints.totalPoints >= criteria.criteria.totalPoints;
-//               break;
-//           }
-
-//           if (meetsCriteria) {
-//             await this.awardBadge(userId, criteria.id, `Achievement: ${criteria.name}`);
-//           }
-//         }
-//       }
-//     } catch (error) {
-//       // Don't throw error for badge checking
-//       console.error('Badge check failed:', error);
-//     }
-//   }
-// }
-
-// export const gamificationService = new GamificationService();
+export const gamificationService = new GamificationService();

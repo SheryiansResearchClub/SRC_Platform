@@ -67,7 +67,6 @@ const PreviewSchema = new Schema(
   }
 );
 
-// Indexes for performance
 PreviewSchema.index({ project: 1, type: 1, approved: 1 });
 
 type PreviewType = InferSchemaType<typeof PreviewSchema>;

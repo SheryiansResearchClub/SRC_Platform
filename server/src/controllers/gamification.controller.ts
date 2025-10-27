@@ -94,9 +94,9 @@ const getUserBadges = async (req: Request, res: Response) => {
 const awardBadge = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
-    const { badgeId, reason } = req.body;
+    const { badgeId } = req.body;
 
-    const badge = await gamificationService.awardBadge(userId, badgeId, reason);
+    const badge = await gamificationService.awardBadge(userId, badgeId);
 
     return sendSuccess(res, {
       badge,

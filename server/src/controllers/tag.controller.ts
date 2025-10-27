@@ -39,7 +39,7 @@ const getTags = async (req: Request, res: Response) => {
       limit: req.query.limit ? parseInt(req.query.limit as string) : 20,
       type: req.query.type as string | undefined,
       search: req.query.search as string | undefined,
-      sortBy: req.query.sortBy as string | undefined,
+      sortBy: req.query.sortBy as 'name' | 'usageCount' | 'createdAt' | undefined,
       sortOrder: (req.query.sortOrder as 'asc' | 'desc') || 'desc',
     };
 
@@ -109,8 +109,8 @@ const deleteTag = async (req: Request, res: Response) => {
   }
 };
 
-// GET /tags/projects - Get project type tags (Web, Electronics, AI, etc.)
-const getProjectTypeTags = async (req: Request, res: Response) => {
+// GET /tags/projects - Get project type tags
+const getProjectTypeTags = async (_req: Request, res: Response) => {
   try {
     const tags = await tagService.getProjectTypeTags();
 

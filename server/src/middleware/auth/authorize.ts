@@ -1,4 +1,4 @@
-import type { Request, Response, NextFunction, JwtPayload } from '@/types';
+import type { Request, Response, NextFunction } from '@/types';
 import { UnauthorizedError, ForbiddenError } from '@/utils/errors';
 
 export const authorize = (...roles: string[]) => {
