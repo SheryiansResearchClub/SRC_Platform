@@ -12,7 +12,10 @@ import Admin from '@/features/admin/components/Admin';
 import ProjectPage from '@/features/admin/components/ProjectPage';
 import MemberProfile from '@/features/admin/components/MemberProfile';
 import UserProfile from '@/features/admin/components/UserProfile'
-import { preventAuthLoader } from '@/components/AuthLoader.jsx'; // We only need this one now
+import { preventAuthLoader } from '@/components/AuthLoader.jsx';
+import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.jsx";
+
+
 
 // Your PrivateRoute component is now here and will work
 function PrivateRoute({ children }) {
@@ -56,14 +59,14 @@ const AppRouter = () => {
         }
       ],
     },
-    
+
     // --- 3. PRIVATE/PROTECTED ROUTES ---
     // Each of these is now wrapped in your <PrivateRoute>
     {
       path: "/dashboard",
       element: (
         // <PrivateRoute> // <-- Bypassed for now
-          <AppLayout />
+        <AppLayout />
         // </PrivateRoute>
       ),
       children: [
@@ -77,15 +80,14 @@ const AppRouter = () => {
       path: "/admin",
       element: (
         // <PrivateRoute>
-          <Admin />
+        <Admin />
         // </PrivateRoute>
       ),
-    },
-    {
+    }, {
       path: "/admin/projects",
       element: (
         // <PrivateRoute>
-          <ProjectPage />
+        <ProjectPage />
         // </PrivateRoute>
       ),
     },
@@ -93,7 +95,7 @@ const AppRouter = () => {
       path: "/admin/member/:name",
       element: (
         // <PrivateRoute>
-          <MemberProfile />
+        <MemberProfile />
         // </PrivateRoute>
       ),
     },
@@ -101,11 +103,16 @@ const AppRouter = () => {
       path: "/userprofile",
       element: (
         // <PrivateRoute> // <-- Bypassed for now
-          <UserProfile />
+        <UserProfile />
         // </PrivateRoute>
       ),
     },
-    
+
+    {
+      path: '/project/:id',
+      element: <ProjectProfilePage />,
+    },
+
     // Fallback route
     {
       path: "*",
