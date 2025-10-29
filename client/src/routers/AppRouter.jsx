@@ -18,6 +18,7 @@ import ProjectPage from "@/components/ProjectPage";
 import MemberProfile from "@/features/Task/components/MemberProfile";
 import UserProfile from "@/components/UserProfile";
 import Calendar from "@/features/Dashboard/components/CalendarSection";
+import Resources from "@/features/Dashboard/components/Resources";
 
 // Your PrivateRoute component is now here and will work
 function PrivateRoute({ children }) {
@@ -91,6 +92,10 @@ const AppRouter = () => {
           path: "calendar",
           element: <Calendar />,
         },
+        {
+          path: "resources",
+          element: <Resources />,
+        }
       ],
     },
 
