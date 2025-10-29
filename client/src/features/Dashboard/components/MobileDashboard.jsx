@@ -16,74 +16,12 @@ import {
   MessageSquare,
   Download,
   FileText,
-  X,
-  Home,
-  Briefcase,
-  LogOut,
-  ClipboardCheck,
 } from "lucide-react";
 import { dashboardMockApi } from "../api/dashboardMockApi";
 import ThemeContext from "@/context/ThemeContext";
 
 import logo from "../../../assets/images/logow.png";
 import { useContext } from "react";
-
-const Sidebar = ({ isOpen, onClose }) => {
-  const navItems = [
-    { icon: Home, label: "Dashboard" },
-    { icon: Briefcase, label: "Projects" },
-    { icon: MessageCircle, label: "Chat" },
-    { icon: FileText, label: "Resources" },
-    { icon: Users, label: "Members" },
-    { icon: Calendar, label: "Events" },
-  ];
-
-  const { dark, toggleTheme } = useContext(ThemeContext);
-
-  return (
-    <div
-      className={`fixed top-0 left-0 z-50 h-full w-3/4 max-w-xs bg-black text-white p-6 shadow-xl transition-transform duration-300 ease-in-out flex flex-col
-                ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
-    >
-      <div className="flex justify-between items-center mb-10 flex-shrink-0">
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-          <img src={logo} alt="Company Logo" className="w-8 h-8 rounded-full" />
-        </div>
-        <button onClick={onClose} className="text-gray-400 hover:text-white">
-          <X size={24} />
-        </button>
-      </div>
-
-      <nav className="flex flex-col space-y-6 flex-shrink-0">
-        {navItems.map((item) => (
-          <a
-            key={item.label}
-            href="#"
-            className="flex items-center space-x-4 text-lg text-gray-200 hover:text-white group"
-          >
-            <div className="p-2 bg-[#D8FF4B] rounded-lg">
-              <item.icon size={20} className="text-black" />
-            </div>
-            <span>{item.label}</span>
-          </a>
-        ))}
-      </nav>
-
-      <div className="flex-grow"></div>
-
-      <div className="flex items-center justify-between space-x-2 flex-shrink-0">
-        <button className="flex flex-1 justify-center items-center space-x-2 bg-[#D8FF4B] text-black font-semibold px-4 py-3 rounded-lg text-sm">
-          <LogOut size={16} />
-          <span>Sign Out</span>
-        </button>
-        <button className="flex flex-1 justify-center items-center space-x-2 bg-gray-700 text-white font-semibold px-4 py-3 rounded-lg text-sm hover:bg-gray-600">
-          <ClipboardCheck size={16} />
-          <span>Task Due</span>
-        </button>
-      </div>
-    </div>
-  );
-};
 
 const MobileDashboard = () => {
   const [onGoingProjects, setOnGoingProjects] = useState([]);
@@ -136,38 +74,11 @@ const MobileDashboard = () => {
 
   return (
     <div
-      className={`flex flex-col w-full min-h-screen   relative overflow-x-hidden ${
-        dark ? "bg-[#121212] text-gray-200" : "bg-[#F9F9F9] text-gray-800"
+      className={`flex flex-col w-full min-h-screen   relative overflow-x-hidden -mt-5 ${
+        dark ? "bg-[#121212] text-gray-200" : "bg-white text-gray-800"
       }`}
     >
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-
-      <header
-        className={`flex justify-between items-center sticky top-0 z-10 bg-black  px-6 py-2 ${
-          dark ? " border-b border-[#454545]" : ""
-        }`}
-      >
-        <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center ">
-          <img src={logo} alt="Company Logo" className="w-8 h-8 rounded-full" />
-        </div>
-        <div className="flex items-center space-x-4">
-          <div
-            onClick={toggleTheme}
-            className={`${dark ? "text-white" : "text-gray-400"}`}
-          >
-            {dark ? (
-              <Sun className=" cursor-pointer }" size={20} />
-            ) : (
-              <Moon className=" cursor-pointer " size={20} />
-            )}
-          </div>
-          <button onClick={() => setIsSidebarOpen(true)} className="text-white">
-            <Menu size={24} />
-          </button>
-        </div>
-      </header>
-
-      <main className="p-6 space-y-7">
+      <main className=" space-y-7">
         <div>
           <p className="text-2xl">Welcome back,</p>
           <h1 className="text-3xl font-bold text-[#A5C33E]">John</h1>

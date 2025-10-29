@@ -19,7 +19,7 @@ const MembersTable = ({ dark }) => {
 
   const handleNameClick = (member) => {
     console.log(member.name)
-    navigate(`/admin/member/${member.name}`, { state: { member } });
+    navigate(`/app/tasks/${member.name}`, { state: { member } });
   };
 
   useEffect(() => {

@@ -25,7 +25,7 @@ const ProjectsSection = ({ projects }) => {
           </h2>
         </div>
         <a
-          href="#"
+          href="/app/projects"
           className={`text-sm font-medium  ${dark ? "text-gray-300 hover:text-white" : "text-gray-500 hover:text-gray-800"}`}
         >
           View All
