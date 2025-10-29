@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import ThemeContext, { ThemeProvider } from "@/context/ThemeContext";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import MobileMenu from "./MobileMenu";
 import { MdEdit } from "react-icons/md";
 import { useContext } from "react";
 
@@ -43,18 +40,8 @@ const ProjectPage = () => {
   };
 
   return (
-    <div
-      className={`w-full min-h-screen md:p-4 lg:p-5 transition-colors duration-300 ${
-        dark ? "bg-[#121212] text-white" : "bg-[#fafafa] text-black"
-      }`}
-    >
-      {/* Header + Sidebar */}
-      <Header dark={dark} toggleTheme={toggleTheme} />
-      <Sidebar dark={dark} active={active} setActive={setActive} />
-      <MobileMenu dark={dark} active={active} setActive={setActive} />
-
-      {/* Main Content */}
-      <main className="ml-[1rem] mt-10 flex flex-col items-center md:ml-[8rem] md:mt-10 relative">
+    
+      <main className=" flex flex-col items-center relative">
         <div
           className={`w-full max-w-3xl rounded-2xl shadow-lg p-8 transition-all duration-300 ${
             dark
@@ -144,7 +131,7 @@ const ProjectPage = () => {
           Delete this Profile
         </div>
       </main>
-    </div>
+    
   );
 };
 
