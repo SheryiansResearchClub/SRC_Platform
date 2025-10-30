@@ -1,5 +1,4 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'; // <-- 1. ADDED THIS IMPORT
 import Home from '@/features/home/components/Home';
 import HomeLayout from '@/layouts/HomeLayout';
 import LoginPage from '@/features/Auth/components/loginPage';
@@ -12,24 +11,15 @@ import Admin from '@/features/admin/components/Admin';
 import ProjectPage from '@/features/admin/components/ProjectPage';
 import MemberProfile from '@/features/admin/components/MemberProfile';
 import UserProfile from '@/features/admin/components/UserProfile'
-import { preventAuthLoader } from '@/components/AuthLoader.jsx'; // We only need this one now
-
-// Your PrivateRoute component is now here and will work
-function PrivateRoute({ children }) {
-  const { token } = useSelector((state) => state.auth);
-
-  // If a token exists, render the child component.
-  // Otherwise, navigate the user to the login page.
-  return token ? children : <Navigate to="/login" replace />;
-}
+import { preventAuthLoader } from '@/components/AuthLoader.jsx';
+import useCurrentUserQuery from '@/hooks/useCurrentUserQuery';
 
 const AppRouter = () => {
+  useCurrentUserQuery();
   const router = createBrowserRouter([
-    // --- 2. PUBLIC ROUTES ---
-    // These are separate and do not use PrivateRoute
     {
       path: "/",
-      element: <HomeLayout />, // Your main layout for public pages
+      element: <HomeLayout />,
       children: [
         {
           index: true,
@@ -41,7 +31,7 @@ const AppRouter = () => {
         },
         {
           path: "login",
-          loader: preventAuthLoader, // This is still good!
+          loader: preventAuthLoader,
           element: <LoginPage />,
         },
         {
@@ -56,14 +46,12 @@ const AppRouter = () => {
         }
       ],
     },
-    
-    // --- 3. PRIVATE/PROTECTED ROUTES ---
-    // Each of these is now wrapped in your <PrivateRoute>
+
     {
       path: "/dashboard",
       element: (
         // <PrivateRoute> // <-- Bypassed for now
-          <AppLayout />
+        <AppLayout />
         // </PrivateRoute>
       ),
       children: [
@@ -77,7 +65,7 @@ const AppRouter = () => {
       path: "/admin",
       element: (
         // <PrivateRoute>
-          <Admin />
+        <Admin />
         // </PrivateRoute>
       ),
     },
@@ -85,7 +73,7 @@ const AppRouter = () => {
       path: "/admin/projects",
       element: (
         // <PrivateRoute>
-          <ProjectPage />
+        <ProjectPage />
         // </PrivateRoute>
       ),
     },
@@ -93,7 +81,7 @@ const AppRouter = () => {
       path: "/admin/member/:name",
       element: (
         // <PrivateRoute>
-          <MemberProfile />
+        <MemberProfile />
         // </PrivateRoute>
       ),
     },
@@ -101,11 +89,11 @@ const AppRouter = () => {
       path: "/userprofile",
       element: (
         // <PrivateRoute> // <-- Bypassed for now
-          <UserProfile />
+        <UserProfile />
         // </PrivateRoute>
       ),
     },
-    
+
     // Fallback route
     {
       path: "*",

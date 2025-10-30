@@ -8,12 +8,12 @@ import tagRouter from '@/routes/tag.route';
 import messageRouter from '@/routes/message.route';
 import notificationRouter from '@/routes/notification.route';
 import gamificationRouter from '@/routes/gamification.route';
+import resourceRouter from '@/routes/resource.route';
 // import fileRouter from '@/routes/file.route';
 // import dashboardRouter from '@/routes/dashboard.route';
 // import eventRouter from '@/routes/event.route';
 // import searchRouter from '@/routes/search.route';
 // import adminAnalyticsRouter from '@/routes/admin-analytics.route';
-// import resourceRouter from '@/routes/resource.route';
 import { isAuthenticate } from '@/middleware/auth/isAuthenticate';
 
 const router = express.Router();
@@ -34,11 +34,11 @@ router.use('/tags', tagRouter);
 router.use('/messages', messageRouter);
 router.use('/notifications', notificationRouter);
 router.use('/gamification', gamificationRouter);
+router.use('/resources', resourceRouter);
 // router.use('/files', fileRouter);
 // router.use('/dashboard', dashboardRouter);
 // router.use('/events', eventRouter);
 // router.use('/search', searchRouter);
 // router.use('/admin/analytics', adminAnalyticsRouter);
-// router.use('/resources', resourceRouter);
 
 export default router;

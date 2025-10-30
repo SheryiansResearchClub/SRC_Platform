@@ -2,12 +2,13 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import AppRouter from '@/routers/AppRouter'
 import QueryProvider from '@/providers/QueryProvider'
-import StoreProvider from '@/providers/StoreProvider'
+import { Provider } from 'react-redux'
+import { store } from '@/config/store'
 
 createRoot(document.getElementById('root')).render(
-  <StoreProvider>
+  <Provider store={store}>
     <QueryProvider>
       <AppRouter />
     </QueryProvider>
-  </StoreProvider>
+  </Provider>
 )

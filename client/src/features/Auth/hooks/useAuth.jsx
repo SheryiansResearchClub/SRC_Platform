@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import {
   login,
@@ -110,6 +110,7 @@ export const useAuth = () => {
     oauthLogin: oauthLoginHandler,
     logout: () => logoutMutation.mutate(),
     clearFeedback: () => dispatch(clearAuthFeedback()),
+    useCurrentUserQuery,
     isAuthenticating: loginMutation.isPending || signupMutation.isPending,
     isForgotPending: forgotMutation.isPending,
     isResetPending: resetMutation.isPending,

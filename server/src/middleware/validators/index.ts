@@ -66,6 +66,10 @@ import {
   createResourceValidation,
   updateResourceValidation,
   getResourcesValidation,
+  resourceIdValidation,
+  searchResourcesValidation,
+  getTrendingValidation,
+  getMyResourcesValidation,
 } from "@/middleware/validators/resource"
 
 // Message validators
@@ -148,6 +152,10 @@ export default {
   createResourceValidation,
   updateResourceValidation,
   getResourcesValidation,
+  resourceIdValidation,
+  searchResourcesValidation,
+  getTrendingValidation,
+  getMyResourcesValidation,
 
   // Message validators
   sendMessageValidation,

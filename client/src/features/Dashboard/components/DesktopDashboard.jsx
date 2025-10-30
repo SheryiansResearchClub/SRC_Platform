@@ -67,53 +67,53 @@ export default function DesktopDashboard() {
               Welcome back, <span className="text-[#B4DA00]">John!</span>
             </h1>
             <div className="flex items-center space-x-2 bg-gray-100 rounded-lg p-1 text-sm font-medium">
-               {/* Status Dropdown */}
-               <div className="relative">
-                 <button
-                    onClick={() => { setIsStatusOpen(!isStatusOpen); setIsDateOpen(false); }}
-                    className="bg-[#B4DA00] text-gray-800 font-semibold py-2 px-4 rounded-lg w-32 flex items-center justify-between"
-                 >
-                   <span>{selectedStatus}</span>
-                   <ChevronDown size={16} />
-                 </button>
-                 {isStatusOpen && (
-                   <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                     {statusOptions.map(option => (
-                       <button
-                         key={option}
-                         onClick={() => { setSelectedStatus(option); setIsStatusOpen(false); }}
-                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                       >
-                         {option}
-                       </button>
-                     ))}
-                   </div>
-                 )}
-               </div>
+              {/* Status Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => { setIsStatusOpen(!isStatusOpen); setIsDateOpen(false); }}
+                  className="bg-[#B4DA00] text-gray-800 font-semibold py-2 px-4 rounded-lg w-32 flex items-center justify-between"
+                >
+                  <span>{selectedStatus}</span>
+                  <ChevronDown size={16} />
+                </button>
+                {isStatusOpen && (
+                  <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                    {statusOptions.map(option => (
+                      <button
+                        key={option}
+                        onClick={() => { setSelectedStatus(option); setIsStatusOpen(false); }}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-               {/* Date Range Dropdown */}
-               <div className="relative">
-                 <button
-                   onClick={() => { setIsDateOpen(!isDateOpen); setIsStatusOpen(false); }}
-                   className="text-gray-500 py-2 px-4 rounded-lg flex items-center justify-between w-40"
-                 >
-                   <span>{selectedDate}</span>
-                   <ChevronDown size={16} />
-                 </button>
-                 {isDateOpen && (
-                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
-                     {dateOptions.map(option => (
-                       <button
-                         key={option}
-                         onClick={() => { setSelectedDate(option); setIsDateOpen(false); }}
-                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
-                       >
-                         {option}
-                       </button>
-                     ))}
-                   </div>
-                 )}
-               </div>
+              {/* Date Range Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={() => { setIsDateOpen(!isDateOpen); setIsStatusOpen(false); }}
+                  className="text-gray-500 py-2 px-4 rounded-lg flex items-center justify-between w-40"
+                >
+                  <span>{selectedDate}</span>
+                  <ChevronDown size={16} />
+                </button>
+                {isDateOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                    {dateOptions.map(option => (
+                      <button
+                        key={option}
+                        onClick={() => { setSelectedDate(option); setIsDateOpen(false); }}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

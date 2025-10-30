@@ -1,6 +1,6 @@
 // src/features/Dashboard/slice/dashboardSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import { dashboardMockApi } from '../api/dashboardMockApi';
+import { dashboardMockApi } from '@/features/dashboard/api/dashboardMockApi';
 
 const initialState = {
   dashboard: { resources: [], events: [] },
@@ -26,7 +26,7 @@ export const { setLoading, setDashboardData } = dashboardSlice.actions;
 
 export const loadDashboardData = () => (dispatch) => {
   dispatch(setLoading(true));
-  setTimeout(() => {  // simulate async API
+  setTimeout(() => {
     dispatch(setDashboardData({
       dashboard: dashboardMockApi.getDashboard(),
       projects: dashboardMockApi.getOngoingProjects(),

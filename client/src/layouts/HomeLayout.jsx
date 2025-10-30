@@ -4,6 +4,7 @@ import logoB from '@/assets/images/logob.png';
 import logoW from '@/assets/images/logow.png';
 
 const HomeLayout = () => {
+
   const location = useLocation();
   const isAuthPage = ['/login', '/signup', '/forgot-password'].includes(location.pathname);
 
