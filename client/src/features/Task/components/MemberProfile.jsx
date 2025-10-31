@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { IoReturnUpBack } from "react-icons/io5";
 import ThemeContext from "@/context/ThemeContext";
 import TaskBox from "./TaskBox";
-import members from "./data"; // ✅ Import all members
+import members from "./data";
 
 const MemberProfile = () => {
   const navigate = useNavigate();
@@ -13,29 +13,34 @@ const MemberProfile = () => {
 
   const toggleTask = () => setAssignTask((prev) => !prev);
 
- 
   const member = state?.member || {};
-
-
   const isAdmin = member.isAdmin === "true";
 
-  const ongoingProjects = [
-    {
-      title: "SRC Platform",
-      description:
-        "We’re not just another college club — we’re a collective of curious minds, restless builders, and ambitious dreamers who believe in turning wild ideas into tangible things.",
-      tags: ["Open Source", "Full Stack Development"],
-      tasks: [
-        { name: "Complete the navigation bar", done: true },
-        { name: "Complete the dashboard", done: false },
-      ],
-    },
-  ];
+  // ✅ Manage state
+  const [tasks, setTasks] = useState([
+    { name: "Admin panel", done: false },
+    { name: "Dashboard", done: false },
+    { name: "Notification panel", done: false },
+    { name: "Header", done: false },
+  ]);
 
-  const completedProjects = [
-    { title: "Full Stack App", progress: 32 },
-    { title: "Web based sharing", progress: 92 },
-  ];
+  const [completedTasks, setCompletedTasks] = useState([
+    { name: "Navigation bar" },
+  ]);
+
+ 
+  const handleMarkDone = (index) => {
+    const taskToMove = tasks[index];
+    setTasks((prev) => prev.filter((_, i) => i !== index));
+    setCompletedTasks((prev) => [...prev, taskToMove]);
+  };
+
+  
+  const handleUndo = (index) => {
+    const taskToRestore = completedTasks[index];
+    setCompletedTasks((prev) => prev.filter((_, i) => i !== index));
+    setTasks((prev) => [...prev, { ...taskToRestore, done: false }]);
+  };
 
   return (
     <div
@@ -55,7 +60,6 @@ const MemberProfile = () => {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-3xl font-semibold">{member.name}</h1>
 
-        {/* Only admin can assign */}
         {isAdmin && (
           <button
             onClick={toggleTask}
@@ -75,24 +79,12 @@ const MemberProfile = () => {
       )}
 
       {/* Info Section */}
-      <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-sm text-center">
-        <div className="text-lg">
+      <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
+        <div>
           <p className={`${dark ? "text-gray-400" : "text-[#1e1e1e]"}`}>Role</p>
-          <div className="mt-1">
-            <span
-              className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                member.role?.toLowerCase().includes("designer")
-                  ? "bg-purple-300 text-purple-900"
-                  : member.role?.toLowerCase().includes("backend")
-                  ? "bg-green-200 text-green-900"
-                  : member.role?.toLowerCase().includes("strategist")
-                  ? "bg-yellow-200 text-yellow-900"
-                  : "bg-pink-200 text-red-800"
-              }`}
-            >
-              {member.role}
-            </span>
-          </div>
+          <span className="px-3 py-1 mt-1 inline-block rounded-full bg-purple-200 text-purple-900 font-semibold text-sm">
+            Designer
+          </span>
         </div>
 
         <div className="text-lg">
@@ -147,122 +139,112 @@ const MemberProfile = () => {
           Projects
         </h2>
 
-        {/* Ongoing Projects */}
+        {/* Ongoing Tasks */}
+        <div className="mt-6">
+        <h3
+            className={`text-xl font-semibold mb-3 ${
+              dark ? "text-gray-300" : "text-black/90"
+            }`}
+          >
+            Ongoing Tasks
+          </h3>
+        <div
+          className={`p-5 rounded-xl border w-full sm:w-[400px] ${
+            dark
+              ? "bg-[#161616] border-[#262626]"
+              : "bg-gray-100 border-gray-300"
+          }`}
+        >
+          <h3 className="text-lg font-semibold mb-2">SRC Platform</h3>
+
+          <div className="flex flex-wrap gap-2 mb-3">
+            <span
+              className={`px-3 py-1 rounded-full text-xs ${
+                dark
+                  ? "bg-[#262626] text-gray-300"
+                  : "bg-gray-200 text-black"
+              }`}
+            >
+              Open Source
+            </span>
+            <span
+              className={`px-3 py-1 rounded-full text-xs ${
+                dark
+                  ? "bg-[#262626] text-gray-300"
+                  : "bg-gray-200 text-black"
+              }`}
+            >
+              Full Stack Development
+            </span>
+          </div>
+
+          {tasks.map((task, index) => (
+            <div
+              key={index}
+              className="flex items-center justify-between mt-2 text-sm"
+            >
+              <div className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                {task.name}
+              </div>
+              <button
+                onClick={() => handleMarkDone(index)}
+                className={`text-xs px-3 py-1 rounded-md ${
+                  dark
+                    ? "bg-green-700 hover:bg-green-600 text-white"
+                    : "bg-green-200 hover:bg-green-300 text-green-800"
+                }`}
+              >
+                Mark Done
+              </button>
+            </div>
+          ))}
+        </div>
+        </div>
+
+        {/* Completed Tasks */}
         <div className="mt-6">
           <h3
             className={`text-xl font-semibold mb-3 ${
-              dark ? "text-gray-400" : "text-black/90"
+              dark ? "text-gray-300" : "text-black"
             }`}
           >
-            Ongoing
+            Completed Tasks
           </h3>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {ongoingProjects.map((project, i) => {
-              const totalTasks = project.tasks.length;
-              const completedTasks = project.tasks.filter((t) => t.done).length;
+          {completedTasks.length > 0 && (
+            <div
+              className={`p-5 rounded-xl border w-full sm:w-[400px] ${
+                dark
+                  ? "bg-[#161616] border-[#262626]"
+                  : "bg-gray-100 border-gray-300"
+              }`}
+            >
+              <h4 className="text-lg font-semibold mb-2">SRC Platform</h4>
 
-              return (
+              {completedTasks.map((task, index) => (
                 <div
-                  key={i}
-                  className={`p-5 rounded-xl border ${
-                    dark
-                      ? "bg-[#161616] border-[#262626]"
-                      : "bg-gray-100 border-gray-300"
-                  }`}
+                  key={index}
+                  className="flex items-center justify-between mt-2 text-sm"
                 >
-                  <h4 className="text-lg font-semibold mb-2">
-                    {project.title}
-                  </h4>
-
-                  <div className="flex flex-wrap gap-2 mb-3">
-                    {project.tags.map((tag, t) => (
-                      <span
-                        key={t}
-                        className={`px-3 py-1 rounded-full text-xs ${
-                          dark
-                            ? "bg-[#262626] text-gray-300"
-                            : "bg-[#d4d4d4] text-black"
-                        }`}
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                    {task.name}
                   </div>
-
-                  <p
-                    className={`text-sm mb-2 ${
-                      dark ? "text-gray-300" : "text-gray-700"
+                  <button
+                    onClick={() => handleUndo(index)}
+                    className={`text-xs px-3 py-1 rounded-md ${
+                      dark
+                        ? "bg-gray-700 hover:bg-gray-600 text-white"
+                        : "bg-gray-200 hover:bg-gray-300 text-black"
                     }`}
                   >
-                    Tasks Completed:{" "}
-                    <span className="font-semibold text-green-500">
-                      {completedTasks}
-                    </span>{" "}
-                    / {totalTasks}
-                  </p>
-
-                  <ul className="space-y-1 text-sm">
-                    {project.tasks.map((task, j) => (
-                      <li
-                        key={j}
-                        className={`flex items-center gap-2 ${
-                          task.done ? "text-gray-500 line-through" : ""
-                        } ${dark ? "text-white" : "text-black"}`}
-                      >
-                        <span
-                          className={`h-2 w-2 rounded-full ${
-                            task.done ? "bg-gray-600" : "bg-green-500"
-                          }`}
-                        ></span>
-                        {task.name}
-                      </li>
-                    ))}
-                  </ul>
+                    Undo
+                  </button>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Completed Projects */}
-        <div className="mt-10">
-          <h3
-            className={`text-xl font-semibold mb-3 ${
-              dark ? "text-gray-400" : "text-black/90"
-            }`}
-          >
-            Completed
-          </h3>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {completedProjects.map((project, i) => (
-              <div
-                key={i}
-                className={`p-5 rounded-xl border flex flex-col items-start ${
-                  dark
-                    ? "bg-[#161616] border-[#262626]"
-                    : "bg-gray-100 border-gray-300"
-                }`}
-              >
-                <h4 className="text-lg font-semibold mb-2">{project.title}</h4>
-                <div
-                  className={`text-sm font-semibold mb-2 ${
-                    project.progress >= 80 ? "text-green-400" : "text-yellow-400"
-                  }`}
-                >
-                  {project.progress}% Completed
-                </div>
-                <p
-                  className={`text-xs ${
-                    dark ? "text-gray-400" : "text-gray-600"
-                  }`}
-                >
-                  • All major tasks finished successfully
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
