@@ -14,11 +14,11 @@ const MembersTable = ({ dark }) => {
     const updatedMembers = [...members];
     updatedMembers[index].role = role;
     setMembers(updatedMembers);
-    setHoveredMember(null); 
+    setHoveredMember(null);
   };
 
   const handleNameClick = (member) => {
-    console.log(member.name)
+    console.log(member.name);
     navigate(`/app/tasks/${member.name}`, { state: { member } });
   };
 
@@ -34,7 +34,7 @@ const MembersTable = ({ dark }) => {
 
   return (
     <table
-      className={`w-[95%] border-collapse ${
+      className={`w-[95%] border-collapse bg-[#181818] ${
         dark ? "text-[#a6a6a6]" : "text-[#1e1e1e]"
       }`}
     >
@@ -46,13 +46,7 @@ const MembersTable = ({ dark }) => {
         >
           <th className="p-2 md:p-3 text-center">Name</th>
           <th className="p-2 md:p-3 text-center">Role</th>
-          <th className="p-2 md:p-3 text-center hidden md:table-cell">
-            Deadline
-          </th>
-          <th className="p-2 md:p-3 text-center">Task Assigned</th>
-          <th className="p-2 md:p-3 text-center hidden md:table-cell">
-            Status
-          </th>
+          <th className="p-2 md:p-3 text-center hidden md:table-cell">Teams</th>
         </tr>
       </thead>
       <tbody>
@@ -63,10 +57,12 @@ const MembersTable = ({ dark }) => {
               dark
                 ? "border-b border-[#262626] hover:bg-[#232323]"
                 : "border-b border-[#a8a8a8] hover:bg-[#e1e1e1]"
-            } transition relative`}
+            } transition text-center align-middle relative`}
           >
             <td
-              className={`p-3 text-center cursor-pointer ${dark ? "hover:text-white" : ""}`}
+              className={`p-3 text-center cursor-pointer ${
+                dark ? "hover:text-white" : ""
+              }`}
               onClick={() => handleNameClick(member)}
             >
               {member.name}
@@ -142,25 +138,14 @@ const MembersTable = ({ dark }) => {
                 </div>
               )}
             </td>
-
-            <td className="p-3 text-center hidden md:table-cell">
-              {member.deadline}
-            </td>
-            <td className="p-3 text-center">{member.task}</td>
-            <td className="p-3 text-center hidden md:table-cell">
-              <span
-                className={`inline-block px-3 py-1 rounded-full text-black ${
-                  member.status.toLowerCase() === "pending"
-                    ? "bg-red-300 text-red-900"
-                    : member.status.toLowerCase() === "completed"
-                    ? "bg-green-300 text-green-900"
-                    : member.status.toLowerCase() === "in progress"
-                    ? "bg-yellow-300 text-yellow-900"
-                    : ""
-                }`}
-              >
-                {member.status}
-              </span>
+            <td
+              className={` text-center cursor-pointer ${
+                dark ? "hover:text-white" : ""
+              }`}
+            >
+              {Array.isArray(member.team)
+                ? member.team.join(", ")
+                : member.team}
             </td>
           </tr>
         ))}

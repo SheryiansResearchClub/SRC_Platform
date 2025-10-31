@@ -19,7 +19,7 @@ const Admin = () => {
       }`}
     >
 
-      <main className=" flex flex-col gap-5  relative">
+      <main className=" flex flex-col gap-10  relative">
         {/* Heading */}
         <div className="flex items-center px-3 justify-between text-xl md:text-4xl">
           <h1>Team Members</h1>
@@ -36,18 +36,6 @@ const Admin = () => {
         />
 
         {assignTask && <TaskBox dark={dark} toggleTask={toggleTask} />}
-
-        <select
-          className={`w-fit py-1 ml-4 px-2 text-sm rounded-sm ${
-            dark
-              ? "bg-[#232323] border border-[#373636]"
-              : "bg-[#eeeeee] border border-[#a8a8a8]"
-          }`}
-        >
-          <option>24 Hours</option>
-          <option>48 Hours</option>
-          <option>72 Hours</option>
-        </select>
 
         <TasksTable dark={dark} />
         
