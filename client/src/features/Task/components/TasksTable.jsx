@@ -19,7 +19,7 @@ const MembersTable = ({ dark }) => {
 
   const handleNameClick = (member) => {
     console.log(member.name)
-    navigate(`/admin/member/${member.name}`, { state: { member } });
+    navigate(`/app/tasks/${member.name}`, { state: { member } });
   };
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const MembersTable = ({ dark }) => {
             } transition relative`}
           >
             <td
-              className="p-3 text-center cursor-pointer hover:text-white"
+              className={`p-3 text-center cursor-pointer ${dark ? "hover:text-white" : ""}`}
               onClick={() => handleNameClick(member)}
             >
               {member.name}

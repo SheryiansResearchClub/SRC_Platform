@@ -13,7 +13,7 @@ export const useProjectProfile = () => {
 
   useEffect(() => {
     // TEMP: manually switch role here for testing
-    const mockRole = "admin"; // "admin" | "leader" | "member"
+    const mockRole = "member"; // "admin" | "leader" | "member"
     setRole(mockRole);
 
     // BACKEND READY:

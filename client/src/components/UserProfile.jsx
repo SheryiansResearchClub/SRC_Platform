@@ -1,27 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import MobileMenu from "./MobileMenu";
+import ThemeContext, { ThemeProvider } from "@/context/ThemeContext";
 import { MdEdit } from "react-icons/md";
+import { useContext } from "react";
 
-const ProjectPage = () => {
+const UserProfilePage = () => {
   const [active, setActive] = useState("profile");
-  const [dark, setDark] = useState(true);
+  const { dark, toggleTheme } = useContext(ThemeContext);
   const fileInputRef = useRef(null);
   const [avatar, setAvatar] = useState(
     "https://randomuser.me/api/portraits/men/32.jpg"
   );
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("admin-theme");
-    if (savedTheme) setDark(JSON.parse(savedTheme));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("admin-theme", JSON.stringify(dark));
-  }, [dark]);
-
-  const toggleTheme = () => setDark((prev) => !prev);
 
   const [formData, setFormData] = useState({
     username: "@JohnDoe",
@@ -52,18 +40,8 @@ const ProjectPage = () => {
   };
 
   return (
-    <div
-      className={`w-full min-h-screen md:p-4 lg:p-5 transition-colors duration-300 ${
-        dark ? "bg-[#121212] text-white" : "bg-[#fafafa] text-black"
-      }`}
-    >
-      {/* Header + Sidebar */}
-      <Header dark={dark} toggleTheme={toggleTheme} />
-      <Sidebar dark={dark} active={active} setActive={setActive} />
-      <MobileMenu dark={dark} active={active} setActive={setActive} />
-
-      {/* Main Content */}
-      <main className="ml-[1rem] mt-10 flex flex-col items-center md:ml-[8rem] md:mt-10 relative">
+    
+      <main className=" flex flex-col items-center relative">
         <div
           className={`w-full max-w-3xl rounded-2xl shadow-lg p-8 transition-all duration-300 ${
             dark
@@ -153,8 +131,8 @@ const ProjectPage = () => {
           Delete this Profile
         </div>
       </main>
-    </div>
+    
   );
 };
 
-export default ProjectPage;
+export default UserProfilePage;

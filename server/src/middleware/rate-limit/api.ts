@@ -27,9 +27,9 @@ export const apiRateLimiters = {
     skip: (req) => !req.user,
   }),
 
-  postComment: rateLimit({
-    ...rateLimitConfig.api.postComment,
-    ...withStore('api:post-comment'),
+  createComment: rateLimit({
+    ...rateLimitConfig.api.createComment,
+    ...withStore('api:create-comment'),
     keyGenerator: (req) => req.user?._id?.toString() || getClientIp(req),
     handler: rateLimitHandler,
     skip: (req) => !req.user,

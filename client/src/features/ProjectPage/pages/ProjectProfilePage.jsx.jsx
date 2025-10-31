@@ -2,8 +2,6 @@
 // React & Imports
 // ------------------------------------
 import React, { useEffect, useState } from "react";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
 import Dashboard from "../components/Dashboard";
 import Comments from "../components/Comments";
 import AddMemberModal from "../components/AddMemberModal";
@@ -18,8 +16,6 @@ export default function ProjectProfilePage() {
 
   const [projectData, setProjectData] = useState(null);
   const [showAddMember, setShowAddMember] = useState(false);
-
-  
 
   // ------------------------------------
   // Sync Redux data with localStorage comments
@@ -108,50 +104,38 @@ export default function ProjectProfilePage() {
   }
 
   // ------------------------------------
-  // Main UI Layout
+  // Main UI Layout (Header & Sidebar removed)
   // ------------------------------------
   return (
-    <div className="flex bg-[#111111] text-white min-h-screen font-sans">
-      {/* Sidebar on left */}
-      <Sidebar />
+    <div className="bg-[#111111] text-white min-h-screen font-sans flex flex-col">
+      {/* Main content layout */}
+      <div className="flex-1 flex flex-col md:flex-row overflow-y-auto p-6 space-y-6 md:space-y-0 md:space-x-6">
+        {/* Dashboard Section */}
+        <div className="relative flex-1">
+          <Dashboard data={projectData} />
 
-      {/* Main content area */}
-      <main className="flex-1 flex flex-col">
-        {/* Header Section */}
-        <Header />
-
-        {/* Main content layout */}
-        <div
-          className="flex-1 flex flex-col md:flex-row overflow-y-auto p-6 space-y-6 md:space-y-0 md:space-x-6"
-          style={{ height: "calc(100vh - 65px)" }}
-        >
-          {/* Dashboard Section */}
-          <div className="relative flex-1">
-            <Dashboard data={projectData} />
-
-            {/* Add Member Button for Admin/Leader */}
-            {(rolePermissions[role]?.canAddMembers) && (
-              <button
-                onClick={() => setShowAddMember(true)}
-                className={`absolute top-0 right-0 px-4 py-2 rounded-md text-white ${
-                  role === "admin"
-                    ? "bg-green-600 hover:bg-green-700"
-                    : "bg-blue-600 hover:bg-blue-700"
-                }`}
-              >
-                + Add Member
-              </button>
-            )}
-          </div>
-
-          {/* Comments Section */}
-          <Comments
-            comments={projectData.comments}
-            onAddComment={handleAddComment}
-            onDelete={handleDeleteComment}
-          />
+          {/* Add Member Button for Admin/Leader */}
+          {rolePermissions[role]?.canAddMembers && (
+            <button
+              onClick={() => setShowAddMember(true)}
+              className={`absolute top-0 right-0 px-4 py-2 rounded-md text-white ${
+                role === "admin"
+                  ? "bg-green-600 hover:bg-green-700"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+            >
+              + Add Member
+            </button>
+          )}
         </div>
-      </main>
+
+        {/* Comments Section */}
+        <Comments
+          comments={projectData.comments}
+          onAddComment={handleAddComment}
+          onDelete={handleDeleteComment}
+        />
+      </div>
 
       {/* Add Member Modal */}
       {showAddMember && (

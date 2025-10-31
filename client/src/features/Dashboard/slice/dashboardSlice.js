@@ -1,6 +1,7 @@
 // src/features/Dashboard/slice/dashboardSlice.js
 import { createSlice } from '@reduxjs/toolkit';
-import { dashboardMockApi } from '../api/dashboardMockApi';
+import { projectsData } from "../api/dashboardMockApi";
+
 
 const initialState = {
   dashboard: { resources: [], events: [] },

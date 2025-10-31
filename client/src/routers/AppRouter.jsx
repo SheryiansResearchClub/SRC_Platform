@@ -1,21 +1,25 @@
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'; // <-- 1. ADDED THIS IMPORT
-import Home from '@/features/home/components/Home';
-import HomeLayout from '@/layouts/HomeLayout';
-import LoginPage from '@/features/Auth/components/loginPage';
-import SignupPage from '@/features/Auth/components/signupPage';
-import ForgetPassword from '@/features/Auth/components/forgetPassword';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
+import { useSelector } from "react-redux"; // <-- 1. ADDED THIS IMPORT
+import HomeLayout from "@/layouts/HomeLayout";
+import Home from "@/features/home/components/Home";
 import About from "@/features/home/components/About";
-import AppLayout from '@/layouts/AppLayout';
-import Dashboard from '@/features/Dashboard/Dashboard';
-import Admin from '@/features/admin/components/Admin';
-import ProjectPage from '@/features/admin/components/ProjectPage';
-import MemberProfile from '@/features/admin/components/MemberProfile';
-import UserProfile from '@/features/admin/components/UserProfile'
-import { preventAuthLoader } from '@/components/AuthLoader.jsx';
+import LoginPage from "@/features/Auth/components/loginPage";
+import SignupPage from "@/features/Auth/components/signupPage";
+import ForgotPassword from "@/features/Auth/components/forgetPassword";
+import AppLayout from "@/layouts/AppLayout";
+import Dashboard from "@/features/Dashboard/Dashboard";
+import ProjectPage from "@/components/ProjectPage";
+import TaskBox from "@/features/Task/components/TaskBox";
+import MemberProfile from "@/features/Task/components/MemberProfile";
+import UserProfilePage from "@/components/UserProfile";
+import Admin from "@/features/Task/components/Tasks";
 import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.jsx";
-
-
+import { preventAuthLoader } from "@/components/AuthLoader";
+import Tasks from "@/features/Task/components/Tasks";
 
 // Your PrivateRoute component is now here and will work
 function PrivateRoute({ children }) {
@@ -55,25 +59,44 @@ const AppRouter = () => {
         {
           path: "forgot-password",
           loader: preventAuthLoader,
-          element: <ForgetPassword />,
-        }
+          element: <ForgotPassword />,
+        },
       ],
     },
 
-    // --- 3. PRIVATE/PROTECTED ROUTES ---
-    // Each of these is now wrapped in your <PrivateRoute>
+    // App Layout
     {
-      path: "/dashboard",
-      element: (
-        // <PrivateRoute> // <-- Bypassed for now
-        <AppLayout />
-        // </PrivateRoute>
-      ),
+      path: "/app",
+      element: <AppLayout />, // Your main layout for public pages
       children: [
         {
           index: true,
           element: <Dashboard />,
         },
+        {
+          path: "projects",
+          element: <ProjectPage />,
+        },
+        {
+          path: 'project/:id',
+          element: <ProjectProfilePage />,
+        },
+        {
+          path: "tasks",
+          element: <Tasks />,
+        },
+        {
+          path: "tasks/:name",
+          element: <MemberProfile  />,
+        },
+        {
+          path: "userprofile",
+          element: <UserProfilePage />,
+        },
+        // {
+        //   path: "calendar",
+        //   element: <Calendar />,
+        // },
       ],
     },
     {
@@ -83,45 +106,39 @@ const AppRouter = () => {
         <Admin />
         // </PrivateRoute>
       ),
-    }, {
-      path: "/admin/projects",
-      element: (
-        // <PrivateRoute>
-        <ProjectPage />
-        // </PrivateRoute>
-      ),
     },
-    {
-      path: "/admin/member/:name",
-      element: (
-        // <PrivateRoute>
-        <MemberProfile />
-        // </PrivateRoute>
-      ),
-    },
-    {
-      path: "/userprofile",
-      element: (
-        // <PrivateRoute> // <-- Bypassed for now
-        <UserProfile />
-        // </PrivateRoute>
-      ),
-    },
-
-    {
-      path: '/project/:id',
-      element: <ProjectProfilePage />,
-    },
-
+    //  {
+    //   path: "/admin/projects",
+    //   element: (
+    //     // <PrivateRoute>
+    //     <ProjectProfilePage />
+    //     // </PrivateRoute>
+    //   ),
+    // },
+    // {
+    //   path: "/admin/member/:name",
+    //   element: (
+    //     // <PrivateRoute>
+    //     <MemberProfile  />
+    //     // </PrivateRoute>
+    //   ),
+    // },
+    // {
+    //   path: "/userprofile",
+    //   element: (
+    //     // <PrivateRoute> // <-- Bypassed for now
+    //     <UserProfile />
+    //     // </PrivateRoute>
+    //   ),
+    // },
     // Fallback route
     {
       path: "*",
-      element: <Navigate to="/" replace />
-    }
+      element: <Navigate to="/" replace />,
+    },
   ]);
 
   return <RouterProvider router={router} />;
 };
 
 export default AppRouter;
-

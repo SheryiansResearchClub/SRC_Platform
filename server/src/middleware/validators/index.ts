@@ -38,6 +38,7 @@ import {
   updateCommentValidation,
   rejectCommentValidation,
   getCommentsValidation,
+  validateCommentId,
 } from "@/middleware/validators/comment"
 
 // File validators
@@ -72,6 +73,7 @@ import {
   sendMessageValidation,
   editMessageValidation,
   getMessagesValidation,
+  mongoIdValidator
 } from "@/middleware/validators/message"
 
 // Notification validators
@@ -79,6 +81,18 @@ import {
   createNotificationValidation,
   getNotificationsValidation,
 } from "@/middleware/validators/notification"
+
+import {
+  createTagValidation,
+  updateTagValidation,
+  getTagsValidation,
+  getTagByIdValidation
+} from "@/middleware/validators/tag"
+
+import {
+  awardBadgeValidation,
+  awardPointsValidation
+} from "@/middleware/validators/gamification"
 
 export default {
   registerValidation,
@@ -114,6 +128,7 @@ export default {
   updateCommentValidation,
   rejectCommentValidation,
   getCommentsValidation,
+  validateCommentId,
 
   // File validators
   uploadFileValidation,
@@ -138,8 +153,19 @@ export default {
   sendMessageValidation,
   editMessageValidation,
   getMessagesValidation,
+  mongoIdValidator,
 
   // Notification validators
   createNotificationValidation,
   getNotificationsValidation,
+
+  // Tag validators
+  createTagValidation,
+  updateTagValidation,
+  getTagsValidation,
+  getTagByIdValidation,
+
+  // Gamification validators
+  awardPointsValidation,
+  awardBadgeValidation
 }

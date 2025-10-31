@@ -89,8 +89,6 @@ const CommentSchema = new Schema(
   }
 );
 
-// Indexes for performance
-CommentSchema.index({ content: 'text' });
 CommentSchema.index({ status: 1, createdAt: -1 });
 CommentSchema.index({ project: 1, status: 1, createdAt: -1 });
 CommentSchema.index({ task: 1, status: 1, createdAt: -1 });

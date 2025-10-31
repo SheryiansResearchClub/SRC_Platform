@@ -37,7 +37,7 @@ const Dashboard = ({ data }) => {
   );
 
   return (
-    <div className="w-full md:w-1/2 space-y-8">
+    <div className="w-full md:w-1/2 space-y-8 relative top-[-20px]">
       {/* ---------- Section Header ---------- */}
       <div className="flex items-center space-x-3">
         <Star className="w-8 h-8 text-zinc-200" />
