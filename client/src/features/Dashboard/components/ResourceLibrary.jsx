@@ -25,10 +25,10 @@ const ResourceLibrary = ({ resources }) => {
           <h2 className={`text-xl font-semibold  ${dark ? "text-gray-200" : 'text-gray-800'}`}>Resource Library</h2>
         </div>
         <button
-          onClick={() => setShowAll(!showAll)}
+          
           className={`text-sm font-medium  ${dark ? "text-gray-300 hover:text-white" : "text-gray-500 hover:text-gray-800"}`}
         >
-          {showAll ? "View Less" : "View All"}
+          <a href="/app/resources">View All</a>
         </button>
       </div>
 
