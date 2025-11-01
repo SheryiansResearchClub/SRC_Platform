@@ -1,34 +1,32 @@
 name: Deploy Client to S3 and CloudFront
-
 on:
   push:
     branches: [ deploy ]
-
 jobs:
   deploy-client:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
+      
+      - name: Install pnpm
+        run: npm install -g pnpm
+      
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-
-      - name: Install pnpm
-        run: npm install -g pnpm
-
+          cache-dependency-path: './client/pnpm-lock.yaml'
+      
       - name: Install dependencies (client)
         working-directory: ./client
-        run: pnpm install --frozen-lockfile
-
+        run: pnpm install
+      
       - name: Build project (client)
         working-directory: ./client
         run: pnpm run build
-
+      
       - name: Deploy to S3
         run: |
           aws s3 sync ./client/build s3://$S3_BUCKET_NAME --delete
@@ -37,7 +35,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_BUCKET_NAME: ${{ secrets.S3_BUCKET_NAME }}
-
+      
       - name: Invalidate CloudFront cache
         run: |
           aws cloudfront create-invalidation --distribution-id $CLOUDFRONT_DISTRIBUTION_ID --paths "/*"
