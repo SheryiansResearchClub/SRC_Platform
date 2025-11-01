@@ -8,43 +8,49 @@ export const projectsData = {
   projects: [
     {
       name: "Project Phoenix",
+      id:"p1",
       team: "Developers Team, editor",
       creator: "Olivia Rhye",
       lead: "Lana Steiner",
-      progress: 75,
       updated: "2 days ago",
+      due: "2024-09-15",
+      status: "Active", // <-- ADD THIS
     },
     {
       name: "Marketing Campaign",
       team: "Marketing Team",
       creator: "Phoenix Baker",
       lead: "Candice Wu",
-      progress: 40,
       updated: "5 days ago",
+      due: "2024-09-15",
+      status: "Active", // <-- ADD THIS
     },
     {
       name: "Mobile App Redesign",
       team: "Design Team",
       creator: "Natali Craig",
       lead: "Drew Cano",
-      progress: 90,
       updated: "yesterday",
+      due: "2024-09-15",
+      status: "Completed", // <-- ADD THIS
     },
     {
       name: "New Website Launch",
       team: "Developers Team",
       creator: "Orlando Diggs",
       lead: "Kate Morrison",
-      progress: 15,
       updated: "10 days ago",
+      due: "2024-09-15",
+      status: "On Hold", // <-- ADD THIS
     },
     {
       name: "API Integration",
       team: "Engineering",
       creator: "Koray Okumus",
       lead: "Andi Lane",
-      progress: 60,
       updated: "3 days ago",
+      due: "2024-09-15",
+      status: "Active", // <-- ADD THIS
     },
   ],
 };
