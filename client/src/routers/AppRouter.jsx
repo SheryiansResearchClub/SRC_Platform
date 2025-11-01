@@ -15,14 +15,14 @@ import Dashboard from "@/features/Dashboard/Dashboard";
 import ProjectPage from "@/components/ProjectPage";
 // import TaskBox from "@/features/Task/components/TaskBox";
 import MemberProfile from "@/features/Task/components/MemberProfile";
-import UserProfilePage from "@/components/UserProfile";
+// import UserProfilePage from "@/components/UserProfile";
 import Admin from "@/features/Task/components/Tasks";
 import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.jsx";
 import { preventAuthLoader } from "@/components/AuthLoader";
 import Tasks from "@/features/Task/components/Tasks";
 import UserProfile from "@/components/UserProfile";
-import Calendar from "@/features/Dashboard/components/CalendarSection";
-import Resources from "@/features/Dashboard/components/Resources";
+// import Calendar from "@/features/Dashboard/components/CalendarSection";
+// import Resources from "@/features/Dashboard/components/Resources";
 
 // Your PrivateRoute component is now here and will work
 function PrivateRoute({ children }) {
@@ -84,6 +84,22 @@ const AppRouter = () => {
           path: 'project/:id',
           element: <ProjectProfilePage />,
         },
+         {
+          path: "tasks/:name",
+          element: <MemberProfile />,
+        },
+        {
+          path: "userprofile",
+          element: <UserProfile />,
+        },
+        // {
+        //   path: "calendar",
+        //   element: <Calendar />,
+        // },
+        // {
+        //   path: "resources",
+        //   element: <Resources />,
+        // },
         {
           path: "tasks",
           element: <Tasks />,
@@ -92,14 +108,8 @@ const AppRouter = () => {
           path: "tasks/:name",
           element: <MemberProfile  />,
         },
-        {
-          path: "userprofile",
-          element: <UserProfilePage />,
-        },
-        {
-          path: "resources",
-          element: <Resources />,
-        }
+        
+       
       ],
     },
     {

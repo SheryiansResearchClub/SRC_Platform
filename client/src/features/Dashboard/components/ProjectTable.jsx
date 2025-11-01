@@ -1,3 +1,4 @@
+// Filename: components/ProjectTable.jsx
 import React from "react";
 import ProjectRow from "./ProjectRow";
 
@@ -11,12 +12,13 @@ export default function ProjectTable({ projects }) {
             <th className="py-3 px-4">TEAMS</th>
             <th className="py-3 px-4">CREATOR</th>
             <th className="py-3 px-4">LEAD</th>
-            <th className="py-3 px-4">PROGRESS</th>
+            <th className="py-3 px-4">DUE DATE</th>
+            <th className="py-3 px-4">STATUS</th>
           </tr>
         </thead>
         <tbody>
           {projects.map((p, i) => (
-            <ProjectRow key={i} project={p} />
+            <ProjectRow key={p.id || i} project={p} />
           ))}
         </tbody>
       </table>
