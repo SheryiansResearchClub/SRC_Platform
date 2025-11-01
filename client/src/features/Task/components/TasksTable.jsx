@@ -34,7 +34,7 @@ const MembersTable = ({ dark }) => {
 
   return (
     <table
-      className={`w-[95%] border-collapse bg-[#181818] ${
+      className={`w-[95%] border-collapse bg-[#111415] ${
         dark ? "text-[#a6a6a6]" : "text-[#1e1e1e]"
       }`}
     >

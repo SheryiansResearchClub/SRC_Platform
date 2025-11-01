@@ -15,7 +15,7 @@ const Tasks = () => {
   return (
     <div
       className={`w-full min-h-screen   ${
-        dark ? "bg-[#121212] text-white" : "bg-white text-black"
+        dark ? "bg-[#0B0D0E] text-white" : "bg-white text-black"
       }`}
     >
 
