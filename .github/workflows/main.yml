@@ -23,7 +23,7 @@ jobs:
 
       - name: Install dependencies (client)
         working-directory: ./client
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Build project (client)
         working-directory: ./client
