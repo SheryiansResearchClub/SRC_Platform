@@ -55,13 +55,11 @@ const Header = ({ dark, toggleTheme }) => {
   ];
 
   return (
-   <header
-  className={`sticky top-0 ml-auto w-[94.5vw] z-50 flex bg-[#0B0C0D] items-center p-4 justify-end gap-3 md:gap-4 mb-5
-    border border-[#272727]
-  `}
->
-
-
+    <header
+      className={`flex items-center p-4 justify-end gap-3 md:gap-4 mb-5 relative border-b md:border-none ${
+        dark ? "border-[#232323]" : "border-[#a8a8a8]"
+      }`}
+    >
       {/* Theme toggle */}
       <div
         onClick={toggleTheme}

@@ -4,22 +4,18 @@ import {
   Navigate,
 } from "react-router-dom";
 import { useSelector } from "react-redux"; // <-- 1. ADDED THIS IMPORT
-import HomeLayout from "@/layouts/HomeLayout";
 import Home from "@/features/home/components/Home";
-import About from "@/features/home/components/About";
+import HomeLayout from "@/layouts/HomeLayout";
 import LoginPage from "@/features/Auth/components/loginPage";
 import SignupPage from "@/features/Auth/components/signupPage";
-import ForgotPassword from "@/features/Auth/components/forgetPassword";
+import ForgetPassword from "@/features/Auth/components/forgetPassword";
+import About from "@/features/home/components/About";
 import AppLayout from "@/layouts/AppLayout";
 import Dashboard from "@/features/Dashboard/Dashboard";
+import Task from "@/features/task/components/Tasks";
+import { preventAuthLoader } from "@/components/AuthLoader.jsx"; // We only need this one now
 import ProjectPage from "@/components/ProjectPage";
-// import TaskBox from "@/features/Task/components/TaskBox";
 import MemberProfile from "@/features/Task/components/MemberProfile";
-import UserProfilePage from "@/components/UserProfile";
-import Admin from "@/features/Task/components/Tasks";
-import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.jsx";
-import { preventAuthLoader } from "@/components/AuthLoader";
-import Tasks from "@/features/Task/components/Tasks";
 import UserProfile from "@/components/UserProfile";
 import Calendar from "@/features/Dashboard/components/CalendarSection";
 import Resources from "@/features/Dashboard/components/Resources";
@@ -62,7 +58,7 @@ const AppRouter = () => {
         {
           path: "forgot-password",
           loader: preventAuthLoader,
-          element: <ForgotPassword />,
+          element: <ForgetPassword />,
         },
       ],
     },
@@ -81,20 +77,20 @@ const AppRouter = () => {
           element: <ProjectPage />,
         },
         {
-          path: 'project/:id',
-          element: <ProjectProfilePage />,
-        },
-        {
           path: "tasks",
-          element: <Tasks />,
+          element: <Task />,
         },
         {
           path: "tasks/:name",
-          element: <MemberProfile  />,
+          element: <MemberProfile />,
         },
         {
           path: "userprofile",
-          element: <UserProfilePage />,
+          element: <UserProfile />,
+        },
+        {
+          path: "calendar",
+          element: <Calendar />,
         },
         {
           path: "resources",
@@ -102,38 +98,7 @@ const AppRouter = () => {
         }
       ],
     },
-    {
-      path: "/admin",
-      element: (
-        // <PrivateRoute>
-        <Admin />
-        // </PrivateRoute>
-      ),
-    },
-    //  {
-    //   path: "/admin/projects",
-    //   element: (
-    //     // <PrivateRoute>
-    //     <ProjectProfilePage />
-    //     // </PrivateRoute>
-    //   ),
-    // },
-    // {
-    //   path: "/admin/member/:name",
-    //   element: (
-    //     // <PrivateRoute>
-    //     <MemberProfile  />
-    //     // </PrivateRoute>
-    //   ),
-    // },
-    // {
-    //   path: "/userprofile",
-    //   element: (
-    //     // <PrivateRoute> // <-- Bypassed for now
-    //     <UserProfile />
-    //     // </PrivateRoute>
-    //   ),
-    // },
+
     // Fallback route
     {
       path: "*",

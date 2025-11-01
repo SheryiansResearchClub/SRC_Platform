@@ -1,74 +1,92 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import "remixicon/fonts/remixicon.css"; // Remix Icons import
+import { Link } from "react-router-dom";
+import { FiHome } from "react-icons/fi";
+import { GoProjectSymlink } from "react-icons/go";
+import { SlCalender } from "react-icons/sl";
+import { LuUser, LuSettings } from "react-icons/lu";
+import { FaTasks } from "react-icons/fa";
 
-const Sidebar = () => {
-  const location = useLocation();
-
+const Sidebar = ({ dark, active, setActive }) => {
   const topLinks = [
-    { key: "home", icon: <i className="ri-home-line"></i>, path: "/app", title: "Home" },
-    { key: "projects", icon: <i className="ri-grid-fill"></i>, path: "/app/projects", title: "Projects" },
-    { key: "calendar", icon: <i className="ri-task-line"></i>, path: "/app/calendar", title: "Calendar" },
-    { key: "tasks", icon: <i className="ri-team-fill"></i>, path: "/app/tasks", title: "Tasks" },
-    { key: "user", icon: <i className="ri-user-line"></i>, path: "/app/userprofile", title: "User" },
+    { key: "home", icon: <FiHome />, path: "/app", title: "Home" },
+    { key: "projects", icon: <GoProjectSymlink />, path: "/app/projects", title: "Projects" },
+    { key: "calendar", icon: <SlCalender />, path: "/app/calendar", title: "Calendar" },
+    { key: "tasks", icon: <FaTasks />, path: "/app/tasks", title: "Tasks" },
+    { key: "user", icon: <LuUser />, path: "/app/userprofile", title: "User" },
   ];
 
   const bottomLink = {
     key: "settings",
-    icon: <i className="ri-settings-3-line"></i>,
+    icon: <LuSettings />,
     path: "/app/settings",
     title: "Settings",
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-[4.5vw] bg-[#181818] border-r border-[#272727] flex flex-col items-center justify-between py-9">
+    <aside className="absolute left-3 top-5 md:fixed md:left-5 md:top-5 flex flex-col justify-between h-[95vh]">
       {/* Top Section */}
-      <div className="flex flex-col items-center w-full">
+      <div className="flex flex-col gap-10">
         {/* Logo */}
-        <div className="mb-12">
-          <Link to="/app">
-            <img
-              src="/src/assets/images/logow.png"
-              alt="Logo"
-              className="w-10 h-10 object-contain"
-            />
-          </Link>
+        <div className="w-9 h-9 md:w-10 md:h-10 rounded-sm">
+          <img
+            className="object-center cursor-pointer"
+            src="https://ik.imagekit.io/sheryians/SRC%20Assets/images/icons/logo_i6Fg0Ut01z.svg"
+            alt="logo"
+          />
         </div>
 
-        {/* Navigation Icons */}
-        <div className="flex flex-col gap-10">
-          {topLinks.map((link) => (
+        {/* Divider line */}
+        <div className="hidden md:flex left-20 top-0 w-[1px] h-full bg-[#373636] fixed"></div>
+
+        {/* Navigation (Top Links) */}
+        <nav className="flex-col gap-6 hidden md:flex">
+          {topLinks.map(({ key, icon, path, title }) => (
             <Link
-              key={link.key}
-              to={link.path}
-              className={`text-2xl transition-colors ${
-                location.pathname === link.path
-                  ? "text-white"
-                  : "text-gray-500 hover:text-gray-300"
-              }`}
-              title={link.title}
+              key={key}
+              to={path}
+              onClick={() => setActive(key)}
+              className={`relative group w-10 h-10 rounded-sm flex items-center justify-center text-2xl cursor-pointer transition-all
+                ${dark ? "border border-[#373636] hover:bg-[#1a1a1a]" : "border border-[#a8a8a8] hover:bg-[#dcdcdc]"}
+                ${active === key ? "ring-2 ring-[#B4DA00]" : ""}
+              `}
             >
-              {link.icon}
+              {/* Icon */}
+              <span>{icon}</span>
+
+              {/* Tooltip */}
+              <span
+                className={`absolute left-12 px-2 py-1 text-sm rounded-md opacity-0 group-hover:opacity-100 transition-all duration-200 
+                ${dark ? "bg-[#1f1f1f] text-white border border-[#373636]" : "bg-white text-black border border-gray-300"}
+                `}
+              >
+                {title}
+              </span>
             </Link>
           ))}
-        </div>
+        </nav>
       </div>
 
-      {/* Bottom Section */}
-      <div>
+      {/* Bottom Settings Link */}
+      <div className="hidden md:flex">
         <Link
           to={bottomLink.path}
-          className={`text-2xl transition-colors ${
-            location.pathname === bottomLink.path
-              ? "text-white"
-              : "text-gray-500 hover:text-gray-300"
-          }`}
-          title={bottomLink.title}
+          onClick={() => setActive(bottomLink.key)}
+          className={`relative group w-10 h-10 rounded-sm flex items-center justify-center text-2xl cursor-pointer transition-all
+            ${dark ? "border border-[#373636] hover:bg-[#1a1a1a]" : "border border-[#a8a8a8] hover:bg-[#dcdcdc]"}
+            ${active === bottomLink.key ? "ring-2 ring-[#B4DA00]" : ""}
+          `}
         >
-          {bottomLink.icon}
+          <span>{bottomLink.icon}</span>
+          <span
+            className={`absolute left-12 px-2 py-1 text-sm rounded-md opacity-0 group-hover:opacity-100 transition-all duration-200 
+            ${dark ? "bg-[#1f1f1f] text-white border border-[#373636]" : "bg-white text-black border border-gray-300"}
+            `}
+          >
+            {bottomLink.title}
+          </span>
         </Link>
       </div>
-    </div>
+    </aside>
   );
 };
 
