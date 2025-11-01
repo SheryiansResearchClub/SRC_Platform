@@ -1,59 +1,16 @@
-# SRC Frontend
+# React + Vite
 
-This React + Vite client powers the SRC application. Follow the steps below to install dependencies and run the app locally.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Prerequisites
+Currently, two official plugins are available:
 
-- **Node.js** v18+ (recommended: use the version declared in `.nvmrc` if present)
-- **pnpm** 9+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Setup & Installation
+## React Compiler
 
-```bash
-pnpm install
-```
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-This command must be executed inside the `client/` directory. It installs all runtime and development dependencies, including React Query, Redux Toolkit, and axios.
+## Expanding the ESLint configuration
 
-## Development Server
-
-```bash
-pnpm dev
-```
-
-Runs the Vite development server with hot module replacement. Access the app at `http://localhost:5173/`.
-
-## Production Build
-
-```bash
-pnpm build
-```
-
-Bundles the client for production output into `dist/`.
-
-## Preview Production Build
-
-```bash
-pnpm preview
-```
-
-Serves the contents of `dist/` locally to verify the production build.
-
-## Linting
-
-```bash
-pnpm lint
-```
-
-Runs ESLint using the shared configuration.
-
-## Environment Variables
-
-Create a `.env` file in the `client/` folder. Common keys include:
-
-```
-VITE_API_BASE_URL=https://api.example.com
-VITE_DEV=true
-```
-
-Restart the dev server after changing env files to ensure Vite reloads the new values.
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
