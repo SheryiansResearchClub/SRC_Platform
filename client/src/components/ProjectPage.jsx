@@ -73,7 +73,7 @@ const ProjectPage = () => {
         dark ? "bg-[#121212] text-gray-200" : "bg-white text-gray-800"
       }`}
     >
-      <main className="flex flex-col justify-center gap-8 px-4 py-6">
+      <main className="flex bg-red-500 flex-col justify-center gap-8 px-4 py-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-xl md:text-3xl font-bold">
           <h1>All Projects</h1>

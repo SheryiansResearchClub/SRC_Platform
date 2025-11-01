@@ -3,7 +3,7 @@ import ThemeContext, { ThemeProvider } from "@/context/ThemeContext";
 import { MdEdit } from "react-icons/md";
 import { useContext } from "react";
 
-const ProjectPage = () => {
+const UserProfilePage = () => {
   const [active, setActive] = useState("profile");
   const { dark, toggleTheme } = useContext(ThemeContext);
   const fileInputRef = useRef(null);
@@ -135,4 +135,4 @@ const ProjectPage = () => {
   );
 };
 
-export default ProjectPage;
+export default UserProfilePage;

@@ -5,7 +5,7 @@ import TasksTable from "./TasksTable";
 import { IoAddCircleOutline, IoAdd } from "react-icons/io5";
 import { useContext } from "react";
 
-const Admin = () => {
+const Tasks = () => {
   const [active, setActive] = useState("home");
   const { dark } = useContext(ThemeContext);
   const [assignTask, setAssignTask] = useState(false);
@@ -44,4 +44,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Tasks;
