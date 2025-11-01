@@ -7,7 +7,7 @@ import ResourceLibrary from './ResourceLibrary';
 import UpcomingEvents from './UpcomingEvents';
 import TaskDue from './TaskDue';
 import CalendarSection from './CalendarSection';
-import { loadDashboardData } from '../slice/dashboardSlice';
+import { loadDashboardData } from '../slice/dashboardSlice.js';
 import logo from '../../../assets/images/logow.png';
 
 export default function DesktopDashboard() {

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { store } from '@/config/store'
-import { logout as logoutAction, setAuthError, setAuthState } from '@/features/auth/slices/authSlice'
+import { logout as logoutAction, setAuthError, setAuthState } from '@/features/auth/slices/authSlice.jsx'
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '/api/v1'
 const isDev = import.meta.env.VITE_DEV === 'true'

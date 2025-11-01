@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getCurrentUser } from '@/features/auth/api/authApi';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { setAuthState } from '@/features/auth/slices/authSlice';
+import { setAuthState } from '@/features/auth/slices/authSlice.jsx';
 import { useSelector } from 'react-redux';
 
 const useCurrentUserQuery = () => {

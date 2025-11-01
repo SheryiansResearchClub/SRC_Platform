@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import Cookies from 'js-cookie';
 import { refreshToken } from '@/features/auth/api/authApi';
 import { store } from '@/config/store';
-import { logout } from '@/features/auth/slices/authSlice';
+import { logout } from '@/features/auth/slices/authSlice.jsx';
 
 class SocketManager {
   constructor() {

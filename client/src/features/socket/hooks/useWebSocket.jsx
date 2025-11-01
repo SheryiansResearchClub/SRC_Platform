@@ -9,7 +9,7 @@ import {
   subscribeToSocketEvent,
   unsubscribeFromSocketEvent,
   emitSocketEvent,
-} from '@/features/socket/slices/socketSlice';
+} from '@/features/socket/slices/socketSlice.jsx';
 
 export const useWebSocket = (url, options = {}) => {
   const {

@@ -4,7 +4,7 @@ import {
   joinRoom as joinRoomAction,
   leaveRoom as leaveRoomAction,
   emitSocketEvent,
-} from '@/features/socket/slices/socketSlice';
+} from '@/features/socket/slices/socketSlice.jsx';
 
 /**
  * Hook for managing room-specific operations
