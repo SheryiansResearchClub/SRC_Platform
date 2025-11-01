@@ -2,7 +2,7 @@ name: Deploy Client to S3 and CloudFront
 
 on:
   push:
-    branches: [ deploy ]
+    branches: [ main ]
 
 jobs:
   deploy-client:
