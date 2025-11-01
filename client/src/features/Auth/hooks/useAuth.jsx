@@ -15,7 +15,7 @@ import {
   setAuthMessage,
   clearAuthFeedback,
   logout as logoutAction,
-} from "@/features/auth/slices/authSlice";
+} from "@/features/auth/slices/authSlice.jsx";
 
 const getErrorMessage = (error) =>
   error?.response?.data?.error?.message || error?.response?.data?.message || error?.message || "Something went wrong";
