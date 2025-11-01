@@ -110,7 +110,6 @@ export const useAuth = () => {
     oauthLogin: oauthLoginHandler,
     logout: () => logoutMutation.mutate(),
     clearFeedback: () => dispatch(clearAuthFeedback()),
-    useCurrentUserQuery,
     isAuthenticating: loginMutation.isPending || signupMutation.isPending,
     isForgotPending: forgotMutation.isPending,
     isResetPending: resetMutation.isPending,

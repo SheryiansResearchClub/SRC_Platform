@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import OAuthButtons from "@/features/auth/components/OAuthButtons";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import masterBg from "@/assets/images/master.png";
-import logoB from "@/assets/images/logob.png";
 import logoW from "@/assets/images/logow.png";
 
 export default function LoginPage() {

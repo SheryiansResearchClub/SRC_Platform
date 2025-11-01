@@ -1,44 +1,25 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import MobileMenu from "./MobileMenu";
+import ThemeContext from "@/context/ThemeContext";
 import TaskBox from "./TaskBox";
-import MembersTable from "./MembersTable";
-import ProjectsSection from "./Projects";
+import TasksTable from "./TasksTable";
 import { IoAddCircleOutline, IoAdd } from "react-icons/io5";
+import { useContext } from "react";
 
 const Admin = () => {
   const [active, setActive] = useState("home");
-  const [dark, setDark] = useState(true);
+  const { dark } = useContext(ThemeContext);
   const [assignTask, setAssignTask] = useState(false);
 
-  
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("admin-theme");
-    if (savedTheme) {
-      setDark(JSON.parse(savedTheme)); 
-    }
-  }, []);
-
-  
-  useEffect(() => {
-    localStorage.setItem("admin-theme", JSON.stringify(dark));
-  }, [dark]);
-
-  const toggleTheme = () => setDark((prev) => !prev);
   const toggleTask = () => setAssignTask((prev) => !prev);
 
   return (
     <div
-      className={`w-full min-h-screen  md:p-4 lg:p-5 ${
+      className={`w-full min-h-screen   ${
         dark ? "bg-[#121212] text-white" : "bg-white text-black"
       }`}
     >
-      <Header dark={dark} toggleTheme={toggleTheme} />
-      <Sidebar dark={dark} active={active} setActive={setActive} />
-      <MobileMenu dark={dark} active={active} setActive={setActive} />
 
-      <main className="ml-[1rem] mt-10 flex flex-col gap-5 md:ml-[8rem] md:mt-10 relative">
+      <main className=" flex flex-col gap-5  relative">
         {/* Heading */}
         <div className="flex items-center px-3 justify-between text-xl md:text-4xl">
           <h1>Team Members</h1>
@@ -68,8 +49,8 @@ const Admin = () => {
           <option>72 Hours</option>
         </select>
 
-        <MembersTable dark={dark} />
-        <ProjectsSection dark={dark} />
+        <TasksTable dark={dark} />
+        
       </main>
     </div>
   );

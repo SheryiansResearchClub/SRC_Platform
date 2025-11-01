@@ -26,11 +26,11 @@ const envSchema = z.object({
   DISCORD_CLIENT_SECRET: z.string(),
   DISCORD_TOKEN: z.string(),
   DISCORD_REDIRECT_URI: z.string().default("http://localhost:8080/api/v1/auth/oauth/discord/callback"),
-  FRONTEND_REDIRECT_URL: z.string().default("http://localhost:5173"),
   AWS_ACCESS_KEY_ID: z.string(),
   AWS_SECRET_ACCESS_KEY: z.string(),
   AWS_REGION: z.string().default('ap-south-1'),
   AWS_BUCKET_NAME: z.string(),
+  FRONTEND_REDIRECT_URL: z.string().default("http://localhost:5173")
 });
 
 const env = envSchema.parse(process.env);

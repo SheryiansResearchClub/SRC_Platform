@@ -38,7 +38,11 @@ export const jwtService = {
       role: payload.role
     };
 
-    const accessToken = signToken(basePayload, appConfig.jwt.secret, appConfig.jwt.expiresIn);
+    const accessToken = signToken(
+      basePayload,
+      appConfig.jwt.secret,
+      appConfig.jwt.expiresIn
+    );
     const refreshToken = signToken(
       basePayload,
       appConfig.jwt.refreshSecret,

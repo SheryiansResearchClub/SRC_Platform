@@ -1,18 +1,29 @@
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
-import Home from '@/features/home/components/Home';
-import HomeLayout from '@/layouts/HomeLayout';
-import LoginPage from '@/features/Auth/components/loginPage';
-import SignupPage from '@/features/Auth/components/signupPage';
-import ForgetPassword from '@/features/Auth/components/forgetPassword';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
+import { useSelector } from "react-redux"; // <-- 1. ADDED THIS IMPORT
+import Home from "@/features/home/components/Home";
+import HomeLayout from "@/layouts/HomeLayout";
+import LoginPage from "@/features/Auth/components/loginPage";
+import SignupPage from "@/features/Auth/components/signupPage";
+import ForgetPassword from "@/features/Auth/components/forgetPassword";
 import About from "@/features/home/components/About";
-import AppLayout from '@/layouts/AppLayout';
-import Dashboard from '@/features/Dashboard/Dashboard';
-import Admin from '@/features/admin/components/Admin';
-import ProjectPage from '@/features/admin/components/ProjectPage';
-import MemberProfile from '@/features/admin/components/MemberProfile';
-import UserProfile from '@/features/admin/components/UserProfile'
-import { preventAuthLoader } from '@/components/AuthLoader.jsx';
-import useCurrentUserQuery from '@/hooks/useCurrentUserQuery';
+import AppLayout from "@/layouts/AppLayout";
+import Dashboard from "@/features/Dashboard/Dashboard";
+import Task from "@/features/task/components/Tasks";
+import { preventAuthLoader } from "@/components/AuthLoader.jsx"; // We only need this one now
+import ProjectPage from "@/components/ProjectPage";
+import MemberProfile from "@/features/Task/components/MemberProfile";
+import UserProfile from "@/components/UserProfile";
+import Calendar from "@/features/Dashboard/components/CalendarSection";
+import useCurrentUserQuery from "@/hooks/useCurrentUserQuery";
+
+function PrivateRoute({ children }) {
+  const { token } = useSelector((state) => state.auth);
+  return token ? children : <Navigate to="/login" replace />;
+}
 
 const AppRouter = () => {
   useCurrentUserQuery();
@@ -43,66 +54,50 @@ const AppRouter = () => {
           path: "forgot-password",
           loader: preventAuthLoader,
           element: <ForgetPassword />,
-        }
+        },
       ],
     },
 
+    // App Layout
     {
-      path: "/dashboard",
-      element: (
-        // <PrivateRoute> // <-- Bypassed for now
-        <AppLayout />
-        // </PrivateRoute>
-      ),
+      path: "/app",
+      element: <AppLayout />, // Your main layout for public pages
       children: [
         {
           index: true,
           element: <Dashboard />,
         },
+        {
+          path: "projects",
+          element: <ProjectPage />,
+        },
+        {
+          path: "tasks",
+          element: <Task />,
+        },
+        {
+          path: "tasks/:name",
+          element: <MemberProfile />,
+        },
+        {
+          path: "userprofile",
+          element: <UserProfile />,
+        },
+        {
+          path: "calendar",
+          element: <Calendar />,
+        },
       ],
-    },
-    {
-      path: "/admin",
-      element: (
-        // <PrivateRoute>
-        <Admin />
-        // </PrivateRoute>
-      ),
-    },
-    {
-      path: "/admin/projects",
-      element: (
-        // <PrivateRoute>
-        <ProjectPage />
-        // </PrivateRoute>
-      ),
-    },
-    {
-      path: "/admin/member/:name",
-      element: (
-        // <PrivateRoute>
-        <MemberProfile />
-        // </PrivateRoute>
-      ),
-    },
-    {
-      path: "/userprofile",
-      element: (
-        // <PrivateRoute> // <-- Bypassed for now
-        <UserProfile />
-        // </PrivateRoute>
-      ),
     },
 
     // Fallback route
     {
       path: "*",
-      element: <Navigate to="/" replace />
-    }
+      element: <Navigate to="/" replace />,
+    },
   ]);
 
   return <RouterProvider router={router} />;
 };
 
 export default AppRouter;
-
