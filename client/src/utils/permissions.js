@@ -8,18 +8,21 @@ export const Permissions = {
     canAddMembers: true,
     canDeleteMembers: true,
     canEditTasks: true,
+    canCreateProject: true,
   },
   leader: {
     canViewAllUsers: true,
     canAddMembers: true,
     canDeleteMembers: false,
     canEditTasks: true,
+    canCreateProject: true,
   },
   member: {
     canViewAllUsers: false,
     canAddMembers: false,
     canDeleteMembers: false,
     canEditTasks: false,
+    canCreateProject: false,
   },
   // You can add other roles like 'guest', 'client', etc.
 };
@@ -34,15 +37,15 @@ export const checkPermission = (role, permission) => {
   if (!role) {
     return false; // No role, no permissions
   }
-  
+
   const normalizedRole = role.toLowerCase();
-  
+
   // Check if the role exists
   if (!Permissions[normalizedRole]) {
     console.warn(`Unknown role: ${role}`);
     return false;
   }
-  
+
   // Check for the permission. Defaults to false if the permission isn't defined
   // for that role.
   return Permissions[normalizedRole][permission] ?? false;

@@ -12,7 +12,7 @@ import SignupPage from "@/features/Auth/components/signupPage";
 import ForgotPassword from "@/features/Auth/components/forgetPassword";
 import AppLayout from "@/layouts/AppLayout";
 import Dashboard from "@/features/Dashboard/Dashboard";
-import ProjectPage from "@/components/ProjectPage";
+import ProjectPage from "@/features/AllProjects/ProjectPage";
 // import TaskBox from "@/features/Task/components/TaskBox";
 import MemberProfile from "@/features/Task/components/MemberProfile";
 // import UserProfilePage from "@/components/UserProfile";
