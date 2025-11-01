@@ -28,7 +28,7 @@ const AppLayout = () => {
   return (
     <div
       className={`font-sans ${
-        dark ? "bg-[#121212] text-white" : "bg-white text-black"
+        dark ? "bg-[#0B0D0E] text-white" : "bg-white text-black"
       } min-h-screen`}
     >
       {/* Shared layout components */}

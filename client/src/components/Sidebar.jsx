@@ -8,7 +8,7 @@ const Sidebar = () => {
   const topLinks = [
     { key: "home", icon: <i className="ri-home-line"></i>, path: "/app", title: "Home" },
     { key: "projects", icon: <i className="ri-grid-fill"></i>, path: "/app/projects", title: "Projects" },
-    { key: "calendar", icon: <i className="ri-task-line"></i>, path: "/app/calendar", title: "Calendar" },
+    { key: "mytasks", icon: <i className="ri-task-line"></i>, path: "/app/taskdetails", title: "My Tasks" },
     { key: "tasks", icon: <i className="ri-team-fill"></i>, path: "/app/tasks", title: "Tasks" },
     { key: "user", icon: <i className="ri-user-line"></i>, path: "/app/userprofile", title: "User" },
   ];
