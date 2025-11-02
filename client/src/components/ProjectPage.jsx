@@ -69,9 +69,8 @@ const ProjectPage = () => {
 
   return (
     <div
-      className={`w-full min-h-screen ${
-        dark ? "bg-[#121212] text-gray-200" : "bg-white text-gray-800"
-      }`}
+      className={`w-full min-h-screen ${dark ? "bg-[#121212] text-gray-200" : "bg-white text-gray-800"
+        }`}
     >
       <main className="flex bg-red-500 flex-col justify-center gap-8 px-4 py-6">
         {/* Header */}
@@ -82,11 +81,10 @@ const ProjectPage = () => {
           <div className="relative text-base font-normal">
             <button
               onClick={() => setIsStatusOpen(!isStatusOpen)}
-              className={`flex items-center justify-between w-40 py-2 px-4 rounded-lg font-semibold ${
-                dark
+              className={`flex items-center justify-between w-40 py-2 px-4 rounded-lg font-semibold ${dark
                   ? "bg-[#B4DA00] text-gray-800"
                   : "bg-[#B4DA00]/20 text-gray-800"
-              }`}
+                }`}
             >
               <span>{selectedStatus}</span>
               <ChevronDown
@@ -97,9 +95,8 @@ const ProjectPage = () => {
 
             {isStatusOpen && (
               <div
-                className={`absolute right-0 mt-2 w-40 rounded-lg shadow-lg py-2 z-10 ${
-                  dark ? "bg-[#2c2c2c]" : "bg-white border border-gray-200"
-                }`}
+                className={`absolute right-0 mt-2 w-40 rounded-lg shadow-lg py-2 z-10 ${dark ? "bg-[#2c2c2c]" : "bg-white border border-gray-200"
+                  }`}
               >
                 {statusOptions.map((option) => (
                   <button
@@ -108,11 +105,10 @@ const ProjectPage = () => {
                       setSelectedStatus(option);
                       setIsStatusOpen(false);
                     }}
-                    className={`block w-full text-left px-4 py-2 text-sm ${
-                      dark
+                    className={`block w-full text-left px-4 py-2 text-sm ${dark
                         ? "text-gray-200 hover:bg-[#1f1f1f]"
                         : "text-gray-700 hover:bg-gray-100"
-                    }`}
+                      }`}
                   >
                     {option}
                   </button>
@@ -128,9 +124,8 @@ const ProjectPage = () => {
             <section key={category}>
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    dark ? "bg-[#B4DA00]" : "bg-[#B4DA00]/20"
-                  }`}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${dark ? "bg-[#B4DA00]" : "bg-[#B4DA00]/20"
+                    }`}
                 >
                   <Radio
                     size={16}
@@ -144,11 +139,10 @@ const ProjectPage = () => {
                 {items.map((p, index) => (
                   <div
                     key={index}
-                    className={`rounded-2xl overflow-hidden w-full max-w-xs p-5 border transition-colors duration-200 ${
-                      dark
+                    className={`rounded-2xl overflow-hidden w-full max-w-xs p-5 border transition-colors duration-200 ${dark
                         ? "bg-[#1f1f1f] border-[#2c2c2c] text-white hover:bg-[#191919]"
                         : "bg-[#f7f7f7] border-[#d0d0d0] text-black hover:bg-[#eaeaea]"
-                    }`}
+                      }`}
                   >
                     {/* Project Image */}
                     <div className="w-full h-44 bg-[#3a3a3a] rounded-lg mb-4"></div>
@@ -156,22 +150,20 @@ const ProjectPage = () => {
                     {/* Status */}
                     <div className="flex items-center gap-2 mb-1">
                       <span
-                        className={`h-3 w-3 rounded-full ${
-                          p.status === "Ongoing"
+                        className={`h-3 w-3 rounded-full ${p.status === "Ongoing"
                             ? "bg-green-500"
                             : p.status === "Completed"
-                            ? "bg-blue-500"
-                            : "bg-yellow-500"
-                        }`}
+                              ? "bg-blue-500"
+                              : "bg-yellow-500"
+                          }`}
                       ></span>
                       <p
-                        className={`text-sm font-medium ${
-                          p.status === "Ongoing"
+                        className={`text-sm font-medium ${p.status === "Ongoing"
                             ? "text-green-500"
                             : p.status === "Completed"
-                            ? "text-blue-500"
-                            : "text-yellow-500"
-                        }`}
+                              ? "text-blue-500"
+                              : "text-yellow-500"
+                          }`}
                       >
                         {p.status}
                       </p>
@@ -185,11 +177,10 @@ const ProjectPage = () => {
                       {p.tags.map((tag, i) => (
                         <span
                           key={i}
-                          className={`text-xs px-3 py-1 rounded-full border ${
-                            dark
+                          className={`text-xs px-3 py-1 rounded-full border ${dark
                               ? "border-[#3a3a3a] text-[#cfcfcf]"
                               : "border-[#bcbcbc] text-[#333]"
-                          }`}
+                            }`}
                         >
                           {tag}
                         </span>

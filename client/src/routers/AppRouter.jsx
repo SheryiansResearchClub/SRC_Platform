@@ -21,25 +21,21 @@ import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.
 import { preventAuthLoader } from "@/components/AuthLoader";
 import Tasks from "@/features/Task/components/Tasks";
 import UserProfile from "@/components/UserProfile";
+import useCurrentUserQuery from "@/hooks/useCurrentUserQuery";
 // import Calendar from "@/features/Dashboard/components/CalendarSection";
 // import Resources from "@/features/Dashboard/components/Resources";
 
-// Your PrivateRoute component is now here and will work
 function PrivateRoute({ children }) {
   const { token } = useSelector((state) => state.auth);
-
-  // If a token exists, render the child component.
-  // Otherwise, navigate the user to the login page.
   return token ? children : <Navigate to="/login" replace />;
 }
 
 const AppRouter = () => {
+  useCurrentUserQuery();
   const router = createBrowserRouter([
-    // --- 2. PUBLIC ROUTES ---
-    // These are separate and do not use PrivateRoute
     {
       path: "/",
-      element: <HomeLayout />, // Your main layout for public pages
+      element: <HomeLayout />,
       children: [
         {
           index: true,
@@ -51,7 +47,7 @@ const AppRouter = () => {
         },
         {
           path: "login",
-          loader: preventAuthLoader, // This is still good!
+          loader: preventAuthLoader,
           element: <LoginPage />,
         },
         {
@@ -84,7 +80,7 @@ const AppRouter = () => {
           path: 'project/:id',
           element: <ProjectProfilePage />,
         },
-         {
+        {
           path: "tasks/:name",
           element: <MemberProfile />,
         },
@@ -106,10 +102,10 @@ const AppRouter = () => {
         },
         {
           path: "tasks/:name",
-          element: <MemberProfile  />,
+          element: <MemberProfile />,
         },
-        
-       
+
+
       ],
     },
     {

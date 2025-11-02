@@ -14,9 +14,8 @@ const Tasks = () => {
 
   return (
     <div
-      className={`w-full min-h-screen   ${
-        dark ? "bg-[#121212] text-white" : "bg-white text-black"
-      }`}
+      className={`w-full min-h-screen   ${dark ? "bg-[#121212] text-white" : "bg-white text-black"
+        }`}
     >
 
       <main className=" flex flex-col gap-10  relative">
@@ -38,7 +37,7 @@ const Tasks = () => {
         {assignTask && <TaskBox dark={dark} toggleTask={toggleTask} />}
 
         <TasksTable dark={dark} />
-        
+
       </main>
     </div>
   );

@@ -55,25 +55,24 @@ const Header = ({ dark, toggleTheme }) => {
   ];
 
   return (
-   <header
-  className={`sticky top-0 ml-auto w-[94.5vw] z-50 flex bg-[#0B0C0D] items-center p-4 justify-end gap-3 md:gap-4 mb-5
+    <header
+      className={`sticky top-0 ml-auto w-[94.5vw] z-50 flex bg-[#0B0C0D] items-center p-4 justify-end gap-3 md:gap-4 mb-5
     border border-[#272727]
   `}
->
+    >
 
 
       {/* Theme toggle */}
       <div
         onClick={toggleTheme}
-        className={`w-9 h-9 flex items-center justify-center text-2xl rounded-sm cursor-pointer ${
-          dark ? "bg-[#232323] border border-[#373636]" : "bg-[#eeeeee] border"
-        }`}
+        className={`w-9 h-9 flex items-center justify-center text-2xl rounded-sm cursor-pointer ${dark ? "bg-[#232323] border border-[#373636]" : "bg-[#eeeeee] border"
+          }`}
       >
         {dark ? <MdOutlineDarkMode /> : <MdOutlineLightMode />}
       </div>
 
       {/* Notification */}
-      
+
       <div
         onClick={toggleNotification}
         className={`relative w-9 h-9 flex  items-center justify-center text-2xl rounded-sm cursor-pointer transition-all
@@ -93,9 +92,8 @@ const Header = ({ dark, toggleTheme }) => {
       {notify && (
         <div
           className={`absolute right-10 md:right-20 top-16 w-[18rem]  max-h-[16rem] rounded-2xl p-3 flex flex-col gap-2 z-50 border-2 shadow-lg overflow-y-auto transition-all duration-200
-      ${
-        dark ? "bg-[#232323] border-[#656565]" : "bg-[#f1f1f1] border-[#d1d1d1]"
-      }
+      ${dark ? "bg-[#232323] border-[#656565]" : "bg-[#f1f1f1] border-[#d1d1d1]"
+            }
       custom-scrollbar
     `}
         >
@@ -103,9 +101,8 @@ const Header = ({ dark, toggleTheme }) => {
           <div className="flex items-center justify-between mb-2 px-1">
             <h3 className="text-sm font-semibold">Notifications</h3>
             <button
-              className={`text-xs underline hover:text-[#B4DA00] transition ${
-                dark ? "text-gray-400" : "text-gray-600"
-              }`}
+              className={`text-xs underline hover:text-[#B4DA00] transition ${dark ? "text-gray-400" : "text-gray-600"
+                }`}
             >
               Mark all as read
             </button>
@@ -123,11 +120,10 @@ const Header = ({ dark, toggleTheme }) => {
                 {/* Icon */}
                 <div
                   className={`w-10 h-10 flex items-center justify-center rounded-full text-lg font-medium shrink-0
-              ${
-                dark
-                  ? "bg-[#1f1f1f] text-[#B4DA00]"
-                  : "bg-[#e8e8e8] text-[#8ca700]"
-              }
+              ${dark
+                      ? "bg-[#1f1f1f] text-[#B4DA00]"
+                      : "bg-[#e8e8e8] text-[#8ca700]"
+                    }
             `}
                 >
                   {note.icon}
@@ -136,24 +132,21 @@ const Header = ({ dark, toggleTheme }) => {
                 {/* Text */}
                 <div className="flex-1">
                   <h4
-                    className={`text-sm font-semibold mb-0.5 ${
-                      dark ? "text-white" : "text-gray-900"
-                    }`}
+                    className={`text-sm font-semibold mb-0.5 ${dark ? "text-white" : "text-gray-900"
+                      }`}
                   >
                     {note.title}
                   </h4>
                   <p
-                    className={`text-xs leading-snug ${
-                      dark ? "text-gray-400" : "text-gray-700"
-                    }`}
+                    className={`text-xs leading-snug ${dark ? "text-gray-400" : "text-gray-700"
+                      }`}
                   >
                     {note.message}
                   </p>
                   <div className="flex justify-between items-center mt-1.5">
                     <span
-                      className={`text-[11px] ${
-                        dark ? "text-gray-500" : "text-gray-500"
-                      }`}
+                      className={`text-[11px] ${dark ? "text-gray-500" : "text-gray-500"
+                        }`}
                     >
                       {note.time}
                     </span>
@@ -167,9 +160,8 @@ const Header = ({ dark, toggleTheme }) => {
               {/* Divider */}
               {index !== notifications.length - 1 && (
                 <div
-                  className={`h-[1px] my-2 ${
-                    dark ? "bg-[#333]" : "bg-gray-300/60"
-                  }`}
+                  className={`h-[1px] my-2 ${dark ? "bg-[#333]" : "bg-gray-300/60"
+                    }`}
                 />
               )}
             </div>
@@ -181,9 +173,8 @@ const Header = ({ dark, toggleTheme }) => {
       <div onClick={toggleProfile} className="flex items-center space-x-2">
         <div className="w-10 h-10 rounded-full bg-[#B4DA00]"></div>
         <span
-          className={` font-medium hidden md:flex ${
-            dark ? "text-gray-200" : "text-gray-800"
-          }`}
+          className={` font-medium hidden md:flex ${dark ? "text-gray-200" : "text-gray-800"
+            }`}
         >
           John Doe
         </span>
@@ -196,11 +187,10 @@ const Header = ({ dark, toggleTheme }) => {
 
       {userProfile && (
         <div
-          className={`absolute right-2 top-14 w-[17rem] rounded-2xl p-4 flex flex-col gap-3 z-10 border shadow-lg transition-all duration-200 ${
-            dark
+          className={`absolute right-2 top-14 w-[17rem] rounded-2xl p-4 flex flex-col gap-3 z-10 border shadow-lg transition-all duration-200 ${dark
               ? "bg-[#232323] border-[#373636] text-white"
               : "bg-[#f9f9f9] border-[#d6d6d6] text-black"
-          }`}
+            }`}
         >
           {/* Profile header */}
           <div className="flex items-center gap-3 border-b pb-3">
@@ -212,9 +202,8 @@ const Header = ({ dark, toggleTheme }) => {
             <div className="flex flex-col">
               <h4 className="text-lg font-semibold">Aayushi</h4>
               <p
-                className={`text-sm ${
-                  dark ? "text-gray-400" : "text-gray-600"
-                }`}
+                className={`text-sm ${dark ? "text-gray-400" : "text-gray-600"
+                  }`}
               >
                 Creative Developer
               </p>
@@ -225,25 +214,22 @@ const Header = ({ dark, toggleTheme }) => {
           <div className="flex flex-col gap-2 mt-2">
             <Link
               to={"/app/userprofile"}
-              className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium hover:scale-[1.02] transition-all ${
-                dark ? "hover:bg-[#333]" : "hover:bg-[#e6e6e6]"
-              }`}
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium hover:scale-[1.02] transition-all ${dark ? "hover:bg-[#333]" : "hover:bg-[#e6e6e6]"
+                }`}
             >
               View Profile
               <FaArrowRight />
             </Link>
             <button
-              className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium hover:scale-[1.02] transition-all ${
-                dark ? "hover:bg-[#333]" : "hover:bg-[#e6e6e6]"
-              }`}
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium hover:scale-[1.02] transition-all ${dark ? "hover:bg-[#333]" : "hover:bg-[#e6e6e6]"
+                }`}
             >
               Settings
               <FaArrowRight />
             </button>
             <button
-              className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium hover:scale-[1.02] transition-all ${
-                dark ? "hover:bg-[#333]" : "hover:bg-[#e6e6e6]"
-              }`}
+              className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm font-medium hover:scale-[1.02] transition-all ${dark ? "hover:bg-[#333]" : "hover:bg-[#e6e6e6]"
+                }`}
             >
               Notifications
               <FaArrowRight />
@@ -252,11 +238,10 @@ const Header = ({ dark, toggleTheme }) => {
 
           {/* Logout */}
           <button
-            className={`mt-3 w-full py-2 text-center rounded-xl font-semibold transition-all ${
-              dark
+            className={`mt-3 w-full py-2 text-center rounded-xl font-semibold transition-all ${dark
                 ? "bg-red-500 hover:bg-red-600 text-white"
                 : "bg-red-400 hover:bg-red-500 text-white"
-            }`}
+              }`}
           >
             Log Out
           </button>

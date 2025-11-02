@@ -48,10 +48,10 @@ const MemberProfile = () => {
     },
   ]);
 
- 
+
   const [searchTerm, setSearchTerm] = useState("");
 
- 
+
   const filteredTasks = useMemo(() => {
     return tasks.filter((task) => {
       const matchesSearch =
@@ -145,16 +145,14 @@ const MemberProfile = () => {
 
   return (
     <div
-      className={`p-4 font-sans -mt-10 ${
-        dark ? "bg-[#121212] text-white" : "bg-white text-black"
-      }`}
+      className={`p-4 font-sans -mt-10 ${dark ? "bg-[#121212] text-white" : "bg-white text-black"
+        }`}
     >
       {/* Back Button */}
       <IoReturnUpBack
         onClick={() => navigate(-1)}
-        className={`mb-4 text-2xl cursor-pointer ${
-          dark ? "hover:text-gray-200" : "hover:text-gray-600"
-        }`}
+        className={`mb-4 text-2xl cursor-pointer ${dark ? "hover:text-gray-200" : "hover:text-gray-600"
+          }`}
       />
 
       {/* Header */}
@@ -170,11 +168,10 @@ const MemberProfile = () => {
         {stats.map((item, index) => (
           <div
             key={index}
-            className={`flex flex-col items-start justify-center p-4 rounded-xl border text-center transition-transform hover:scale-[1.02] ${
-              dark
+            className={`flex flex-col items-start justify-center p-4 rounded-xl border text-center transition-transform hover:scale-[1.02] ${dark
                 ? "bg-[#1e1e1e] border-[#2d2d2d]"
                 : "bg-gray-100 border-gray-300"
-            }`}
+              }`}
           >
             <div className="w-full flex items-center justify-between gap-3 mb-1">
               <span className="text-md font-semibold">{item.title}</span>
@@ -182,9 +179,8 @@ const MemberProfile = () => {
             </div>
             <p className="text-3xl font-bold">{item.count}</p>
             <p
-              className={`text-md mt-3 ${
-                dark ? "text-[#a1a1a1]" : "text-gray-600"
-              }`}
+              className={`text-md mt-3 ${dark ? "text-[#a1a1a1]" : "text-gray-600"
+                }`}
             >
               {item.description}
             </p>
@@ -196,20 +192,18 @@ const MemberProfile = () => {
       <div className="flex items-center justify-between">
         <div className="relative flex-1 mt-10">
           <MdOutlineSearch
-            className={`absolute left-3 top-2.5 ${
-              dark ? "text-gray-400" : "text-gray-600"
-            }`}
+            className={`absolute left-3 top-2.5 ${dark ? "text-gray-400" : "text-gray-600"
+              }`}
           />
           <input
             type="text"
             placeholder="Search tasks..."
-            value={searchTerm} 
+            value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)} // 🔍
-            className={`w-[20rem] pl-10 pr-3 py-2 rounded-md border outline-none text-sm ${
-              dark
+            className={`w-[20rem] pl-10 pr-3 py-2 rounded-md border outline-none text-sm ${dark
                 ? "bg-[#232323] text-white placeholder-gray-400 border-[#2d2d2d]"
                 : "bg-gray-100 text-black placeholder-gray-600 border-gray-300"
-            }`}
+              }`}
           />
         </div>
       </div>
@@ -219,11 +213,10 @@ const MemberProfile = () => {
         {/* All Projects */}
         <div>
           <select
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${
-              dark
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${dark
                 ? "bg-[#1f1f1f] border border-[#333] hover:bg-[#2b2b2b] text-white"
                 : "bg-gray-200 border border-gray-300 hover:bg-gray-300 text-black"
-            }`}
+              }`}
             value={selectedProject}
             onChange={(e) => setSelectedProject(e.target.value)}
           >
@@ -238,11 +231,10 @@ const MemberProfile = () => {
         {/* All States */}
         <div>
           <select
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${
-              dark
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${dark
                 ? "bg-[#1f1f1f] border border-[#333] hover:bg-[#2b2b2b] text-white"
                 : "bg-gray-200 border border-gray-300 hover:bg-gray-300 text-black"
-            }`}
+              }`}
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
           >
@@ -256,11 +248,10 @@ const MemberProfile = () => {
         {/* All Priorities */}
         <div>
           <select
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${
-              dark
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${dark
                 ? "bg-[#1f1f1f] border border-[#333] hover:bg-[#2b2b2b] text-white"
                 : "bg-gray-200 border border-gray-300 hover:bg-gray-300 text-black"
-            }`}
+              }`}
             value={selectedPriority}
             onChange={(e) => setSelectedPriority(e.target.value)}
           >
@@ -276,11 +267,10 @@ const MemberProfile = () => {
         {member.role === "Admin" && (
           <div>
             <select
-              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${
-                dark
+              className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${dark
                   ? "bg-[#1f1f1f] border border-[#333] hover:bg-[#2b2b2b] text-white"
                   : "bg-gray-200 border border-gray-300 hover:bg-gray-300 text-black"
-              }`}
+                }`}
               value={selectedUser}
               onChange={(e) => setSelectedUser(e.target.value)}
             >
@@ -296,11 +286,10 @@ const MemberProfile = () => {
         {/* All Due Dates */}
         <div>
           <select
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${
-              dark
+            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${dark
                 ? "bg-[#1f1f1f] border border-[#333] hover:bg-[#2b2b2b] text-white"
                 : "bg-gray-200 border border-gray-300 hover:bg-gray-300 text-black"
-            }`}
+              }`}
             value={selectedDueDate}
             onChange={(e) => setSelectedDueDate(e.target.value)}
           >
@@ -318,22 +307,19 @@ const MemberProfile = () => {
           filteredTasks.map((task, i) => (
             <div
               key={i}
-              className={`rounded-lg px-5 py-2 ${
-                dark ? "bg-[#181818]" : "bg-gray-100"
-              }`}
+              className={`rounded-lg px-5 py-2 ${dark ? "bg-[#181818]" : "bg-gray-100"
+                }`}
             >
               <div
-                className={`flex flex-wrap items-center justify-between border-b py-4 ${
-                  dark ? "border-[#2c2c2c]" : "border-gray-300"
-                }`}
+                className={`flex flex-wrap items-center justify-between border-b py-4 ${dark ? "border-[#2c2c2c]" : "border-gray-300"
+                  }`}
               >
                 <div className="w-full px-2 py-1">
                   <div className="flex justify-between items-start">
                     <h3 className="font-semibold text-xl">{task.title}</h3>
                     <p
-                      className={`text-md ${
-                        dark ? "text-gray-400" : "text-gray-500"
-                      }`}
+                      className={`text-md ${dark ? "text-gray-400" : "text-gray-500"
+                        }`}
                     >
                       {task.due}
                     </p>
@@ -341,9 +327,8 @@ const MemberProfile = () => {
 
                   <div className="flex items-center justify-between mt-2">
                     <div
-                      className={`flex flex-wrap items-center gap-6 mt-4 text-md ${
-                        dark ? "text-gray-300" : "text-gray-600"
-                      }`}
+                      className={`flex flex-wrap items-center gap-6 mt-4 text-md ${dark ? "text-gray-300" : "text-gray-600"
+                        }`}
                     >
                       <span className="flex items-center gap-2">
                         <BsPerson className="text-xl" /> Creator: {task.creator}
@@ -356,21 +341,20 @@ const MemberProfile = () => {
 
                     <div className="flex items-center gap-3 mt-3 sm:mt-0">
                       <span
-                        className={`text-sm px-3 py-1 rounded-full font-semibold ${
-                          task.status === "Working"
+                        className={`text-sm px-3 py-1 rounded-full font-semibold ${task.status === "Working"
                             ? dark
                               ? "bg-yellow-900 text-yellow-300"
                               : "bg-yellow-100 text-yellow-800"
                             : task.status === "Completed"
-                            ? dark
-                              ? "bg-green-900 text-green-300"
-                              : "bg-green-100 text-green-800"
-                            : task.status === "Not Started"
-                            ? dark
-                              ? "bg-red-900 text-red-300"
-                              : "bg-red-100 text-red-800"
-                            : "bg-gray-200 text-gray-800"
-                        }`}
+                              ? dark
+                                ? "bg-green-900 text-green-300"
+                                : "bg-green-100 text-green-800"
+                              : task.status === "Not Started"
+                                ? dark
+                                  ? "bg-red-900 text-red-300"
+                                  : "bg-red-100 text-red-800"
+                                : "bg-gray-200 text-gray-800"
+                          }`}
                       >
                         {task.status}
                       </span>
@@ -383,9 +367,8 @@ const MemberProfile = () => {
         ) : (
           // 🔍 Show message if no tasks match
           <p
-            className={`text-center mt-10 ${
-              dark ? "text-gray-400" : "text-gray-600"
-            }`}
+            className={`text-center mt-10 ${dark ? "text-gray-400" : "text-gray-600"
+              }`}
           >
             No tasks found matching "{searchTerm}"
           </p>

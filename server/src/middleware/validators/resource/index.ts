@@ -1,152 +1,342 @@
-import { validateResult } from "@/utils/validate";
-import { body, param, query } from "express-validator";
+import { body, param, query, validationResult } from 'express-validator';
+import { Request, Response, NextFunction } from 'express';
+import mongoose from 'mongoose';
+
+export const handleValidationErrors = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation failed',
+      errors: errors.array().map(err => ({
+        field: err.type === 'field' ? err.path : 'unknown',
+        message: err.msg
+      }))
+    });
+  }
+
+  next();
+};
+
+const isValidObjectId = (value: string) => {
+  if (!mongoose.Types.ObjectId.isValid(value)) {
+    throw new Error('Invalid ID format');
+  }
+  return true;
+};
+
+const isValidTagsArray = (value: any) => {
+  if (!value) return true;
+
+  let tags;
+  try {
+    tags = typeof value === 'string' ? JSON.parse(value) : value;
+  } catch (error) {
+    throw new Error('Tags must be a valid JSON array');
+  }
+
+  if (!Array.isArray(tags)) {
+    throw new Error('Tags must be an array');
+  }
+
+  if (tags.length > 20) {
+    throw new Error('Maximum 20 tags allowed');
+  }
+
+  for (const tag of tags) {
+    if (typeof tag !== 'string' || tag.length > 50) {
+      throw new Error('Each tag must be a string with max 50 characters');
+    }
+  }
+
+  return true;
+};
+
+const isValidCategory = (value: string) => {
+  const validCategories = [
+    'tutorial',
+    'document',
+    'snippet',
+    'reference',
+    'tool',
+    'image',
+    'video',
+    'audio',
+    'other'
+  ];
+
+  if (!validCategories.includes(value)) {
+    throw new Error(`Category must be one of: ${validCategories.join(', ')}`);
+  }
+
+  return true;
+};
+
+const isValidVisibility = (value: string) => {
+  const validVisibilities = ['public', 'private', 'unlisted'];
+
+  if (!validVisibilities.includes(value)) {
+    throw new Error(`Visibility must be one of: ${validVisibilities.join(', ')}`);
+  }
+
+  return true;
+};
+
+const isValidSortField = (value: string) => {
+  const validSortFields = [
+    'createdAt',
+    'updatedAt',
+    'title',
+    'downloads',
+    'views',
+    'likes',
+    'category'
+  ];
+
+  if (!validSortFields.includes(value)) {
+    throw new Error(`Sort field must be one of: ${validSortFields.join(', ')}`);
+  }
+
+  return true;
+};
+
+/**
+ * Validate URL format
+ */
+const isValidUrl = (value: string) => {
+  try {
+    new URL(value);
+    return true;
+  } catch (error) {
+    throw new Error('Invalid URL format');
+  }
+};
 
 export const createResourceValidation = [
-  body("title")
+  body('title')
     .trim()
     .notEmpty()
-    .withMessage("Title is required")
-    .isString()
-    .withMessage("Title must be a string")
+    .withMessage('Title is required')
     .isLength({ min: 3, max: 200 })
-    .withMessage("Title must be between 3 and 200 characters"),
+    .withMessage('Title must be between 3 and 200 characters')
+    .escape(),
 
-  body("description")
+  body('description')
     .trim()
     .notEmpty()
-    .withMessage("Description is required")
-    .isString()
-    .withMessage("Description must be a string")
-    .isLength({ min: 10, max: 1000 })
-    .withMessage("Description must be between 10 and 1000 characters"),
+    .withMessage('Description is required')
+    .isLength({ min: 10, max: 2000 })
+    .withMessage('Description must be between 10 and 2000 characters')
+    .escape(),
 
-  body("content")
-    .optional()
-    .isString()
-    .withMessage("Content must be a string"),
-
-  body("category")
+  body('category')
+    .trim()
     .notEmpty()
-    .withMessage("Category is required")
-    .isString()
-    .withMessage("Category must be a string")
-    .isLength({ min: 2, max: 100 })
-    .withMessage("Category must be between 2 and 100 characters"),
+    .withMessage('Category is required')
+    .custom(isValidCategory),
 
-  body("type")
-    .notEmpty()
-    .withMessage("Type is required")
-    .isIn(['tutorial', 'document', 'snippet', 'template'])
-    .withMessage("Type must be one of: tutorial, document, snippet, template"),
-
-  body("tags")
-    .notEmpty()
-    .withMessage("Tags are required")
-    .isArray({ min: 1 })
-    .withMessage("At least one tag is required"),
-
-  body("tags.*")
-    .isString()
-    .withMessage("Each tag must be a string")
-    .isLength({ min: 2, max: 50 })
-    .withMessage("Each tag must be between 2 and 50 characters"),
-
-  body("difficulty")
+  body('tags')
     .optional()
-    .isIn(['beginner', 'intermediate', 'advanced'])
-    .withMessage("Difficulty must be one of: beginner, intermediate, advanced"),
+    .custom(isValidTagsArray),
 
-  body("estimatedTime")
+  body('visibility')
     .optional()
-    .isInt({ min: 1, max: 1000 })
-    .withMessage("Estimated time must be between 1 and 1000 minutes"),
+    .trim()
+    .custom(isValidVisibility),
 
-  body("githubUrl")
+  body('isExternal')
     .optional()
-    .isURL()
-    .withMessage("GitHub URL must be a valid URL"),
+    .isBoolean()
+    .withMessage('isExternal must be a boolean'),
 
-  body("demoUrl")
+  body('externalUrl')
     .optional()
-    .isURL()
-    .withMessage("Demo URL must be a valid URL"),
+    .trim()
+    .custom((value, { req }) => {
+      if (req.body.isExternal === 'true' || req.body.isExternal === true) {
+        if (!value) {
+          throw new Error('External URL is required when isExternal is true');
+        }
+        isValidUrl(value);
+      }
+      return true;
+    }),
 
-  validateResult,
+  handleValidationErrors
 ];
 
 export const updateResourceValidation = [
-  param("id")
-    .isMongoId()
-    .withMessage("Resource ID must be a valid MongoDB ObjectId"),
+  param('id')
+    .custom(isValidObjectId),
 
-  body("title")
+  body('title')
     .optional()
     .trim()
-    .isString()
-    .withMessage("Title must be a string")
     .isLength({ min: 3, max: 200 })
-    .withMessage("Title must be between 3 and 200 characters"),
+    .withMessage('Title must be between 3 and 200 characters')
+    .escape(),
 
-  body("description")
+  body('description')
     .optional()
     .trim()
-    .isString()
-    .withMessage("Description must be a string")
-    .isLength({ min: 10, max: 1000 })
-    .withMessage("Description must be between 10 and 1000 characters"),
+    .isLength({ min: 10, max: 2000 })
+    .withMessage('Description must be between 10 and 2000 characters')
+    .escape(),
 
-  body("content")
+  body('category')
     .optional()
-    .isString()
-    .withMessage("Content must be a string"),
+    .trim()
+    .custom(isValidCategory),
 
-  body("category")
+  body('tags')
     .optional()
-    .isString()
-    .withMessage("Category must be a string")
-    .isLength({ min: 2, max: 100 })
-    .withMessage("Category must be between 2 and 100 characters"),
+    .custom(isValidTagsArray),
 
-  body("type")
+  body('visibility')
     .optional()
-    .isIn(['tutorial', 'document', 'snippet', 'template'])
-    .withMessage("Type must be one of: tutorial, document, snippet, template"),
+    .trim()
+    .custom(isValidVisibility),
 
-  body("tags")
+  body('featured')
     .optional()
-    .isArray({ min: 1 })
-    .withMessage("At least one tag is required"),
+    .isBoolean()
+    .withMessage('Featured must be a boolean'),
 
-  body("tags.*")
-    .optional()
-    .isString()
-    .withMessage("Each tag must be a string")
-    .isLength({ min: 2, max: 50 })
-    .withMessage("Each tag must be between 2 and 50 characters"),
-
-  validateResult,
+  handleValidationErrors
 ];
 
 export const getResourcesValidation = [
-  query("page")
+  query('page')
     .optional()
     .isInt({ min: 1 })
-    .withMessage("Page must be a positive integer"),
+    .withMessage('Page must be a positive integer'),
 
-  query("limit")
+  query('limit')
     .optional()
     .isInt({ min: 1, max: 100 })
-    .withMessage("Limit must be between 1 and 100"),
+    .withMessage('Limit must be between 1 and 100'),
 
-  query("category")
+  query('sortBy')
+    .optional()
+    .trim()
+    .custom(isValidSortField),
+
+  query('order')
+    .optional()
+    .trim()
+    .isIn(['asc', 'desc'])
+    .withMessage('Order must be either asc or desc'),
+
+  query('category')
+    .optional()
+    .trim()
+    .custom(isValidCategory),
+
+  query('search')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Search query must be between 2 and 100 characters'),
+
+  query('featured')
+    .optional()
+    .isIn(['true', 'false'])
+    .withMessage('Featured must be true or false'),
+
+  query('visibility')
+    .optional()
+    .trim()
+    .custom(isValidVisibility),
+
+  query('tags')
     .optional()
     .isString()
-    .withMessage("Category must be a string"),
+    .withMessage('Tags must be a string'),
 
-  query("type")
+  query('uploader')
     .optional()
-    .isIn(['tutorial', 'document', 'snippet', 'template'])
-    .withMessage("Type must be one of: tutorial, document, snippet, template"),
+    .custom(isValidObjectId),
 
-  validateResult,
+  handleValidationErrors
 ];
+
+export const resourceIdValidation = [
+  param('id')
+    .custom(isValidObjectId),
+
+  handleValidationErrors
+];
+
+/**
+ * Validate search query
+ * GET /api/resources/search
+ */
+export const searchResourcesValidation = [
+  query('q')
+    .trim()
+    .notEmpty()
+    .withMessage('Search query is required')
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Search query must be between 2 and 100 characters'),
+
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage('Limit must be between 1 and 100'),
+
+  handleValidationErrors
+];
+
+/**
+ * Validate trending resources query
+ * GET /api/resources/trending
+ */
+export const getTrendingValidation = [
+  query('days')
+    .optional()
+    .isInt({ min: 1, max: 365 })
+    .withMessage('Days must be between 1 and 365'),
+
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 50 })
+    .withMessage('Limit must be between 1 and 50'),
+
+  handleValidationErrors
+];
+
+export const getMyResourcesValidation = [
+  query('page')
+    .optional()
+    .isInt({ min: 1 })
+    .withMessage('Page must be a positive integer'),
+
+  query('limit')
+    .optional()
+    .isInt({ min: 1, max: 100 })
+    .withMessage('Limit must be between 1 and 100'),
+
+  query('status')
+    .optional()
+    .trim()
+    .isIn(['pending', 'approved', 'rejected', 'archived'])
+    .withMessage('Status must be one of: pending, approved, rejected, archived'),
+
+  handleValidationErrors
+];
+
+export default {
+  createResourceValidation,
+  updateResourceValidation,
+  getResourcesValidation,
+  resourceIdValidation,
+  searchResourcesValidation,
+  getTrendingValidation,
+  getMyResourcesValidation,
+  handleValidationErrors
+};

@@ -48,6 +48,25 @@ router.post(
  *               $ref: '#/components/schemas/ApiMessageResponse'
  */
 
+router.get("/currentUser",
+  userController.getCurrentUser)
+/**
+ * @openapi
+ * /users/currentUser:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get current user
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       '200':
+ *         description: Current user retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserResponse'
+ */
+
 router.get(
   '/',
   validators.getUsersValidation,

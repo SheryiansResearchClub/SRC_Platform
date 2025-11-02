@@ -8,10 +8,12 @@ export const QueryProvider = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {isDev && (
-        <ReactQueryDevtools position="bottom-right" initialIsOpen={false} />
-      )}
-    </QueryClientProvider>
+      {
+        isDev && (
+          <ReactQueryDevtools />
+        )
+      }
+    </QueryClientProvider >
   )
 }
 export default QueryProvider

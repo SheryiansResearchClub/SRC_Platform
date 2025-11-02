@@ -21,8 +21,9 @@ export const resetPassword = (data) =>
 
 export const refreshToken = () => axiosInstance.post(`/auth/refresh-token`);
 
-export const verifyEmail = (data) =>
-  axiosInstance.post(`/auth/verify-email`, data);
+export const verifyEmail = (data) => axiosInstance.post(`/auth/verify-email`, data);
+
+export const getCurrentUser = () => axiosInstance.get(`/users/currentUser`);
 
 export const oauthLogin = (provider) => {
   window.location.href = `${API_BASE_URL}/auth/oauth/${provider}`;

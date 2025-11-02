@@ -41,11 +41,10 @@ const Sidebar = () => {
             <Link
               key={link.key}
               to={link.path}
-              className={`text-2xl transition-colors ${
-                location.pathname === link.path
+              className={`text-2xl transition-colors ${location.pathname === link.path
                   ? "text-white"
                   : "text-gray-500 hover:text-gray-300"
-              }`}
+                }`}
               title={link.title}
             >
               {link.icon}
@@ -58,11 +57,10 @@ const Sidebar = () => {
       <div>
         <Link
           to={bottomLink.path}
-          className={`text-2xl transition-colors ${
-            location.pathname === bottomLink.path
+          className={`text-2xl transition-colors ${location.pathname === bottomLink.path
               ? "text-white"
               : "text-gray-500 hover:text-gray-300"
-          }`}
+            }`}
           title={bottomLink.title}
         >
           {bottomLink.icon}

@@ -34,15 +34,13 @@ const MembersTable = ({ dark }) => {
 
   return (
     <table
-      className={`w-[95%] border-collapse bg-[#181818] ${
-        dark ? "text-[#a6a6a6]" : "text-[#1e1e1e]"
-      }`}
+      className={`w-[95%] border-collapse bg-[#181818] ${dark ? "text-[#a6a6a6]" : "text-[#1e1e1e]"
+        }`}
     >
       <thead>
         <tr
-          className={`${
-            dark ? "border-b border-[#262626]" : "border-b border-[#a8a8a8]"
-          }`}
+          className={`${dark ? "border-b border-[#262626]" : "border-b border-[#a8a8a8]"
+            }`}
         >
           <th className="p-2 md:p-3 text-center">Name</th>
           <th className="p-2 md:p-3 text-center">Role</th>
@@ -53,16 +51,14 @@ const MembersTable = ({ dark }) => {
         {members.map((member, i) => (
           <tr
             key={i}
-            className={`${
-              dark
+            className={`${dark
                 ? "border-b border-[#262626] hover:bg-[#232323]"
                 : "border-b border-[#a8a8a8] hover:bg-[#e1e1e1]"
-            } transition text-center align-middle relative`}
+              } transition text-center align-middle relative`}
           >
             <td
-              className={`p-3 text-center cursor-pointer ${
-                dark ? "hover:text-white" : ""
-              }`}
+              className={`p-3 text-center cursor-pointer ${dark ? "hover:text-white" : ""
+                }`}
               onClick={() => handleNameClick(member)}
             >
               {member.name}
@@ -75,15 +71,14 @@ const MembersTable = ({ dark }) => {
               }
             >
               <span
-                className={`inline-block px-3 py-1 rounded-full text-black cursor-pointer ${
-                  member.role.toLowerCase() === "designer"
+                className={`inline-block px-3 py-1 rounded-full text-black cursor-pointer ${member.role.toLowerCase() === "designer"
                     ? "bg-purple-300 text-purple-900"
                     : member.role.toLowerCase() === "backend"
-                    ? "bg-green-200 text-green-900"
-                    : member.role.toLowerCase() === "strategist"
-                    ? "bg-yellow-200 text-yellow-900"
-                    : "bg-pink-200 text-red-800"
-                }`}
+                      ? "bg-green-200 text-green-900"
+                      : member.role.toLowerCase() === "strategist"
+                        ? "bg-yellow-200 text-yellow-900"
+                        : "bg-pink-200 text-red-800"
+                  }`}
               >
                 {member.role}
               </span>
@@ -94,11 +89,10 @@ const MembersTable = ({ dark }) => {
                   ref={dropdownRef}
                   className={`absolute top-[45%] left-[11.5rem] scale-75 md:top-[90%] md:left-[12rem] md:scale-95 lg:left-[17rem] lg:scale-100 transform -translate-x-1/2 -mt-10
                    
-                 rounded-xl shadow-xl p-2 z-10 w-[10rem] text-sm ${
-                   dark
-                     ? "bg-[#1e1e1e] border border-[#3f3f3f] text-white"
-                     : "bg-white border border-gray-400 text-black"
-                 }`}
+                 rounded-xl shadow-xl p-2 z-10 w-[10rem] text-sm ${dark
+                      ? "bg-[#1e1e1e] border border-[#3f3f3f] text-white"
+                      : "bg-white border border-gray-400 text-black"
+                    }`}
                 >
                   <div className="text-center mb-2 font-medium">
                     Select an option
@@ -120,10 +114,9 @@ const MembersTable = ({ dark }) => {
                           onClick={() => handleRoleClick(i, roleOption)}
                           className={`flex items-center justify-start  gap-1 px-2 py-1 rounded-full 
                           cursor-pointer hover:scale-[1.02] transition-transform 
-                          ${
-                            roleColors[roleOption] ||
+                          ${roleColors[roleOption] ||
                             "bg-gray-200 text-gray-800"
-                          }`}
+                            }`}
                         >
                           <span className="text-lg text-gray-700 dark:text-gray-300">
                             ⋮⋮
@@ -139,9 +132,8 @@ const MembersTable = ({ dark }) => {
               )}
             </td>
             <td
-              className={` text-center cursor-pointer ${
-                dark ? "hover:text-white" : ""
-              }`}
+              className={` text-center cursor-pointer ${dark ? "hover:text-white" : ""
+                }`}
             >
               {Array.isArray(member.team)
                 ? member.team.join(", ")

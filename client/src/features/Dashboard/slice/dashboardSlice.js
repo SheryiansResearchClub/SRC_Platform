@@ -27,7 +27,7 @@ export const { setLoading, setDashboardData } = dashboardSlice.actions;
 
 export const loadDashboardData = () => (dispatch) => {
   dispatch(setLoading(true));
-  setTimeout(() => {  // simulate async API
+  setTimeout(() => {
     dispatch(setDashboardData({
       dashboard: dashboardMockApi.getDashboard(),
       projects: dashboardMockApi.getOngoingProjects(),

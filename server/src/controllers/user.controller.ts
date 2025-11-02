@@ -212,6 +212,17 @@ const updateUserPassword = async (req: Request, res: Response) => {
   }
 };
 
+const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    return sendSuccess(res, {
+      user: req.user,
+      message: 'User retrieved successfully',
+    });
+  } catch (error: any) {
+    return handleError(res, error, 'USER_PASSWORD_UPDATE_FAILED', error.message || 'Unable to update password');
+  }
+};
+
 export default {
   createUser,
   getUsers,
@@ -225,4 +236,5 @@ export default {
   updateUserRole,
   updateUserProfile,
   updateUserPassword,
+  getCurrentUser,
 };
