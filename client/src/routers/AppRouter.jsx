@@ -21,6 +21,7 @@ import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.
 import { preventAuthLoader } from "@/components/AuthLoader";
 import Tasks from "@/features/Task/components/Tasks";
 import UserProfile from "@/components/UserProfile";
+import TaskDetails from "@/features/Task/components/TaskDetails";
 // import Calendar from "@/features/Dashboard/components/CalendarSection";
 // import Resources from "@/features/Dashboard/components/Resources";
 
@@ -91,6 +92,10 @@ const AppRouter = () => {
         {
           path: "userprofile",
           element: <UserProfile />,
+        },
+        {
+          path: "taskdetails",
+          element: <TaskDetails />,
         },
         // {
         //   path: "calendar",
