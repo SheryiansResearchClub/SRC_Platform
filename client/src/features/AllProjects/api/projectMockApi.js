@@ -1,6 +1,7 @@
 // This mocks a network request
 const mockProjects = [
   {
+    id: 1,
     status: "Ongoing",
     title: "Focus Flow",
     tags: ["Open Source", "Web App", "5★ Rating", "Active"],
@@ -14,6 +15,7 @@ const mockProjects = [
     ],
   },
   {
+    id: 2,
     status: "Ongoing",
     title: "DesignPilot",
     tags: ["Internal", "UI Tool", "Alpha"],
@@ -27,6 +29,7 @@ const mockProjects = [
     ],
   },
   {
+    id: 3,
     status: "Completed",
     title: "Designathon",
     tags: ["Hackathon", "UI Tool", "Completed"],
@@ -40,6 +43,7 @@ const mockProjects = [
     ],
   },
   {
+    id: 4,
     status: "Todo",
     title: "New Launch",
     tags: ["Planned", "Upcoming"],
@@ -56,7 +60,6 @@ const mockProjects = [
  */
 export const fetchProjectsApi = () => {
   return new Promise((resolve) => {
-    // Simulate a 500ms network delay
     setTimeout(() => {
       resolve(mockProjects);
     }, 500);

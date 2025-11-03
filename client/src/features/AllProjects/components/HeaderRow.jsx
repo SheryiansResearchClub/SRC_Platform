@@ -7,7 +7,7 @@ export default function HeaderRow({
   selectedStatus,
   setSelectedStatus,
   statusOptions,
-  userRole = "admin", // pass actual role from context or props later
+  userRole = "member", // pass actual role from context or props later
 }) {
   const canCreateProject = checkPermission(userRole, "canCreateProject");
 
