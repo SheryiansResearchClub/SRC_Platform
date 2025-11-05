@@ -124,7 +124,7 @@
 .odometer.odometer-auto-theme,
 .odometer.odometer-theme-minimal {
   line-height: 1em;
-  font-size: 1.5rem;
+  font-size: 10vw;
   font-weight: bold;
   width: 100%;
 }
