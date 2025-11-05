@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import { useSelector } from "react-redux"; // <-- 1. ADDED THIS IMPORT
 import HomeLayout from "@/layouts/HomeLayout";
-import Home from "@/features/home/components/Home";
+import Home from "@/features/home/Home";
 import About from "@/features/home/components/About";
 import LoginPage from "@/features/Auth/components/loginPage";
 import SignupPage from "@/features/Auth/components/signupPage";
