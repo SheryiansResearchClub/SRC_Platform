@@ -4,6 +4,9 @@ import socketReducer from '@/features/socket/slices/socketSlice';
 import dashboardReducer from '@/features/Dashboard/slice/dashboardSlice';
 import projectProfileReducer from '@/features/ProjectPage/slice/projectProfileSlice';
 import projectSlice from '@/features/AllProjects/slice/projectSlice';
+import teamsReducer from '@/features/AllTeams/slice/teamSlice';
+import teamProfileReducer from "@/features/TeamPage/slice/teamSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +15,9 @@ export const store = configureStore({
     dashboard: dashboardReducer,
     projectProfile: projectProfileReducer, 
     projects: projectSlice,
+    teams: teamsReducer,
+    teamProfile: teamProfileReducer,
+
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import "remixicon/fonts/remixicon.css"; // Remix Icons import
+import "remixicon/fonts/remixicon.css";
 
 const Sidebar = () => {
   const location = useLocation();
@@ -9,7 +9,13 @@ const Sidebar = () => {
     { key: "home", icon: <i className="ri-home-line"></i>, path: "/app", title: "Home" },
     { key: "projects", icon: <i className="ri-grid-fill"></i>, path: "/app/projects", title: "Projects" },
     { key: "mytasks", icon: <i className="ri-task-line"></i>, path: "/app/taskdetails", title: "My Tasks" },
-    { key: "tasks", icon: <i className="ri-team-fill"></i>, path: "/app/tasks", title: "Tasks" },
+    { key: "tasks", icon: <i className="ri-team-fill"></i>, path: "/app/tasks", title: "Team Members" },
+    {
+      key: "teams",
+      icon: <i className="ri-user-community-line"></i>,
+      path: "/app/teams",
+      title: "All Teams",
+    },
     { key: "user", icon: <i className="ri-user-line"></i>, path: "/app/userprofile", title: "User" },
   ];
 
@@ -21,7 +27,8 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="fixed left-0 top-0 h-screen w-[4.5vw] bg-[#181818] border-r border-[#272727] flex flex-col items-center justify-between py-9">
+    // --- THIS IS THE MODIFIED LINE ---
+    <div className="fixed left-0 top-0 h-screen w-[4.5vw] bg-[#181818] border-r border-[#272727] hidden md:flex flex-col items-center justify-between py-9">
       {/* Top Section */}
       <div className="flex flex-col items-center w-full">
         {/* Logo */}

@@ -31,10 +31,9 @@ export const projectProfileApi = {
         id: 1,
         user: {
           name: "Sagar Saxena",
-          avatar: "https://placehold.co/36x36/444444/ffffff?text=S",
+          avatar: "https://placehold.co/36x36/60A5FA/FFFFFF?text=SS",
         },
-        message:
-          "want to get access to commit the Untitled File",
+        message: "want to get access to commit the Untitled File",
         file: "Untitled File",
         role: "Admin Space",
         time: "2 hours ago",
@@ -43,11 +42,21 @@ export const projectProfileApi = {
       {
         id: 2,
         user: {
-          name: "Sagar Saxena",
-          avatar: "https://placehold.co/36x36/444444/ffffff?text=S",
+          name: "Sneha Kapoor",
+          avatar: "https://placehold.co/36x36/F472B6/FFFFFF?text=SK",
         },
         message: "I just finished designing the whole admin section",
-        status: "online",
+        time: "1 day ago",
+        type: "status-update",
+      },
+      {
+        id: 3,
+        user: {
+          name: "Aman Verma",
+          avatar: "https://placehold.co/36x36/34D399/FFFFFF?text=AV",
+        },
+        message: "Backend API for user auth is complete and deployed.",
+        time: "1 day ago",
         type: "status-update",
       },
     ],
@@ -56,8 +65,9 @@ export const projectProfileApi = {
     milestones: [
       { id: 1, title: "Project Setup", completed: true },
       { id: 2, title: "Authentication Module", completed: true },
-      { id: 3, title: "Dashboard Design", completed: false },
+      { id: 3, title: "Dashboard Design", completed: true },
       { id: 4, title: "AI Integration", completed: false },
+      { id: 5, title: "Final Deployment", completed: false },
     ],
     repoLink: "https://github.com/yourusername/ai-task-manager",
     documents: [

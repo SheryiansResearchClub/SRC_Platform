@@ -3,7 +3,7 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { useSelector } from "react-redux"; // <-- 1. ADDED THIS IMPORT
+import { useSelector } from "react-redux";
 import HomeLayout from "@/layouts/HomeLayout";
 import Home from "@/features/home/components/Home";
 import About from "@/features/home/components/About";
@@ -13,17 +13,16 @@ import ForgotPassword from "@/features/Auth/components/forgetPassword";
 import AppLayout from "@/layouts/AppLayout";
 import Dashboard from "@/features/Dashboard/Dashboard";
 import ProjectPage from "@/features/AllProjects/ProjectPage";
-// import TaskBox from "@/features/Task/components/TaskBox";
 import MemberProfile from "@/features/Task/components/MemberProfile";
-// import UserProfilePage from "@/components/UserProfile";
+import TeamProfilePage from "@/features/TeamPage/page/TeamProfilePage";
 import Admin from "@/features/Task/components/Tasks";
 import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.jsx";
 import { preventAuthLoader } from "@/components/AuthLoader";
 import Tasks from "@/features/Task/components/Tasks";
 import UserProfile from "@/components/UserProfile";
 import TaskDetails from "@/features/Task/components/TaskDetails";
-// import Calendar from "@/features/Dashboard/components/CalendarSection";
-// import Resources from "@/features/Dashboard/components/Resources";
+import AllTeamsPage from "@/features/AllTeams/pages/AllTeamsPage";
+
 
 // Your PrivateRoute component is now here and will work
 function PrivateRoute({ children }) {
@@ -71,7 +70,7 @@ const AppRouter = () => {
     // App Layout
     {
       path: "/app",
-      element: <AppLayout />, // Your main layout for public pages
+      element: <AppLayout />,
       children: [
         {
           index: true,
@@ -85,7 +84,7 @@ const AppRouter = () => {
           path: 'project/:id',
           element: <ProjectProfilePage />,
         },
-         {
+        {
           path: "tasks/:name",
           element: <MemberProfile />,
         },
@@ -94,27 +93,29 @@ const AppRouter = () => {
           element: <UserProfile />,
         },
         {
+          path: "teams/:id",
+          element: <TeamProfilePage />,
+        },
+        {
           path: "taskdetails",
           element: <TaskDetails />,
         },
-        // {
-        //   path: "calendar",
-        //   element: <Calendar />,
-        // },
-        // {
-        //   path: "resources",
-        //   element: <Resources />,
-        // },
+
+        {
+          path: "teams",
+          element: <AllTeamsPage />,
+        },
+
         {
           path: "tasks",
           element: <Tasks />,
         },
         {
           path: "tasks/:name",
-          element: <MemberProfile  />,
+          element: <MemberProfile />,
         },
-        
-       
+
+
       ],
     },
     {
@@ -125,31 +126,7 @@ const AppRouter = () => {
         // </PrivateRoute>
       ),
     },
-    //  {
-    //   path: "/admin/projects",
-    //   element: (
-    //     // <PrivateRoute>
-    //     <ProjectProfilePage />
-    //     // </PrivateRoute>
-    //   ),
-    // },
-    // {
-    //   path: "/admin/member/:name",
-    //   element: (
-    //     // <PrivateRoute>
-    //     <MemberProfile  />
-    //     // </PrivateRoute>
-    //   ),
-    // },
-    // {
-    //   path: "/userprofile",
-    //   element: (
-    //     // <PrivateRoute> // <-- Bypassed for now
-    //     <UserProfile />
-    //     // </PrivateRoute>
-    //   ),
-    // },
-    // Fallback route
+
     {
       path: "*",
       element: <Navigate to="/" replace />,

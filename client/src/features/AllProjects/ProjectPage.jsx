@@ -1,3 +1,4 @@
+// ProjectsPage.jsx
 import React, { useState, useEffect } from "react";
 import { useProjectData } from "./hook/useProjects";
 import "remixicon/fonts/remixicon.css";
@@ -13,13 +14,7 @@ export default function ProjectsPage() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedUser, setSelectedUser] = useState("All Users");
 
-  // This would eventually come from backend (via auth API / Redux)
-  const currentUser = {
-    name: "Riya Infinity",
-    role: "admin", // or "member"
-  };
-
-  // Example list of users (in real app, fetched from backend)
+  const currentUser = { name: "Riya Infinity", role: "admin" };
   const allUsers = [
     "All Users",
     "Riya Infinity",
@@ -34,15 +29,12 @@ export default function ProjectsPage() {
   }, [initialProjects]);
 
   const filtered = projects.filter((p) => {
-    const statusMatch =
-      selectedStatus === "All" || p.status === selectedStatus;
-
+    const statusMatch = selectedStatus === "All" || p.status === selectedStatus;
     const userMatch =
       selectedUser === "All Users" ||
       p.createdBy === selectedUser ||
       p.members?.includes(selectedUser) ||
       p.leads?.includes(selectedUser);
-
     return statusMatch && userMatch;
   });
 
@@ -61,7 +53,7 @@ export default function ProjectsPage() {
     );
 
   return (
-    <div className="px-20 py-10 bg-[#0B0C0D] min-h-screen ml-[-3vw] mt-[-6.5vh] mr-[-1vw] mb-[-8vh]">
+    <div className="px-4 sm:px-8 md:px-16 lg:px-10 py-8 md:py-5 bg-[#0B0C0D] min-h-screen">
       {/* Header */}
       <HeaderRow
         selectedStatus={selectedStatus}
@@ -69,32 +61,28 @@ export default function ProjectsPage() {
         statusOptions={statusOptions}
       />
 
-      {/* Admin-only controls */}
+      {/* Admin Controls */}
       {currentUser.role === "admin" && (
-        <div className="flex justify-end gap-10 items-center mb-6">
-          {/* All Users Dropdown */}
-          <div className="relative">
-            <select
-              value={selectedUser}
-              onChange={(e) => setSelectedUser(e.target.value)}
-              className="bg-[#1b1c1e] text-white px-4 py-2 rounded-md border border-[#2b2c2e]"
-            >
-              {allUsers.map((user) => (
-                <option key={user} value={user}>
-                  {user}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Create Project Button */}
+        <div className="flex flex-col sm:flex-row justify-end sm:items-center gap-4 sm:gap-8 mb-6">
+          <select
+            value={selectedUser}
+            onChange={(e) => setSelectedUser(e.target.value)}
+            className="bg-[#1b1c1e] text-white px-3 py-2 rounded-md border border-[#2b2c2e] w-full sm:w-auto"
+          >
+            {allUsers.map((user) => (
+              <option key={user} value={user}>
+                {user}
+              </option>
+            ))}
+          </select>
           <CreateProjectButton setProjects={setProjects} />
         </div>
       )}
 
       <ProjectSection selectedStatus={selectedStatus} />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+      {/* Responsive Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
         {filtered.map((project, i) => (
           <ProjectCard key={i} project={project} />
         ))}

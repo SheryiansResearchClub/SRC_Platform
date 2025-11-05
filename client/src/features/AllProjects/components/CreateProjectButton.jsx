@@ -127,9 +127,10 @@ export default function CreateProjectButton({ setProjects }) {
 
   return (
     <>
+
       <button
         onClick={() => setOpen(true)}
-        className="bg-[#B4DA00] hover:bg-black hover:text-[#B4DA00] text-black font-medium border border-white border-[2px] px-4 py-2 rounded-[30px]"
+        className="bg-[#B4DA00] hover:bg-black hover:text-[#B4DA00] text-black font-medium border border-white border-[2px] px-4 py-2 rounded-lg whitespace-nowrap"
       >
         Create Project
       </button>

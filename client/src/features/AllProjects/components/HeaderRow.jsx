@@ -13,7 +13,16 @@ export default function HeaderRow({
 
   return (
     <div className="flex items-center justify-between mb-8">
-      <h1 className="text-2xl font-bold text-white">All Projects</h1>
+
+      <div className="flex-col space-y-3">
+
+        <h1 className="text-4xl  text-white">All Projects</h1>
+        <h1 className="text-md  text-gray-400">See All your Projects</h1>
+
+
+      </div>
+
+
 
       <div className="flex items-center gap-3">
         <StatusDropdown
@@ -21,7 +30,7 @@ export default function HeaderRow({
           setSelectedStatus={setSelectedStatus}
           statusOptions={statusOptions}
         />
-        {/* {canCreateProject && <CreateProjectButton />} */}
+
       </div>
     </div>
   );

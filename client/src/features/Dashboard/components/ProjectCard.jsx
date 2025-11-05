@@ -1,112 +1,74 @@
-import React, { useContext } from 'react';
-import { MessageCircle, Paperclip } from 'lucide-react';
-import ThemeContext from '@/context/ThemeContext';
+// Filename: ProjectCard.jsx
 
-const tagColors = [
-  '#66946B', // Teal
-  '#FF6B6B', // Red
-  '#4D96FF', // Blue
-  '#FFA500', // Orange
-  '#9B59B6', // Purple
-  '#F39C12', // Dark Orange
-];
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
+// Helper function to get the correct color for the status badge
+const getStatusClass = (status) => {
+  switch (status) {
+    case 'Active':
+      return 'bg-green-500/20 text-green-300';
+    case 'Completed':
+      return 'bg-blue-500/20 text-blue-300';
+    case 'On Hold':
+      return 'bg-yellow-500/20 text-yellow-300';
+    default:
+      return 'bg-gray-500/20 text-gray-300';
+  }
+};
+
+/**
+ * This component renders a single project from the dashboard
+ * in a mobile-friendly card format.
+ */
 const ProjectCard = ({ project }) => {
-  const { dark } = useContext(ThemeContext);
+  const navigate = useNavigate(); 
+
+  if (!project) return null;
+
+  const handleCardClick = () => {
+    navigate(`/app/project/${project.id}`); // This path is now correct
+  };
 
   return (
     <div
-      className={`rounded-[20px] shadow-sm border p-3 w-[280px] h-[150px] flex flex-col justify-between transition-colors duration-300 
-        ${
-          dark
-            ? 'bg-[#1F1F1F] border-gray-700 hover:bg-[#2A2A2A]'
-            : 'bg-white border-gray-100 hover:bg-gray-50'
-        }`}
+      onClick={handleCardClick} 
+      className="bg-[#1F1F1F] border border-gray-700 rounded-lg p-4 space-y-3 shadow-md 
+                 cursor-pointer transition-colors duration-150 hover:bg-[#2A2A2A]" 
     >
-      {/* Progress Bar */}
-      <div className="flex items-center justify-between mb-2">
-        <div
-          className={`w-full rounded-full h-1 mr-2 ${
-            dark ? 'bg-gray-700' : 'bg-gray-200'
-          }`}
-        >
-          <div
-            className="h-1 rounded-full"
-            style={{ width: `${project.progress}%`, backgroundColor: '#B4DA00' }}
-          ></div>
+      
+      {/* Top Row: Project Name + Status Badge */}
+      <div className="flex justify-between items-start">
+        <div className="pr-2">
+          <h3 className="font-semibold text-white leading-tight">{project.name}</h3>
+          <p className="text-xs text-gray-500 italic mt-1">{project.updated}</p>
         </div>
-        <span
-          className={`text-[10px] font-semibold ${
-            dark ? 'text-gray-300' : 'text-gray-700'
-          }`}
-        >
-          {project.progress}%
+        <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full flex-shrink-0 ${getStatusClass(project.status)}`}>
+          {project.status}
         </span>
       </div>
 
-      {/* Members */}
-      <div className="flex items-center mb-1">
-        <div className="flex -space-x-1.5">
-          {project.members?.slice(0, 4).map((img, index) => (
-            <img
-              key={index}
-              src={img}
-              alt=""
-              className={`w-5 h-5 rounded-full border-2 object-cover ${
-                dark ? 'border-[#1F1F1F]' : 'border-white'
-              }`}
-            />
-          ))}
+      {/* Details: Key/Value pairs from the table */}
+      <div className="text-sm text-gray-300 space-y-1.5 pt-3 border-t border-gray-700/50">
+        <div className="flex">
+          <span className="w-20 font-medium text-gray-500 flex-shrink-0">Team:</span>
+          <span className="truncate">{project.team}</span>
         </div>
-      </div>
-
-      {/* Title & Category */}
-      <div className="flex items-start justify-between">
-        <div className="space-y-0.5">
-          <h3
-            className={`font-semibold text-sm truncate ${
-              dark ? 'text-gray-100' : 'text-gray-900'
-            }`}
-          >
-            {project.title}
-          </h3>
+        
+        {/* --- ADDED THIS SECTION --- */}
+        <div className="flex">
+          <span className="w-20 font-medium text-gray-500 flex-shrink-0">Creator:</span>
+          <span>{project.creator}</span>
         </div>
+        {/* --- END OF ADDED SECTION --- */}
 
-        <span
-          className="px-2 py-0.5 rounded-full text-[12px] font-medium"
-          style={{
-            backgroundColor: `${tagColors[0]}40`,
-            color: tagColors[0],
-          }}
-        >
-          {project.category}
-        </span>
-      </div>
-
-      {/* Tags & Icons */}
-      <div className="flex items-center justify-between mt-2">
-        <div className="flex flex-wrap items-center gap-1">
-          {project.tags?.slice(0, 3).map((tag, index) => (
-            <span
-              key={tag}
-              className="rounded px-1.5 py-0.5 text-[12px] font-medium"
-              style={{
-                backgroundColor: `${tagColors[index % tagColors.length]}40`,
-                color: tagColors[index % tagColors.length],
-              }}
-            >
-              {tag}
-            </span>
-          ))}
+        <div className="flex">
+          <span className="w-20 font-medium text-gray-500 flex-shrink-0">Lead:</span>
+          <span>{project.lead}</span>
         </div>
-
-        <div
-          className={`flex items-center space-x-1.5 ${
-            dark ? 'text-gray-400' : 'text-gray-500'
-          }`}
-        >
-          <MessageCircle size={14} />
-          <Paperclip size={14} />
+        <div className="flex">
+          <span className="w-20 font-medium text-gray-500 flex-shrink-0">Due:</span>
+          <span>{project.due}</span>
         </div>
       </div>
     </div>

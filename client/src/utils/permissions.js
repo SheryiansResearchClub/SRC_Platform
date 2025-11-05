@@ -9,6 +9,7 @@ export const Permissions = {
     canDeleteMembers: true,
     canEditTasks: true,
     canCreateProject: true,
+    canEditProject: true, // added
   },
   leader: {
     canViewAllUsers: true,
@@ -16,6 +17,7 @@ export const Permissions = {
     canDeleteMembers: false,
     canEditTasks: true,
     canCreateProject: true,
+    canEditProject: true, // added
   },
   member: {
     canViewAllUsers: false,
@@ -23,6 +25,7 @@ export const Permissions = {
     canDeleteMembers: false,
     canEditTasks: false,
     canCreateProject: false,
+    canEditProject: false, // added
   },
   // You can add other roles like 'guest', 'client', etc.
 };
