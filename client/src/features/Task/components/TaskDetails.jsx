@@ -66,9 +66,11 @@ const TaskDetails = () => {
 
       {/* Header */}
       <div className="flex flex-col gap-2 mb-6">
-        <h1 className="text-2xl sm:text-3xl font-semibold break-words">
-          {task.title}
-        </h1>
+        <div className="flex justify-between">
+          <h1 className="text-2xl sm:text-3xl font-semibold break-words">
+            {task.title}
+          </h1>
+        </div>
         <p className={`${dark ? "text-[#a1a1a1]" : "text-[#2c2c2c]"}`}>
           Created on {task.created}
         </p>
@@ -77,10 +79,14 @@ const TaskDetails = () => {
       {/* Task Info Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
         {/* Status */}
-        <div className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}>
+        <div
+          className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}
+        >
           <div className="flex items-center gap-2 mb-1">
             <MdOutlineLabelImportant className="text-lg text-yellow-400" />
-            <p className="text-base sm:text-lg font-semibold text-gray-300">Status</p>
+            <p className="text-base sm:text-lg font-semibold text-gray-300">
+              Status
+            </p>
           </div>
           <span
             className={`text-sm sm:text-base w-fit px-3 py-1.5 font-medium rounded-lg ${
@@ -96,10 +102,14 @@ const TaskDetails = () => {
         </div>
 
         {/* Priority */}
-        <div className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}>
+        <div
+          className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}
+        >
           <div className="flex items-center gap-2 mb-1">
             <MdOutlineFlag className="text-lg text-blue-400" />
-            <p className="text-base sm:text-lg font-semibold text-gray-300">Priority</p>
+            <p className="text-base sm:text-lg font-semibold text-gray-300">
+              Priority
+            </p>
           </div>
           <span
             className={`w-fit px-3 py-1.5 text-sm sm:text-base font-medium rounded-lg ${
@@ -117,10 +127,14 @@ const TaskDetails = () => {
         </div>
 
         {/* Deadline */}
-        <div className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}>
+        <div
+          className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}
+        >
           <div className="flex items-center gap-2 mb-1">
             <AiOutlineClockCircle className="text-lg text-red-400" />
-            <p className="text-base sm:text-lg font-semibold text-gray-300">Deadline</p>
+            <p className="text-base sm:text-lg font-semibold text-gray-300">
+              Deadline
+            </p>
           </div>
           <p className="flex items-center gap-2 text-sm sm:text-base break-words">
             {task.deadline}
@@ -128,10 +142,14 @@ const TaskDetails = () => {
         </div>
 
         {/* Assigned By */}
-        <div className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}>
+        <div
+          className={`flex flex-col justify-center p-5 rounded-2xl border ${card}`}
+        >
           <div className="flex items-center gap-2 mb-1">
             <BsPerson className="text-lg text-green-400" />
-            <p className="text-base sm:text-lg font-semibold text-gray-300">Assigned By</p>
+            <p className="text-base sm:text-lg font-semibold text-gray-300">
+              Assigned By
+            </p>
           </div>
           <p className="text-sm sm:text-base break-words">{task.assignedBy}</p>
         </div>
@@ -147,10 +165,15 @@ const TaskDetails = () => {
 
       {/* Members */}
       <div className={`rounded-xl border ${card} p-5 mb-6`}>
-        <h2 className="text-lg sm:text-xl font-semibold mb-3">Assigned Members</h2>
+        <h2 className="text-lg sm:text-xl font-semibold mb-3">
+          Assigned Members
+        </h2>
         <div className="space-y-3">
           {task.members.map((m, i) => (
-            <div key={i} className="flex flex-wrap justify-between items-center gap-2">
+            <div
+              key={i}
+              className="flex flex-wrap justify-between items-center gap-2"
+            >
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-yellow-600/20 rounded-full flex items-center justify-center">
                   <BsPerson className="text-yellow-400" />
@@ -168,7 +191,10 @@ const TaskDetails = () => {
         <h2 className="text-lg sm:text-xl font-semibold mb-3">Subtasks</h2>
         <div className="space-y-3">
           {task.subtasks.map((sub, i) => (
-            <div key={i} className="flex justify-between items-center flex-wrap gap-2 border-b border-gray-700 pb-2">
+            <div
+              key={i}
+              className="flex justify-between items-center flex-wrap gap-2 border-b border-gray-700 pb-2"
+            >
               <span
                 className={`text-sm sm:text-base break-words ${
                   sub.done ? "line-through text-gray-500" : ""

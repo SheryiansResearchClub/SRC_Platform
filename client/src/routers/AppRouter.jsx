@@ -14,7 +14,7 @@ import AppLayout from "@/layouts/AppLayout";
 import Dashboard from "@/features/Dashboard/Dashboard";
 import ProjectPage from "@/components/ProjectPage";
 // import TaskBox from "@/features/Task/components/TaskBox";
-import MemberProfile from "@/features/Task/components/MemberProfile";
+import MemberTasks from "@/features/Task/components/MemberTasks";
 // import UserProfilePage from "@/components/UserProfile";
 import Admin from "@/features/Task/components/Tasks";
 import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.jsx";
@@ -22,6 +22,7 @@ import { preventAuthLoader } from "@/components/AuthLoader";
 import Tasks from "@/features/Task/components/Tasks";
 import UserProfile from "@/components/UserProfile";
 import TaskDetails from "@/features/Task/components/TaskDetails";
+import AllTasks from "@/features/Task/components/AllTasks"
 // import Calendar from "@/features/Dashboard/components/CalendarSection";
 // import Resources from "@/features/Dashboard/components/Resources";
 
@@ -87,15 +88,19 @@ const AppRouter = () => {
         },
          {
           path: "tasks/:name",
-          element: <MemberProfile />,
+          element: <MemberTasks />,
         },
         {
           path: "userprofile",
           element: <UserProfile />,
         },
         {
-          path: "taskdetails",
+          path: "all-tasks/task-details",
           element: <TaskDetails />,
+        },
+        {
+          path: "all-tasks",
+          element: <AllTasks />,
         },
         // {
         //   path: "calendar",
@@ -109,10 +114,7 @@ const AppRouter = () => {
           path: "tasks",
           element: <Tasks />,
         },
-        {
-          path: "tasks/:name",
-          element: <MemberProfile  />,
-        },
+        
         
        
       ],
