@@ -23,7 +23,7 @@ export default function ProjectRow({ project }) {
 
   return (
     <tr
-      className="border-b border-gray-800 hover:bg-[#1a1d1f] transition cursor-pointer"
+      className="border-b border-[#2d2d2d] hover:bg-[#333333] transition cursor-pointer"
       onClick={handleClick}
     >
       {/* Project Name / Updated */}

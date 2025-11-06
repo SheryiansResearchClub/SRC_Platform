@@ -51,7 +51,7 @@ export default function RecentActivitiesCard() {
   };
 
   return (
-    <div className="bg-[#151617] border border-gray-800 rounded-xl p-6">
+    <div className="bg-[#1e1e1e] border border-[#2d2d2d] rounded-xl p-6">
       <div className="flex justify-between items-center mb-6 border-b border-gray-700 pb-4">
         <h2 className="text-xl font-semibold">
           {view === "events" ? "Events" : "Recent Activities"}

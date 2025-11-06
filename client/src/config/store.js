@@ -6,7 +6,7 @@ import projectProfileReducer from '@/features/ProjectPage/slice/projectProfileSl
 import projectSlice from '@/features/AllProjects/slice/projectSlice';
 import teamsReducer from '@/features/AllTeams/slice/teamSlice';
 import teamProfileReducer from "@/features/TeamPage/slice/teamSlice";
-
+import taskReducer from "@/features/Task/slices/tasksSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +17,7 @@ export const store = configureStore({
     projects: projectSlice,
     teams: teamsReducer,
     teamProfile: teamProfileReducer,
+    tasks: taskReducer
 
   },
   middleware: (getDefaultMiddleware) =>

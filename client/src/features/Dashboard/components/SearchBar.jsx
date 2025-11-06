@@ -48,13 +48,13 @@ const useOnClickOutside = (ref, handler) => {
 
 // --- DropdownMenu Helper ---
 const DropdownMenu = ({ options, onSelect, iconMap = {} }) => (
-  <div className="absolute right-0 mt-2 w-56 bg-[#1f2328] border border-gray-800 rounded-lg shadow-lg z-20">
+  <div className="absolute right-0 mt-2 w-56 bg-[#1e1e1e] border border-[#2d2d2d] rounded-lg shadow-lg z-20">
     <ul className="py-1 max-h-60 overflow-y-auto">
       {options.map((optionLabel) => (
         <li
           key={optionLabel}
           onClick={() => onSelect(optionLabel)}
-          className="flex items-center px-4 py-2 text-white hover:bg-gray-700 cursor-pointer"
+          className="flex items-center px-4 py-2 text-white  hover:bg-[#333333] cursor-pointer"
         >
           {iconMap[optionLabel] || iconMap["default"]}
           {optionLabel}
@@ -148,7 +148,7 @@ export default function SearchBar({
           value={value}
           onChange={onChange}
           placeholder="Search projects..."
-          className="bg-[#111315] text-white pl-10 pr-4 py-2.5 rounded-lg w-full outline-none border border-gray-800 focus:border-gray-600 focus:z-10"
+          className="bg-[#1e1e1e] text-white pl-10 pr-4 py-2.5 rounded-lg w-full outline-none border border-[#2d2d2d] focus:border-gray-600 focus:z-10"
         />
       </div>
 
@@ -166,7 +166,7 @@ export default function SearchBar({
           <div className="relative">
             <button
               onClick={() => handleToggleDropdown('users')}
-              className={`flex items-center justify-between bg-[#1f2328] text-white px-4 py-2.5 rounded-lg border border-gray-800 hover:bg-gray-700 ${isMobile ? 'w-full' : '' // Mobile: Full width
+              className={`flex items-center justify-between bg-[#1e1e1e] text-white px-4 py-2.5 rounded-lg border border-[#2d2d2d] hover:bg-[#333333] ${isMobile ? 'w-full' : '' // Mobile: Full width
                 }`}
             >
               <span className="mr-2">{selectedUser}</span>
@@ -186,7 +186,7 @@ export default function SearchBar({
         <div className="relative">
           <button
             onClick={() => handleToggleDropdown('teams')}
-            className={`flex items-center justify-between bg-[#1f2328] text-white px-4 py-2.5 rounded-lg border border-gray-800 hover:bg-gray-700 ${isMobile ? 'w-full' : '' // Mobile: Full width
+            className={`flex items-center justify-between bg-[#1e1e1e] text-white px-4 py-2.5 rounded-lg border border-[#2d2d2d] hover:bg-[#333333]${isMobile ? 'w-full' : '' // Mobile: Full width
               }`}
           >
             <span className="mr-2">{selectedTeam}</span>
@@ -201,7 +201,7 @@ export default function SearchBar({
         <div className="relative">
           <button
             onClick={() => handleToggleDropdown('date')}
-            className={`flex items-center justify-between bg-[#1f2328] text-white px-4 py-2.5 rounded-lg border border-gray-800 hover:bg-gray-700 ${isMobile ? 'w-full' : '' // Mobile: Full width
+            className={`flex items-center justify-between bg-[#1e1e1e] text-white px-4 py-2.5 rounded-lg border border-[#2d2d2d] hover:bg-[#333333] ${isMobile ? 'w-full' : '' // Mobile: Full width
               }`}
           >
             <span className="mr-2">{selectedDate}</span>
@@ -216,7 +216,7 @@ export default function SearchBar({
         <div className="relative">
           <button
             onClick={() => handleToggleDropdown('status')}
-            className={`flex items-center justify-between bg-[#1f2328] text-white px-4 py-2.5 rounded-lg border border-gray-800 hover:bg-gray-700 ${isMobile ? 'w-full' : '' // Mobile: Full width
+            className={`flex items-center justify-between bg-[#1e1e1e] text-white px-4 py-2.5 rounded-lg border border-[#2d2d2d] hover:bg-[#333333] ${isMobile ? 'w-full' : '' // Mobile: Full width
               }`}
           >
             <span className="mr-2">{selectedStatus}</span>

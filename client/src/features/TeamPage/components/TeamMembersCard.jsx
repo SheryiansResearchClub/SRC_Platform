@@ -27,7 +27,7 @@ export default function TeamMembersCard({ allMembers: initialMembers }) {
   };
 
   return (
-    <div className="bg-[#151617] border border-gray-800 rounded-xl p-5 w-full">
+    <div className="bg-[#1e1e1e] border border-[#2d2d2d] rounded-xl p-5 w-full">
       <div className="flex flex-wrap justify-between items-center gap-4 mb-5">
         <h2 className="text-base font-semibold">Team Members</h2>
         <AddMemberButton onAddMember={handleAddMember} currentMembers={members} />
@@ -38,7 +38,7 @@ export default function TeamMembersCard({ allMembers: initialMembers }) {
         {members.map((member, index) => (
           <div
             key={index}
-            className="relative flex items-center justify-between bg-[#111315] rounded-lg px-3 py-2 min-w-[160px] sm:min-w-[180px] flex-grow sm:flex-grow-0"
+            className="relative flex items-center justify-between bg-[#1e1e1e] rounded-lg px-3 py-2 min-w-[160px] sm:min-w-[180px] flex-grow sm:flex-grow-0"
           >
             <div className="flex items-center space-x-2 overflow-hidden">
               <FaUserCircle className="w-6 h-6 text-gray-500 flex-shrink-0" />

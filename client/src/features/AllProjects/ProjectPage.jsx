@@ -67,7 +67,7 @@ export default function ProjectsPage() {
           <select
             value={selectedUser}
             onChange={(e) => setSelectedUser(e.target.value)}
-            className="bg-[#1b1c1e] text-white px-3 py-2 rounded-md border border-[#2b2c2e] w-full sm:w-auto"
+            className="bg-[#1e1e1e] text-white px-3 py-2 rounded-md border border-[#2d2d2d] w-full sm:w-auto"
           >
             {allUsers.map((user) => (
               <option key={user} value={user}>

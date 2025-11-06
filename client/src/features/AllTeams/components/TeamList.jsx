@@ -6,7 +6,7 @@ export default function TeamList({ teams }) {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#111315] rounded-lg shadow-xl w-full">
+    <div className="bg-[#1e1e1e] rounded-lg shadow-xl w-full">
       {teams.map((team, index) => (
         <div
           key={team.id}

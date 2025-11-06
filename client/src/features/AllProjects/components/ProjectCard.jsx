@@ -15,7 +15,7 @@ export default function ProjectCard({ project }) {
   return (
     <div
       onClick={handleClick}
-      className="bg-[#111315] rounded-xl border border-[#1f1f1f] p-5 hover:bg-[#181a1c] transition-colors cursor-pointer"
+      className="bg-[#1e1e1e] rounded-xl border border-[#2d2d2d] p-5 hover:bg-[#333333] transition-colors cursor-pointer"
     >
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-lg font-semibold text-white">{project.title}</h3>

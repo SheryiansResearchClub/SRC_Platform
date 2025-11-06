@@ -3,8 +3,8 @@ import React from "react";
 export default function TeamRow({ team, isFirst, isLast, hasBorder }) {
   return (
     <div
-      className={`flex items-center gap-4 p-5 hover:bg-[#1a1d21] cursor-pointer transition
-        ${hasBorder ? "border-b border-[#2b2c2e]" : ""}
+      className={`flex items-center gap-4 p-5 hover:bg-[#333333] cursor-pointer transition
+        ${hasBorder ? "border-b border-[#2d2d2d]" : ""}
         ${isFirst ? "rounded-t-lg" : ""}
         ${isLast ? "rounded-b-lg" : ""}
       `}

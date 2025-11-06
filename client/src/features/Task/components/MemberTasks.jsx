@@ -7,8 +7,10 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 import { RiTodoLine, RiCalendarLine } from "react-icons/ri";
 import { IoMdCloseCircleOutline } from "react-icons/io";
 import ThemeContext from "@/context/ThemeContext";
+import { useTasks } from "@/features/Task/hooks/useTasks";
 
-const MemberProfile = () => {
+
+const MemberTasks = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const { dark } = useContext(ThemeContext);
@@ -21,35 +23,7 @@ const MemberProfile = () => {
 
   const member = state?.member || {};
 
-  const [tasks] = useState([
-    {
-      title: "Fix the SRC Website",
-      creator: "Aayush Chouhan",
-      assigned: 1,
-      priority: "High",
-      created: "10/29/2025",
-      due: "10/31/2025",
-      status: "Working",
-    },
-    {
-      title: "AROX Landing page",
-      creator: "Sarthak Sharma",
-      assigned: 1,
-      priority: "Low",
-      created: "5/29/2025",
-      due: "12/31/2025",
-      status: "Completed",
-    },
-    {
-      title: "Website Seo",
-      creator: "Sarthak Sharma",
-      assigned: 1,
-      priority: "Urgent",
-      created: "1/29/2025",
-      due: "10/31/2025",
-      status: "Not Started",
-    },
-  ]);
+  const { tasks, status, createTask} = useTasks();
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -175,7 +149,7 @@ const MemberProfile = () => {
             key={index}
             className={`flex flex-col items-start justify-center p-4 rounded-xl border transition-transform hover:scale-[1.02] ${
               dark
-                ? "bg-[#1e1e1e] border-[#2d2d2d]"
+                ? "bg-[#1e1e1e] border-[#2d2d2d] "
                 : "bg-gray-100 border-gray-300"
             }`}
           >
@@ -249,7 +223,7 @@ const MemberProfile = () => {
             key={i}
             className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium cursor-pointer ${
               dark
-                ? "bg-[#1f1f1f] border border-[#333] hover:bg-[#2b2b2b] text-white"
+                ? "bg-[#1f1f1f] border border-[#333] hover:bg-[#333333] text-white"
                 : "bg-gray-200 border border-gray-300 hover:bg-gray-300 text-black"
             }`}
             value={filter.value}
@@ -270,7 +244,7 @@ const MemberProfile = () => {
           filteredTasks.map((task, i) => (
             <div
               key={i}
-              className={`rounded-lg px-4 sm:px-5 py-4 ${
+              className={`rounded-lg px-4 sm:px-5 py-4 cursor-pointer ${
                 dark ? "bg-[#181818]" : "bg-gray-100"
               }`}
             >
@@ -367,4 +341,4 @@ const MemberProfile = () => {
   );
 };
 
-export default MemberProfile;
+export default MemberTasks;

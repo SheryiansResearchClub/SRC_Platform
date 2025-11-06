@@ -18,7 +18,6 @@ const MembersTable = ({ dark }) => {
   };
 
   const handleNameClick = (member) => {
-    console.log(member.name);
     navigate(`/app/tasks/${member.name}`, { state: { member } });
   };
 

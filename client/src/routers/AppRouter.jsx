@@ -13,13 +13,15 @@ import ForgotPassword from "@/features/Auth/components/forgetPassword";
 import AppLayout from "@/layouts/AppLayout";
 import Dashboard from "@/features/Dashboard/Dashboard";
 import ProjectPage from "@/features/AllProjects/ProjectPage";
-import MemberProfile from "@/features/Task/components/MemberProfile";
+
 import TeamProfilePage from "@/features/TeamPage/page/TeamProfilePage";
+import MemberTasks from "@/features/Task/components/MemberTasks";
 import Admin from "@/features/Task/components/Tasks";
 import ProjectProfilePage from "@/features/ProjectPage/pages/ProjectProfilePage.jsx";
 import { preventAuthLoader } from "@/components/AuthLoader";
 import Tasks from "@/features/Task/components/Tasks";
 import UserProfile from "@/components/UserProfile";
+import AllTasks from "@/features/Task/components/AllTasks"
 import TaskDetails from "@/features/Task/components/TaskDetails";
 import AllTeamsPage from "@/features/AllTeams/pages/AllTeamsPage";
 
@@ -86,7 +88,7 @@ const AppRouter = () => {
         },
         {
           path: "tasks/:name",
-          element: <MemberProfile />,
+          element: <MemberTasks />,
         },
         {
           path: "userprofile",
@@ -97,8 +99,12 @@ const AppRouter = () => {
           element: <TeamProfilePage />,
         },
         {
-          path: "taskdetails",
+          path: "all-tasks/task-details",
           element: <TaskDetails />,
+        },
+        {
+          path: "all-tasks",
+          element: <AllTasks />,
         },
 
         {
@@ -110,10 +116,7 @@ const AppRouter = () => {
           path: "tasks",
           element: <Tasks />,
         },
-        {
-          path: "tasks/:name",
-          element: <MemberProfile />,
-        },
+        
 
 
       ],

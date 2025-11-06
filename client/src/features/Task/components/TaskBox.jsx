@@ -1,218 +1,245 @@
-import React, { useState , useEffect} from "react";
+import React, { useState } from "react";
 import { IoReturnUpBack } from "react-icons/io5";
 
-const TaskBox = ({ dark, toggleTask, to }) => {
-  // Example team and mentor data
-  const teamMembers = [
-    "Sagar Patel",
-    "Aayush Gupta",
-    "Meera Joshi",
-    "Rohan Mehta",
-    "Kritika Singh",
-  ];
+const TaskBox = ({ dark, closeBox, newTask, setNewTask, onCreate, members }) => {
+  const [subtaskInput, setSubtaskInput] = useState("");
+  const [attachmentInput, setAttachmentInput] = useState("");
 
-  const mentors = ["Harsh Sharma", "Vivek Rao", "Anjali Nair", "Kunal Verma"];
+  const handleAddTask = () => {
+    if (
+      !newTask.title ||
+      !newTask.creator ||
+      !newTask.assigned ||
+      !newTask.due ||
+      !newTask.description
+    )
+      return alert("Please fill all required fields before adding a task.");
 
-  // State management
-  const [member, setMember] = useState("");
-  const [mentor, setMentor] = useState("");
-  const [date, setDate] = useState("");
-  const [filteredMembers, setFilteredMembers] = useState([]);
-  const [filteredMentors, setFilteredMentors] = useState([]);
-  const [showMemberSuggestions, setShowMemberSuggestions] = useState(false);
-  const [showMentorSuggestions, setShowMentorSuggestions] = useState(false);
+    const created = new Date().toLocaleDateString();
 
-// Auto-fill member name when TaskBox opens
-  useEffect(() => {
-    if (to) {
-      setMember(to);
-    }
-  }, [to]);
+    const task = {
+      ...newTask,
+      created,
+      status: "Not Started",
+      comments: [],
+      activity: [
+        { time: new Date().toLocaleTimeString(), action: "Task created" },
+      ],
+    };
 
-  // Handlers for member autocomplete
-  const handleMemberChange = (e) => {
-    const value = e.target.value;
-    setMember(value);
-    if (!value.trim()) {
-      setFilteredMembers([]);
-      setShowMemberSuggestions(false);
-      return;
-    }
-    const filtered = teamMembers.filter((name) =>
-      name.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredMembers(filtered);
-    setShowMemberSuggestions(true);
+    onCreate(task);
+
+    setNewTask({
+      title: "",
+      description: "",
+      creator: "",
+      assigned: "",
+      priority: "Medium",
+      due: "",
+      members: [],
+      subtasks: [],
+      attachments: [],
+    });
+
+    closeBox();
   };
 
-  const selectMember = (name) => {
-    setMember(name);
-    setShowMemberSuggestions(false);
+  const handleAddSubtask = () => {
+    if (subtaskInput.trim() === "") return;
+    setNewTask({
+      ...newTask,
+      subtasks: [...(newTask.subtasks || []), { name: subtaskInput, done: false }],
+    });
+    setSubtaskInput("");
   };
 
-  // Handlers for mentor autocomplete
-  const handleMentorChange = (e) => {
-    const value = e.target.value;
-    setMentor(value);
-    if (!value.trim()) {
-      setFilteredMentors([]);
-      setShowMentorSuggestions(false);
-      return;
-    }
-    const filtered = mentors.filter((name) =>
-      name.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilteredMentors(filtered);
-    setShowMentorSuggestions(true);
+  const handleAddAttachment = () => {
+    if (attachmentInput.trim() === "") return;
+    setNewTask({
+      ...newTask,
+      attachments: [...(newTask.attachments || []), attachmentInput],
+    });
+    setAttachmentInput("");
   };
 
-  const selectMentor = (name) => {
-    setMentor(name);
-    setShowMentorSuggestions(false);
+  const handleAddMember = (memberName) => {
+    if (!memberName || newTask.members?.some((m) => m.name === memberName)) return;
+    setNewTask({
+      ...newTask,
+      members: [
+        ...(newTask.members || []),
+        { name: memberName, role: "Contributor", active: true },
+      ],
+    });
   };
 
+  const inputStyle = `p-2 rounded-md border w-full outline-none ${
+    dark
+      ? "bg-[#1a1a1a] border-[#2d2d2d] text-white"
+      : "bg-white border-gray-300 text-black"
+  }`;
 
   return (
     <div
-      className={`fixed  top-[20%] w-[95%]  rounded-2xl p-8 border transition-all duration-500 z-50 md:right-2 md:w-[60%] lg:w-[40%] ${
-        dark ? "bg-[#232323] border-[#373737]" : "bg-[#eeeeee] border-[#a8a8a8]"
-      }`}
+      className={`fixed top-[10%] left-1/2 -translate-x-1/2 w-[95%] md:w-[65%] lg:w-[45%] 
+      rounded-2xl p-6 border z-50 shadow-2xl overflow-y-auto max-h-[85vh]
+      ${dark ? "bg-[#232323] border-[#373737]" : "bg-[#f4f4f4] border-[#cfcfcf]"}`}
     >
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <h1
-          className={`text-4xl font-semibold ${
-            dark ? "text-[#aaaaaa]" : "text-[#444444]"
-          }`}
-        >
-          Assign a Task
-        </h1>
-        <IoReturnUpBack  onClick={toggleTask}
-          className={`cursor-pointer ${dark ? "text-[#aaaaaa]" : "text-[#444]"}`}
-          size={24}
+      <div className="flex justify-between items-center mb-5">
+        <h2 className="text-xl font-semibold">Create a New Task</h2>
+        <IoReturnUpBack
+          onClick={closeBox}
+          className="text-2xl cursor-pointer hover:scale-105 transition-transform"
         />
       </div>
 
-      {/* Form */}
-      <form className="flex flex-col gap-8">
-        {/* Team Member */}
-        <div className="flex justify-between items-start relative">
-          <label
-            className={`text-lg ${
-              dark ? "text-[#bcbcbc]" : "text-[#555]"
-            }`}
-          >
-            To
-          </label>
-          <div className="relative w-[60%]">
+      <div className="flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Task Title"
+          value={newTask.title}
+          onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
+          className={inputStyle}
+        />
+
+        <textarea
+          placeholder="Task Description"
+          rows={3}
+          value={newTask.description}
+          onChange={(e) => setNewTask({ ...newTask, description: e.target.value })}
+          className={`${inputStyle} resize-none`}
+        />
+
+        <input
+          type="text"
+          placeholder="Creator"
+          value={newTask.creator}
+          onChange={(e) => setNewTask({ ...newTask, creator: e.target.value })}
+          className={inputStyle}
+        />
+
+        {/* Assign */}
+        <select
+          value={newTask.assigned}
+          onChange={(e) => {
+            setNewTask({ ...newTask, assigned: e.target.value });
+            handleAddMember(e.target.value);
+          }}
+          className={inputStyle}
+        >
+          <option value="">Assign to...</option>
+          {members.slice(1).map((m) => (
+            <option key={m}>{m}</option>
+          ))}
+        </select>
+
+        {/* Priority */}
+        <select
+          value={newTask.priority}
+          onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}
+          className={inputStyle}
+        >
+          {["Urgent", "High", "Medium", "Low"].map((p) => (
+            <option key={p}>{p}</option>
+          ))}
+        </select>
+
+        <input
+          type="date"
+          value={newTask.due}
+          onChange={(e) => setNewTask({ ...newTask, due: e.target.value })}
+          className={inputStyle}
+        />
+
+        {/* Members */}
+        {newTask.members?.length > 0 && (
+          <div className="mt-2">
+            <h3 className="text-sm font-semibold mb-1">Assigned Members:</h3>
+            <ul className="text-sm text-gray-400 space-y-1">
+              {newTask.members.map((m, i) => (
+                <li key={i}>{m.name}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Subtasks */}
+        <div>
+          <h3 className="text-sm font-semibold mb-1">Subtasks</h3>
+          <div className="flex gap-2 mb-2">
             <input
               type="text"
-              value={member}
-              onChange={handleMemberChange}
-              onFocus={() => member && setShowMemberSuggestions(true)}
-              placeholder="Enter team member name"
-              className={`w-full px-4 py-2 rounded-full outline-none text-sm transition-all ${
-                dark
-                  ? "bg-[#2e2e2e] text-[#bcbcbc] placeholder-[#6d6d6d]"
-                  : "bg-[#ddd] text-[#444] placeholder-[#777]"
-              }`}
+              placeholder="Add subtask"
+              value={subtaskInput}
+              onChange={(e) => setSubtaskInput(e.target.value)}
+              className={inputStyle}
             />
-            {showMemberSuggestions && filteredMembers.length > 0 && (
-              <ul
-                className={`absolute mt-2 w-full rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto ${
-                  dark ? "bg-[#2e2e2e]" : "bg-white border border-[#ccc]"
-                }`}
-              >
-                {filteredMembers.map((name, i) => (
-                  <li
-                    key={i}
-                    onClick={() => selectMember(name)}
-                    className={`px-4 py-2 cursor-pointer text-sm ${
-                      dark
-                        ? "hover:bg-[#3a3a3a] text-[#bcbcbc]"
-                        : "hover:bg-[#f1f1f1] text-[#333]"
-                    }`}
-                  >
-                    {name}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <button
+              onClick={handleAddSubtask}
+              className={`px-3 py-2 rounded-md ${
+                dark
+                  ? "bg-blue-700 hover:bg-blue-600 text-white"
+                  : "bg-blue-600 hover:bg-blue-500 text-white"
+              }`}
+            >
+              +
+            </button>
           </div>
+          <ul className="text-sm text-gray-400 space-y-1">
+            {newTask.subtasks?.map((s, i) => (
+              <li key={i}>• {s.name}</li>
+            ))}
+          </ul>
         </div>
 
-        {/* Date Picker */}
-        <div className="flex justify-between items-center">
-          <label
-            className={`text-lg ${
-              dark ? "text-[#bcbcbc]" : "text-[#555]"
-            }`}
-          >
-            Date
-          </label>
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className={`px-4 py-2 rounded-full text-sm outline-none w-[60%] ${
-              dark
-                ? "bg-[#2e2e2e] text-[#bcbcbc]"
-                : "bg-[#ddd] text-[#444]"
-            }`}
-          />
-        </div>
-
-        {/* Mentor */}
-        <div className="flex justify-between items-start relative">
-          <label
-            className={`text-lg ${
-              dark ? "text-[#bcbcbc]" : "text-[#555]"
-            }`}
-          >
-            Mentor
-          </label>
-          <div className="relative w-[60%]">
+        {/* Attachments */}
+        <div>
+          <h3 className="text-sm font-semibold mb-1">Attachments</h3>
+          <div className="flex gap-2 mb-2">
             <input
               type="text"
-              value={mentor}
-              onChange={handleMentorChange}
-              onFocus={() => mentor && setShowMentorSuggestions(true)}
-              placeholder="Enter mentor name"
-              className={`w-full px-4 py-2 rounded-full outline-none text-sm transition-all ${
-                dark
-                  ? "bg-[#2e2e2e] text-[#bcbcbc] placeholder-[#6d6d6d]"
-                  : "bg-[#ddd] text-[#444] placeholder-[#777]"
-              }`}
+              placeholder="e.g. hero-design.fig"
+              value={attachmentInput}
+              onChange={(e) => setAttachmentInput(e.target.value)}
+              className={inputStyle}
             />
-            {showMentorSuggestions && filteredMentors.length > 0 && (
-              <ul
-                className={`absolute mt-2 w-full rounded-lg shadow-lg z-10 max-h-40 overflow-y-auto ${
-                  dark ? "bg-[#2e2e2e]" : "bg-white border border-[#ccc]"
-                }`}
-              >
-                {filteredMentors.map((name, i) => (
-                  <li
-                    key={i}
-                    onClick={() => selectMentor(name)}
-                    className={`px-4 py-2 cursor-pointer text-sm ${
-                      dark
-                        ? "hover:bg-[#3a3a3a] text-[#bcbcbc]"
-                        : "hover:bg-[#f1f1f1] text-[#333]"
-                    }`}
-                  >
-                    {name}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </div>
-        <button className={`px-4 py-2 w-fit ml-[80%] border rounded-full  ${
+            <button
+              onClick={handleAddAttachment}
+              className={`px-3 py-2 rounded-md ${
                 dark
-                  ? "bg-[#2e2e2e] text-[#bcbcbc] placeholder-[#6d6d6d] hover:bg-[#484848]"
-                  : "bg-[#ddd] text-[#444] placeholder-[#777] hover:bg-[#bbb]"
-              }`}> Submit</button>
-      </form>
+                  ? "bg-green-700 hover:bg-green-600 text-white"
+                  : "bg-green-600 hover:bg-green-500 text-white"
+              }`}
+            >
+              +
+            </button>
+          </div>
+          <ul className="text-sm text-gray-400 space-y-1">
+            {newTask.attachments?.map((a, i) => (
+              <li key={i}>📎 {a}</li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex justify-end gap-3 mt-4">
+          <button
+            onClick={closeBox}
+            className={`px-4 py-2 rounded-md font-semibold transition-all
+              ${dark ? "bg-[#2d2d2d] hover:bg-[#3a3a3a] text-gray-200" : "bg-gray-200 hover:bg-gray-300 text-black"}`}
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleAddTask}
+            className={`px-4 py-2 rounded-md font-semibold transition-all
+              ${dark ? "bg-blue-700 hover:bg-blue-600 text-white" : "bg-blue-600 hover:bg-blue-500 text-white"}`}
+          >
+            Add Task
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

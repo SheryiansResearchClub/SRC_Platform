@@ -2,7 +2,7 @@ import React from "react";
 
 export default function TeamList({ teams }) {
   return (
-    <div className="bg-[#111315] rounded-lg shadow-xl w-full">
+    <div className="bg-[#1e1e1e] rounded-lg shadow-xl w-full">
       {teams.map((team) => (
         <div
           key={team.id}

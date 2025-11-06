@@ -4,7 +4,7 @@ import ProjectRow from "./ProjectRow";
 
 export default function ProjectTable({ projects }) {
   return (
-    <div className="mt-6 bg-[#111315] rounded-xl p-5">
+    <div className="mt-6 bg-[#1e1e1e] rounded-xl p-5">
       <table className="w-full text-left">
         <thead>
           <tr className="text-gray-400 text-sm border-b border-gray-800">

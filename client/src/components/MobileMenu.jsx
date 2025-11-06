@@ -34,7 +34,7 @@ const Sidebar = () => {
   const topLinks = [
     { key: "home", icon: <i className="ri-home-line"></i>, path: "/app", title: "Home" },
     { key: "projects", icon: <i className="ri-grid-fill"></i>, path: "/app/projects", title: "Projects" },
-    { key: "mytasks", icon: <i className="ri-task-line"></i>, path: "/app/taskdetails", title: "My Tasks" },
+    { key: "alltasks", icon: <i className="ri-task-line"></i>, path: "/app/all-tasks", title: "All Tasks" },
     { key: "tasks", icon: <i className="ri-team-fill"></i>, path: "/app/tasks", title: "Team Members" },
     {
       key: "teams",

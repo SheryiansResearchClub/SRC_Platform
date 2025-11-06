@@ -50,7 +50,7 @@ export default function AddMemberButton({ onAddMember, currentMembers = [] }) {
 
       {open && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
-          <div className="bg-[#151617] border border-gray-700 rounded-xl p-6 w-[400px]">
+          <div className="bg-[#1e1e1e] border border-[#2d2d2d] rounded-xl p-6 w-[400px]">
             <h3 className="text-lg font-semibold mb-4">Add a Team Member</h3>
 
             <input
@@ -58,7 +58,7 @@ export default function AddMemberButton({ onAddMember, currentMembers = [] }) {
               placeholder="Search members..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full mb-4 p-2 rounded bg-[#111315] border border-gray-700 text-white"
+              className="w-full mb-4 p-2 rounded bg-[#1e1e1e] border border-[#363636] text-white"
             />
 
             <div className="max-h-48 overflow-y-auto space-y-2">
@@ -67,7 +67,7 @@ export default function AddMemberButton({ onAddMember, currentMembers = [] }) {
                   <div
                     key={user.name}
                     onClick={() => handleAdd(user)}
-                    className="p-2 rounded hover:bg-gray-800 cursor-pointer"
+                    className="p-2 rounded hover:bg-[#333333] cursor-pointer"
                   >
                     {user.name}
                   </div>
@@ -79,7 +79,7 @@ export default function AddMemberButton({ onAddMember, currentMembers = [] }) {
 
             <button
               onClick={handleClose}
-              className="mt-4 w-full py-2 rounded bg-gray-700 hover:bg-gray-600 text-white"
+              className="mt-4 w-full py-2 rounded bg-[#393939] hover:bg-[#333333] text-white"
             >
               Close
             </button>

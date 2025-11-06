@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import ThemeContext from "@/context/ThemeContext";
-import { MdEdit } from "react-icons/md";
+import { MdEdit, MdAdd, MdClose } from "react-icons/md";
 import { FaGithub, FaLinkedin, FaDribbble } from "react-icons/fa";
 
 const MemberProfilePage = () => {
@@ -36,6 +36,8 @@ const MemberProfilePage = () => {
   });
 
   const [formData, setFormData] = useState(member);
+  const [newSkill, setNewSkill] = useState("");
+  const [newTeam, setNewTeam] = useState("");
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -64,6 +66,40 @@ const MemberProfilePage = () => {
     setIsEditing(false);
   };
 
+  const addSkill = () => {
+    if (newSkill.trim() && !formData.skills.includes(newSkill.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        skills: [...prev.skills, newSkill.trim()],
+      }));
+      setNewSkill("");
+    }
+  };
+
+  const removeSkill = (skill) => {
+    setFormData((prev) => ({
+      ...prev,
+      skills: prev.skills.filter((s) => s !== skill),
+    }));
+  };
+
+  const addTeam = () => {
+    if (newTeam.trim() && !formData.teams.includes(newTeam.trim())) {
+      setFormData((prev) => ({
+        ...prev,
+        teams: [...prev.teams, newTeam.trim()],
+      }));
+      setNewTeam("");
+    }
+  };
+
+  const removeTeam = (team) => {
+    setFormData((prev) => ({
+      ...prev,
+      teams: prev.teams.filter((t) => t !== team),
+    }));
+  };
+
   return (
     <main
       className={`min-h-screen flex justify-center items-start py-8 px-4 sm:px-8 ${
@@ -73,7 +109,7 @@ const MemberProfilePage = () => {
       <div
         className={`w-full max-w-6xl rounded-3xl p-6 sm:p-10 shadow-2xl border relative transition-all duration-300 ${
           dark
-            ? "bg-[#121212] border-[#1a2134] shadow-[0_0_30px_rgba(0,132,255,0.15)]"
+            ? "bg-[#1e1e1e] border-[#2d2d2d] shadow-[0_0_30px_rgba(220,255,255,0.15)]"
             : "bg-white border-gray-200 shadow-[0_8px_40px_rgba(0,0,0,0.06)]"
         }`}
       >
@@ -82,7 +118,7 @@ const MemberProfilePage = () => {
           onClick={handleEdit}
           className={`absolute top-5 right-5 sm:top-8 sm:right-8 flex items-center gap-2 px-3 sm:px-4 py-2 text-sm font-medium rounded-xl shadow-md transition-all ${
             dark
-              ? "bg-gray-800 hover:bg-gray-700 text-white"
+              ? "bg-[#2d2d2d] hover:bg-[#333333] text-white"
               : "bg-gray-100 hover:bg-gray-200 text-gray-800"
           }`}
         >
@@ -101,7 +137,7 @@ const MemberProfilePage = () => {
                   "https://avatars.githubusercontent.com/u/9919?s=200&v=4"
                 }
                 alt="Avatar"
-                className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-full border-2 border-gray-500/30 shadow-xl group-hover:scale-105 transition-transform duration-300"
+                className="w-28 h-28 sm:w-32 sm:h-32 object-cover rounded-full border-2 border-[#2d2d2d] shadow-xl group-hover:scale-105 transition-transform duration-300"
               />
               <button
                 onClick={() => fileInputRef.current.click()}
@@ -162,14 +198,14 @@ const MemberProfilePage = () => {
             Performance Overview
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-            {[
+            {[ 
               { value: member.stats.completed, label: "Projects Completed", color: "text-green-400" },
               { value: member.stats.inProgress, label: "In Progress", color: "text-yellow-400" },
               { value: member.stats.teams, label: "Teams Joined", color: "text-teal-400" },
             ].map((stat, i) => (
               <div
                 key={i}
-                className="bg-gradient-to-br from-gray-900/30 to-gray-700/10 rounded-2xl p-6 border border-gray-700/40 text-center shadow-inner hover:-translate-y-1 transition-all duration-300"
+                className="bg-gradient-to-br from-[#1e1e1e] to-gray-700/10 rounded-2xl p-6 border border-gray-700/40 text-center shadow-inner hover:-translate-y-1 transition-all duration-300"
               >
                 <h4 className={`text-3xl sm:text-4xl font-bold ${stat.color}`}>{stat.value}</h4>
                 <p className="text-sm text-gray-400 mt-2">{stat.label}</p>
@@ -187,7 +223,7 @@ const MemberProfilePage = () => {
                 key={skill}
                 className={`px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 ${
                   dark
-                    ? "bg-gray-900/30 text-gray-300 border border-gray-700/40 hover:bg-gray-800"
+                    ? "bg-gray-900/30 text-gray-300 border border-gray-700/40 hover:bg-[#333333]"
                     : "bg-gray-50 text-gray-700 border border-gray-100 hover:bg-gray-100"
                 }`}
               >
@@ -206,7 +242,7 @@ const MemberProfilePage = () => {
                 key={team}
                 className={`px-4 sm:px-5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all duration-300 ${
                   dark
-                    ? "bg-[#2e2e2e] border border-gray-800/40 hover:bg-gray-800"
+                    ? "bg-[#2e2e2e] border border-gray-800/40 hover:bg-[#333333]"
                     : "bg-gray-50 border border-gray-200 hover:bg-gray-200"
                 }`}
               >
@@ -266,6 +302,78 @@ const MemberProfilePage = () => {
                 placeholder="Bio"
                 className="w-full mb-5 p-2 rounded-md border border-gray-500/30 bg-transparent text-sm"
               ></textarea>
+
+              {/* Editable Skills */}
+              <div className="mb-5">
+                <h4 className="font-semibold mb-2">Skills</h4>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {formData.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="flex items-center gap-2 bg-gray-700/30 px-3 py-1 rounded-full text-sm"
+                    >
+                      {skill}
+                      <MdClose
+                        size={14}
+                        onClick={() => removeSkill(skill)}
+                        className="cursor-pointer hover:text-red-400"
+                      />
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    placeholder="Add new skill"
+                    className="flex-1 p-2 rounded-md border border-gray-500/30 bg-transparent text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={addSkill}
+                    className="px-3 py-2 bg-blue-600 text-white rounded-md flex items-center gap-1 hover:bg-blue-700"
+                  >
+                    <MdAdd size={16} /> Add
+                  </button>
+                </div>
+              </div>
+
+              {/* Editable Teams */}
+              <div className="mb-5">
+                <h4 className="font-semibold mb-2">Teams</h4>
+                <div className="flex flex-wrap gap-2 mb-2">
+                  {formData.teams.map((team) => (
+                    <span
+                      key={team}
+                      className="flex items-center gap-2 bg-gray-700/30 px-3 py-1 rounded-full text-sm"
+                    >
+                      {team}
+                      <MdClose
+                        size={14}
+                        onClick={() => removeTeam(team)}
+                        className="cursor-pointer hover:text-red-400"
+                      />
+                    </span>
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newTeam}
+                    onChange={(e) => setNewTeam(e.target.value)}
+                    placeholder="Add new team"
+                    className="flex-1 p-2 rounded-md border border-gray-500/30 bg-transparent text-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={addTeam}
+                    className="px-3 py-2 bg-blue-600 text-white rounded-md flex items-center gap-1 hover:bg-blue-700"
+                  >
+                    <MdAdd size={16} /> Add
+                  </button>
+                </div>
+              </div>
 
               <div className="flex justify-end gap-3 text-sm">
                 <button
