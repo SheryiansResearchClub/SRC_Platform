@@ -2,7 +2,7 @@ import React from 'react'
 
 const Home = () => {
   return (
-    <div>Home Page 1</div>
+    <iframe className='h-screen w-screen' src="https://www.sheryians.com/src" frameborder="0"></iframe>
   )
 }
 
