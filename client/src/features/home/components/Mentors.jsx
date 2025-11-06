@@ -13,7 +13,7 @@ const Mentors = () => {
             <div className="meet">
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6.87793 1.81445V12.5312M6.87793 12.5312L12.2363 7.17285M6.87793 12.5312L1.51953 7.17285"
-                  stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="information">meet them</span>
             </div>
@@ -25,7 +25,7 @@ const Mentors = () => {
               <div className="back">
                 <svg width="21" height="14" viewBox="0 0 21 14" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M19.3998 6.99467H1.43945M6.99528 12.5491L1.43945 6.99332L6.99528 1.4375" stroke="white"
-                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                    strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 <span>Go Back</span>
               </div>

@@ -5,6 +5,13 @@ import { addClass, debounce, createElem, get, getAll, isMobileOrTablet, onClick,
 export default class JoinFormHandler {
   constructor() {
     this.form = get('.joinForm');
+    
+    // Guard: if form doesn't exist, exit early
+    if (!this.form) {
+      console.warn('JoinFormHandler: .joinForm element not found in DOM');
+      return;
+    }
+    
     this.sections = Array.from(getAll('.form-section', this.form));
     this.progressSteps = Array.from(getAll('.progress-step', this.form));
     this.nextButtons = Array.from(getAll('.next-btn', this.form));
@@ -35,6 +42,11 @@ export default class JoinFormHandler {
 
 
   init() {
+    // Guard: if form doesn't exist, skip initialization
+    if (!this.form) {
+      return;
+    }
+    
     this.form.style.display = 'none';
 
     if (this.phoneField) {

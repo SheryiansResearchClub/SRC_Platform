@@ -2,9 +2,9 @@ import React, { useEffect } from "react";
 import "./Home.css";
 
 import Loader from "./components/Loader";
+import ApplicationForm from "./components/ApplicationForm";
 import ThreeScene from "./three/ThreeScene";
 import Nav from "./components/Nav";
-import JoinForm from "./components/JoinForm";
 import HeroSection from "./components/HeroSection";
 import Moto from "./components/Moto";
 import Manifesto from "./components/Manifesto";
@@ -40,7 +40,7 @@ const Home = () => {
         {/* HeroSection FIRST so .small and .big elements exist in DOM */}
         <main className="">
           <Nav />
-          <JoinForm />
+          <ApplicationForm />
           <VideoPlayer />
 
           <HeroSection startRef={startRef} targetRef={targetRef} />
