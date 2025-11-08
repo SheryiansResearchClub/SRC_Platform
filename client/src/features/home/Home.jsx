@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; 
+import React, { useEffect } from "react";
 import "./Home.css";
 
 import Loader from "./components/Loader";
@@ -39,7 +39,9 @@ const Home = () => {
       <ThreeScene>
         {/* HeroSection FIRST so .small and .big elements exist in DOM */}
         <main className="">
+          <div id="canvas-container" />
           <Nav />
+          <div className="mask"></div>
           <ApplicationForm />
           <VideoPlayer />
 
@@ -53,10 +55,8 @@ const Home = () => {
           <OpenRoles />
           <Footer />
         </main>
-
         {/* Loader component AFTER HeroSection so it can find elements */}
         <Loader startRef={startRef} targetRef={targetRef} />
-        <div id="canvas-container" />
         {/* Global scroll progress bar (mirrors static site's behavior) */}
         <div className="scrollProgress">
           <div className="bar" />

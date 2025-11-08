@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import OdometerLite from "../../../libs/Odometer";
 import "../../../libs/Odometer.css";
 
-const Loader = ({ startRef, targetRef }) => {
+const Loader = () => {
   const loaderRef = useRef(null);
   const odometerRef = useRef(null);
   const odometerInstance = useRef(null);
