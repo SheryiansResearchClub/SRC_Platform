@@ -230,12 +230,13 @@
   position: absolute;
   bottom: -20rem;
   left: 3rem;
-  font-size: 100px;
+  /* font-size: 10px; */
   font-family: "minecraft";
   font-weight: 600;
 }
 
-.words-wrapper {
+.loader .words-wrapper {  
+  position: absolute;
   font-family: "minecraft";
   font-weight: 500;
   font-size: 2rem;

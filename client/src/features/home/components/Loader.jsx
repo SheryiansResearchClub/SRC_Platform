@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import OdometerLite from "../../../libs/Odometer";
-import "../../../libs/Odometer.css";
+import "../styles/odometer.css";
 
 const Loader = () => {
   const loaderRef = useRef(null);

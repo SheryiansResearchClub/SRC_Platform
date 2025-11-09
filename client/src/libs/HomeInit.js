@@ -5,25 +5,25 @@ import Lenis from "lenis";
 import Player from "@vimeo/player";
 
 
-import MagicMesh from "../../libs/MagicMesh";
-import ImageSequenceViewer from "../../libs/ImageSequenceViewer";
-import MouseFollower from "../../libs/MouseFollower ";
-import AssetLoader from "../../libs/AssetLoader";
-import TextAnimator from "../../libs/TextAnimator";
-import JoinFormHandler from "../../libs/JoinFormHandler";
-import { addClass, animate, createElem, formatTime, get, getAll, hasClass, isMobileOrTablet, load, monitorViewportChanges, onClick, onHover, onResize, pixelFov, removeClass, splitNumber, toggleClass, updateRenderer } from "../../libs/Utils";
+import MagicMesh from "./MagicMesh";
+import ImageSequenceViewer from "./ImageSequenceViewer";
+import MouseFollower from "./MouseFollower ";
+import AssetLoader from "./AssetLoader";
+import TextAnimator from "./TextAnimator";
+import JoinFormHandler from "./JoinFormHandler";
+import { addClass, animate, createElem, formatTime, get, getAll, hasClass, isMobileOrTablet, load, monitorViewportChanges, onClick, onHover, onResize, pixelFov, removeClass, splitNumber, toggleClass, updateRenderer } from "./Utils";
 
-import wrapEffectVertex from "../../shaders/wrapEffect/vertex.glsl";
-import wrapEffectFragment from "../../shaders/wrapEffect/fragment.glsl";
-import carouselFragment from "../../shaders/carousel/fragment.glsl";
-import carouselVertex from "../../shaders/carousel/vertex.glsl";
+import wrapEffectVertex from "../shaders/wrapEffect/vertex.glsl";
+import wrapEffectFragment from "../shaders/wrapEffect/fragment.glsl";
+import carouselFragment from "../shaders/carousel/fragment.glsl";
+import carouselVertex from "../shaders/carousel/vertex.glsl";
 
-import parchmentFragment from "../../shaders/parchment/fragment.glsl";
-import parchmentVertex from "../../shaders/parchment/vertex.glsl";
+import parchmentFragment from "../shaders/parchment/fragment.glsl";
+import parchmentVertex from "../shaders/parchment/vertex.glsl";
 
-import { AssetsDatabase, CarouselDatabase, MentorDatabase, OpenRolesDatabase } from "../../libs/Database";
-import { DraggableContainer } from "../../libs/DraggableContainer";
-import ParchmentTexture from "../../libs/ParchmentTexture";
+import { AssetsDatabase, CarouselDatabase, MentorDatabase, OpenRolesDatabase } from "./Database";
+import { DraggableContainer } from "./DraggableContainer";
+import ParchmentTexture from "./ParchmentTexture";
 
 gsap.registerPlugin(ScrollTrigger);
 gsap.registerPlugin(ScrollToPlugin);

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./Home.css";
+import "./styles/Home.css";
 
 import Loader from "./components/Loader";
 import ApplicationForm from "./components/ApplicationForm";
@@ -17,7 +17,7 @@ import Footer from "./components/Footer";
 import VideoPlayer from "./components/VideoPlayer";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import startHome from "./homeInit";
+import startHome from "../../libs/HomeInit";
 
 const Home = () => {
   useEffect(() => {
